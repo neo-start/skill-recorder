@@ -163,6 +163,16 @@ export interface SkillStep {
   };
 }
 
+export interface SkillAuthHint {
+  /** Whether the skill needs a pre-authenticated session to run. */
+  required: boolean;
+  /** Human-readable reason why we think auth is needed (password input seen,
+   * redirect to known auth provider, etc.). */
+  reason?: string;
+  /** Auth-provider hostnames touched during recording (logto.app, auth0.com…). */
+  authDomains?: string[];
+}
+
 export interface Skill {
   id: string;
   title: string;
@@ -171,6 +181,8 @@ export interface Skill {
   startUrl: string;
   parameters: SkillParameter[];
   steps: SkillStep[];
+  /** If present and `required`, the renderer emits a `## Precondition` block. */
+  auth?: SkillAuthHint;
   sourceRecordingId: string;
   createdAt: number;
   updatedAt: number;

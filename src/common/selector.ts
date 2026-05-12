@@ -78,7 +78,7 @@ export function fingerprint(el: Element): ElementFingerprint {
  * (e.g., `<a><img alt="Product name"></a>` on Amazon search results).
  */
 function fingerprintText(el: Element): string {
-  const direct = normalizeText(el.textContent || '');
+  const direct = dedupeRepeatedText(normalizeText(el.textContent || ''));
   if (direct) return direct.slice(0, MAX_TEXT_LEN);
   const img = el.querySelector('img');
   if (img) {
@@ -93,6 +93,22 @@ function fingerprintText(el: Element): string {
     if (lab) return normalizeText(lab).slice(0, MAX_TEXT_LEN);
   }
   return '';
+}
+
+/**
+ * Collapse "FooFoo" → "Foo" when textContent concatenates a visually-hidden
+ * sr-only sibling with the visible label (very common in icon-buttons). Only
+ * collapses exact duplicate halves with no whitespace at the seam, which is
+ * the smoking gun for DOM concat artifacts vs legitimate repetition.
+ */
+function dedupeRepeatedText(s: string): string {
+  if (s.length < 8 || s.length % 2 !== 0) return s;
+  const half = s.length / 2;
+  const left = s.slice(0, half);
+  const right = s.slice(half);
+  if (left !== right) return s;
+  if (s[half - 1] === ' ' || s[half] === ' ') return s;
+  return left;
 }
 
 // ─── Resolution ───
@@ -372,7 +388,7 @@ function getAccessibleName(el: Element): string {
       const innerLabel = inner.getAttribute('aria-label');
       if (innerLabel) return normalizeText(innerLabel);
     }
-    return normalizeText(el.textContent || '').slice(0, MAX_TEXT_LEN);
+    return dedupeRepeatedText(normalizeText(el.textContent || '')).slice(0, MAX_TEXT_LEN);
   }
   return '';
 }

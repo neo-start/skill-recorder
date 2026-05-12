@@ -29,6 +29,11 @@ export function renderSkillAsMarkdown(skill: Skill): string {
   lines.push(`Domain: \`${skill.domain || hostnameOf(skill.startUrl) || 'unknown'}\``);
   lines.push('');
 
+  // ─── precondition (auth) ───
+  if (skill.auth?.required) {
+    lines.push(...renderAuthPrecondition(skill));
+  }
+
   // ─── parameters ───
   if (skill.parameters.length) {
     lines.push('## Parameters');
@@ -76,27 +81,93 @@ export function renderSkillAsMarkdown(skill: Skill): string {
 }
 
 /**
+ * Render a `## Precondition` section telling the agent to load a Browserbase
+ * context with the target site already logged in. The context id is supplied
+ * by the caller as an environment variable so the skill itself stays
+ * credential-free.
+ */
+function renderAuthPrecondition(skill: Skill): string[] {
+  const domain = skill.domain || hostnameOf(skill.startUrl) || 'site';
+  const envVar = domainToEnvVar(domain);
+  const out: string[] = [];
+  out.push('## Precondition');
+  out.push('');
+  out.push(
+    `This skill requires an authenticated \`${domain}\` session. ` +
+      `It cannot log in for you — load a pre-authed Browserbase context first.`,
+  );
+  if (skill.auth?.reason) {
+    out.push('');
+    out.push(`> Detected at record time: ${skill.auth.reason}.`);
+  }
+  if (skill.auth?.authDomains?.length) {
+    out.push('> Auth providers touched: ' + skill.auth.authDomains.map((d) => `\`${d}\``).join(', ') + '.');
+  }
+  out.push('');
+  out.push(`Set \`${envVar}\` to a Browserbase context id that has \`${domain}\` already signed in, then:`);
+  out.push('');
+  out.push(bashBlock([
+    `browse env remote`,
+    `browse open ${skill.startUrl} --context-id "$${envVar}"`,
+    `# do NOT pass --persist here; replay should not mutate your saved auth state`,
+  ].join('\n')));
+  out.push('');
+  out.push('### First-time setup (one-off)');
+  out.push('');
+  out.push('If you don\'t have a context yet, create one and sign in interactively:');
+  out.push('');
+  out.push(bashBlock([
+    `# 1. Create an empty context on Browserbase`,
+    `curl -sX POST https://api.browserbase.com/v1/contexts \\`,
+    `  -H "X-BB-API-Key: $BROWSERBASE_API_KEY" \\`,
+    `  -H "Content-Type: application/json" \\`,
+    `  -d "{\\"projectId\\":\\"$BROWSERBASE_PROJECT_ID\\"}"`,
+    `# → returns {"id": "ctx_xxx", ...}`,
+    ``,
+    `# 2. Open with --persist, sign in via the Browserbase live-view, then stop`,
+    `export ${envVar}=ctx_xxx`,
+    `browse env remote`,
+    `browse open ${skill.startUrl} --context-id "$${envVar}" --persist`,
+    `# (manually sign in in the live-view tab)`,
+    `browse stop  # persists cookies + storage back to the context`,
+  ].join('\n')));
+  out.push('');
+  out.push(
+    'After that, every subsequent run with the same `--context-id` arrives already logged in (no `--persist`).',
+  );
+  out.push('');
+  return out;
+}
+
+function domainToEnvVar(domain: string): string {
+  const ascii = domain.replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+  const head = ascii.split('_')[0] || 'site';
+  return `${head.toUpperCase()}_CTX`;
+}
+
+/**
  * Heuristic: a click whose top selector chain implies an item inside a
  * search-results / product grid / generic list container. When that's true,
  * the recorded selector is parameter-sensitive and almost never reusable
  * across different inputs, so we surface a warning in the rendered skill.
+ *
+ * Earlier versions also flagged any click with a deeply positional xpath
+ * (≥6 `[N]` segments), but modern SPAs routinely produce such xpaths for
+ * ordinary buttons, so that rule produced false positives on every click.
+ * We now require *positive* evidence of a list container.
  */
 function looksLikeDynamicListItem(step: SkillStep): boolean {
   const top = topSelector(step.selectors)?.value || '';
   const hintBag = (step.selectors || []).map((s) => s.value).join(' ');
+  // Top selector itself uses positional indexing among siblings of the same tag.
   if (/:nth-of-type\(|:nth-child\(/i.test(top)) return true;
+  // Known list/grid container class names from common e-commerce / CMS frameworks.
   if (
     /\b(s-product-image|s-card-container|puis-card|s-result-item|search-result|result-item|gridcell|list-item|product-card|product-tile|tile-content|productCard|card-container)\b/i.test(
       hintBag,
     )
   ) {
     return true;
-  }
-  // xpath with deep positional indexing into the body — likely a list item position
-  const xpath = (step.selectors || []).find((s) => s.kind === 'xpath')?.value || '';
-  if (xpath) {
-    const positional = (xpath.match(/\[\d+\]/g) || []).length;
-    if (positional >= 6) return true;
   }
   return false;
 }

@@ -9,6 +9,7 @@ import type {
   SelectorEntry,
   Skill,
   SkillActionType,
+  SkillAuthHint,
   SkillParameter,
   SkillStep,
 } from '@/common/types';
@@ -222,6 +223,31 @@ const Hint = styled.div`
   word-break: break-word;
 `;
 
+const AuthRow = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 8px 10px;
+  border: 1px solid ${colors.border};
+  border-radius: 6px;
+  background: rgba(250, 204, 21, 0.06);
+`;
+
+const AuthCheckbox = styled.input`
+  margin-top: 3px;
+  cursor: pointer;
+`;
+
+const AuthLabel = styled.label`
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 12px;
+  cursor: pointer;
+  flex: 1;
+  min-width: 0;
+`;
+
 function kindColor(k: SkillActionType): string {
   switch (k) {
     case 'navigate':
@@ -261,6 +287,7 @@ export function SaveAsSkillDialog({ recording, onClose }: Props) {
   const [title, setTitle] = useState(recording.title || 'Untitled Skill');
   const [description, setDescription] = useState('');
   const [drafts, setDrafts] = useState<DraftStep[]>([]);
+  const [authHint, setAuthHint] = useState<SkillAuthHint>({ required: false });
   const [busy, setBusy] = useState<'idle' | 'copying' | 'downloading'>('idle');
   const [feedback, setFeedback] = useState<string | null>(null);
 
@@ -268,9 +295,10 @@ export function SaveAsSkillDialog({ recording, onClose }: Props) {
     void (async () => {
       const actions = await loadActions(recording.id);
       setDrafts(buildDrafts(actions));
+      setAuthHint(detectAuthSignals(actions, recording.url));
       setLoaded(true);
     })();
-  }, [recording.id]);
+  }, [recording.id, recording.url]);
 
   const params = useMemo<SkillParameter[]>(() => {
     const seen = new Map<string, SkillParameter>();
@@ -311,6 +339,7 @@ export function SaveAsSkillDialog({ recording, onClose }: Props) {
       startUrl: recording.url,
       parameters: params,
       steps,
+      auth: authHint.required ? authHint : undefined,
       sourceRecordingId: recording.id,
       createdAt: Date.now(),
       updatedAt: Date.now(),
@@ -373,6 +402,25 @@ export function SaveAsSkillDialog({ recording, onClose }: Props) {
               placeholder="What does this skill accomplish? Used as the AI-facing description."
             />
           </FieldGroup>
+
+          <AuthRow>
+            <AuthCheckbox
+              type="checkbox"
+              checked={authHint.required}
+              onChange={(e) =>
+                setAuthHint((cur) => ({ ...cur, required: e.target.checked }))
+              }
+            />
+            <AuthLabel>
+              <b>Requires authenticated session</b>
+              <Hint>
+                {authHint.required
+                  ? authHint.reason ||
+                    'A `## Precondition` block will be emitted telling the agent to load a Browserbase context before running steps.'
+                  : 'Skill assumes a public, unauthenticated page. Toggle on if the target site needs login.'}
+              </Hint>
+            </AuthLabel>
+          </AuthRow>
 
           <SectionLabel>
             Steps ({drafts.filter((d) => !d.skipped).length}/{drafts.length})
@@ -758,6 +806,84 @@ function hostnameOf(url: string): string {
   } catch {
     return '';
   }
+}
+
+const AUTH_HOST_PATTERNS = [
+  /(^|\.)logto\.app$/i,
+  /(^|\.)auth0\.com$/i,
+  /(^|\.)okta\.com$/i,
+  /(^|\.)clerk\.(dev|com|accounts|services)$/i,
+  /(^|\.)stytch\.com$/i,
+  /(^|\.)workos\.com$/i,
+  /(^|\.)firebaseapp\.com$/i,
+  /(^|\.)identityserver\.io$/i,
+  /(^|\.)accounts\.google\.com$/i,
+  /(^|\.)appleid\.apple\.com$/i,
+  /(^|\.)login\.microsoftonline\.com$/i,
+  /(^|\.)github\.com$/i, // /login or /oauth paths — caught by path check too
+  /(^|\.)gitlab\.com$/i,
+  /(^|\.)supabase\.co$/i,
+];
+
+const AUTH_PATH_PATTERN = /\/(login|signin|sign-in|sso|oauth|oauth2|authorize|register|signup|sign-up)(\/|$|\?)/i;
+
+/**
+ * Distill-time heuristic: did the recording cross any auth-provider signal?
+ * If yes, the skill probably needs a pre-authenticated session at replay time.
+ *
+ * Strong signals (auto-flag as required):
+ *   - A `change` step on a password input (masked).
+ *   - A `navigate` to a known auth-provider host.
+ *   - A `navigate` whose path matches /login|/signin|/oauth|... .
+ *
+ * Soft signal (suggest, but leave for the user to confirm):
+ *   - The starting URL is on a host whose root path is *not* what we're navigating
+ *     to (e.g., recording starts at /workspace, /dashboard, /app — common
+ *     post-login routes). We don't auto-flag here; the user is the better judge.
+ */
+function detectAuthSignals(actions: ActionStep[], startUrl: string): SkillAuthHint {
+  const reasons: string[] = [];
+  const domains = new Set<string>();
+  const startHost = hostnameOf(startUrl);
+
+  for (const a of actions) {
+    if (a.type === 'change' && a.masked) {
+      reasons.push('a password input was filled during recording');
+    }
+    const target = a.type === 'navigate' ? a.navigateUrl : a.url;
+    if (!target) continue;
+    let host = '';
+    let path = '';
+    try {
+      const u = new URL(target);
+      host = u.host;
+      path = u.pathname;
+    } catch {
+      continue;
+    }
+    if (host && host !== startHost) {
+      for (const re of AUTH_HOST_PATTERNS) {
+        if (re.test(host)) {
+          domains.add(host);
+          reasons.push(`redirect to auth provider ${host}`);
+          break;
+        }
+      }
+    }
+    if (path && AUTH_PATH_PATTERN.test(path)) {
+      reasons.push(`navigated to ${path}`);
+    }
+  }
+
+  if (!reasons.length) return { required: false };
+
+  // Deduplicate, cap at 3 distinct reasons for the UI hint.
+  const uniqueReasons = [...new Set(reasons)].slice(0, 3);
+  return {
+    required: true,
+    reason: uniqueReasons.join('; '),
+    authDomains: domains.size ? [...domains] : undefined,
+  };
 }
 
 function cryptoRandomId(): string {
