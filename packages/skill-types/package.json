@@ -1,0 +1,25 @@
+{
+  "name": "@skill-recorder/types",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "echo no lint",
+    "build": "echo types-only package, no build"
+  },
+  "dependencies": {
+    "@rrweb/types": "2.0.0-alpha.20"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.3"
+  }
+}

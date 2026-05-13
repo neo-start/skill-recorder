@@ -1,5 +1,8 @@
 node_modules
 dist
+.next
+.vercel
+.turbo
 .DS_Store
 *.log
 .vite
@@ -7,3 +10,7 @@ tsconfig.tsbuildinfo
 .idea
 .vscode
 *.local
+.env
+.env.local
+.env.*.local
+.wrangler
