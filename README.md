@@ -108,19 +108,45 @@ i18n: routes auto-detect `Accept-Language` and default to `/en`. Switch via the 
 
 ### Cloudflare Pages (web)
 
-CI workflow: `.github/workflows/web-deploy.yml`
+Two parallel deployment paths, pick whichever fits the situation.
 
-Required GitHub secrets/vars on the repo:
+**A. Local one-liner** (best for iterating):
+
+```bash
+# one-time: fill in the two creds in apps/web/.env.local
+cp projects/skill-recorder/apps/web/.env.example projects/skill-recorder/apps/web/.env.local
+$EDITOR projects/skill-recorder/apps/web/.env.local
+
+# then anytime:
+pnpm --filter @skill-recorder/web deploy
+```
+
+`scripts/deploy.sh` will:
+
+1. Source `apps/web/.env.local` for `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`
+2. Auto-create the Cloudflare Pages project (named `skill-recorder`, override via `PAGES_PROJECT_NAME`) if it doesn't exist yet
+3. Build (`pnpm build` → `out/`)
+4. Copy `public/_redirects` and `public/_headers` into `out/`
+5. Upload via `wrangler pages deploy out --commit-hash=… --commit-message=…`
+
+**B. GitHub Actions** (auto on push to main): `.github/workflows/web-deploy.yml`. Same end result, but driven by CI. Requires these on the GitHub repo:
 
 | Name | Type | Notes |
 |---|---|---|
-| `CLOUDFLARE_API_TOKEN` | secret | Token with Pages:Edit permission |
+| `CLOUDFLARE_API_TOKEN` | secret | Token with Pages:Edit + Account:Read |
 | `CLOUDFLARE_ACCOUNT_ID` | secret | Your account id |
 | `NEXT_PUBLIC_SITE_URL` | variable | e.g. `https://skill-recorder.dev` |
 | `NEXT_PUBLIC_POSTHOG_KEY` | variable (optional) | PostHog public project key |
 | `NEXT_PUBLIC_POSTHOG_HOST` | variable (optional) | Self-hosted PostHog URL if any |
 
-The workflow runs on every push to `main` that touches `packages/**` or `projects/skill-recorder/apps/web/**`, and also on PRs (Cloudflare preview deployments).
+Triggers on pushes to `main` that touch `packages/**` or `projects/skill-recorder/apps/web/**`, plus PRs (preview deploys).
+
+### `public/_redirects` and `public/_headers`
+
+Next.js's static export auto-copies anything in `public/` into `out/`. We use that to ship two Cloudflare-Pages-native files:
+
+- `_redirects` — `/  /en  302` so the bare domain lands on EN.
+- `_headers` — long-cache for `/_next/static/*` immutable assets, no-cache for HTML, plus standard security headers (`X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`).
 
 ### Chrome extension release
 

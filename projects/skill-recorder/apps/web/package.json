@@ -9,7 +9,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "pages:dev": "wrangler pages dev out --compatibility-date=2026-04-01",
-    "pages:deploy": "wrangler pages deploy out --project-name=skill-recorder",
+    "deploy": "./scripts/deploy.sh",
     "clean": "rm -rf .next out .turbo"
   },
   "dependencies": {
