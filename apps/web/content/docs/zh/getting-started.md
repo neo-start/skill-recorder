@@ -24,7 +24,7 @@ pnpm --filter @skill-recorder/crx build
 1. 打开 `chrome://extensions`
 2. 右上角开启 **开发者模式**
 3. 点击 **加载已解压的扩展程序**
-4. 选择 `projects/skill-recorder/apps/crx/dist/`
+4. 选择 `apps/crx/dist/`
 5. 把扩展固定到工具栏,点图标打开 sidepanel
 
 ## 录制第一段流程

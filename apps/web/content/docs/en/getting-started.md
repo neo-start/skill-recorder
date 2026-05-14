@@ -24,7 +24,7 @@ Then in Chrome:
 1. Open `chrome://extensions`
 2. Toggle **Developer mode** on
 3. Click **Load unpacked**
-4. Select `projects/skill-recorder/apps/crx/dist/`
+4. Select `apps/crx/dist/`
 5. Pin the extension; click the icon to open the side panel
 
 ## Record your first flow

@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - 'packages/**'
-      - 'projects/skill-recorder/apps/web/**'
+      - 'apps/web/**'
       - 'package.json'
       - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'
@@ -15,7 +15,7 @@ on:
     branches: [main]
     paths:
       - 'packages/**'
-      - 'projects/skill-recorder/apps/web/**'
+      - 'apps/web/**'
 
 concurrency:
   group: web-deploy-${{ github.ref }}
@@ -58,6 +58,6 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: skill-recorder
-          directory: projects/skill-recorder/apps/web/out
+          directory: apps/web/out
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.head_ref || github.ref_name }}

@@ -21,37 +21,17 @@ importers:
         specifier: ^5.5.3
         version: 5.9.3
 
-  packages/skill-render:
-    dependencies:
-      '@skill-recorder/types':
-        specifier: workspace:*
-        version: link:../skill-types
-    devDependencies:
-      typescript:
-        specifier: ^5.5.3
-        version: 5.9.3
-
-  packages/skill-types:
-    dependencies:
-      '@rrweb/types':
-        specifier: 2.0.0-alpha.20
-        version: 2.0.0-alpha.20
-    devDependencies:
-      typescript:
-        specifier: ^5.5.3
-        version: 5.9.3
-
-  projects/skill-recorder/apps/crx:
+  apps/crx:
     dependencies:
       '@rrweb/types':
         specifier: 2.0.0-alpha.20
         version: 2.0.0-alpha.20
       '@skill-recorder/render':
         specifier: workspace:*
-        version: link:../../../../packages/skill-render
+        version: link:../../packages/skill-render
       '@skill-recorder/types':
         specifier: workspace:*
-        version: link:../../../../packages/skill-types
+        version: link:../../packages/skill-types
       idb:
         specifier: ^8.0.0
         version: 8.0.3
@@ -105,17 +85,17 @@ importers:
         specifier: ^5.4.1
         version: 5.4.21(@types/node@20.19.41)
 
-  projects/skill-recorder/apps/web:
+  apps/web:
     dependencies:
       '@next/mdx':
         specifier: ^14.2.15
         version: 14.2.35(@mdx-js/loader@3.1.1)(@mdx-js/react@3.1.1(@types/react@18.3.28)(react@18.3.1))
       '@skill-recorder/render':
         specifier: workspace:*
-        version: link:../../../../packages/skill-render
+        version: link:../../packages/skill-render
       '@skill-recorder/types':
         specifier: workspace:*
-        version: link:../../../../packages/skill-types
+        version: link:../../packages/skill-types
       next:
         specifier: 14.2.15
         version: 14.2.15(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -180,6 +160,26 @@ importers:
       wrangler:
         specifier: ^3.86.0
         version: 3.114.17
+
+  packages/skill-render:
+    dependencies:
+      '@skill-recorder/types':
+        specifier: workspace:*
+        version: link:../skill-types
+    devDependencies:
+      typescript:
+        specifier: ^5.5.3
+        version: 5.9.3
+
+  packages/skill-types:
+    dependencies:
+      '@rrweb/types':
+        specifier: 2.0.0-alpha.20
+        version: 2.0.0-alpha.20
+    devDependencies:
+      typescript:
+        specifier: ^5.5.3
+        version: 5.9.3
 
 packages:
 

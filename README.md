@@ -4,8 +4,8 @@ A pnpm + Turborepo monorepo for **Skill Recorder** — a Chrome extension that r
 
 This repo contains:
 
-- The **Chrome extension** (`projects/skill-recorder/apps/crx`)
-- The **marketing / docs website** (`projects/skill-recorder/apps/web`) — Next.js 14, next-intl, deploys to Cloudflare Pages
+- The **Chrome extension** (`apps/crx`)
+- The **marketing / docs website** (`apps/web`) — Next.js 14, next-intl, deploys to Cloudflare Pages
 - Shared **workspace packages** for the SKILL.md types and renderer so both apps speak the same language
 
 ## Layout
@@ -20,25 +20,23 @@ skill-recorder/
 ├── packages/
 │   ├── skill-types/                          # @skill-recorder/types — pure type defs
 │   └── skill-render/                         # @skill-recorder/render — renderSkillAsMarkdown
-└── projects/
-    └── skill-recorder/
-        └── apps/
-            ├── crx/                          # @skill-recorder/crx (Chrome MV3, Vite + CRXJS)
-            │   └── src/
-            │       ├── manifest.ts
-            │       ├── common/{db,messages,selector,skill-export}.ts
-            │       ├── stores/               # MobX stores
-            │       └── modules/{background,content,sidepanel,player}/
-            └── web/                          # @skill-recorder/web (Next.js 14 + next-intl)
-                ├── messages/{en,zh}.json
-                ├── content/
-                │   ├── docs/{en,zh}/*.md
-                │   └── changelog/*.md
-                └── src/
-                    ├── app/[locale]/         # landing, pricing, docs, changelog, legal
-                    ├── components/
-                    ├── lib/
-                    └── styles/
+└── apps/
+    ├── crx/                                  # @skill-recorder/crx (Chrome MV3, Vite + CRXJS)
+    │   └── src/
+    │       ├── manifest.ts
+    │       ├── common/{db,messages,selector,skill-export}.ts
+    │       ├── stores/                       # MobX stores
+    │       └── modules/{background,content,sidepanel,player}/
+    └── web/                                  # @skill-recorder/web (Next.js 14 + next-intl)
+        ├── messages/{en,zh}.json
+        ├── content/
+        │   ├── docs/{en,zh}/*.md
+        │   └── changelog/*.md
+        └── src/
+            ├── app/[locale]/                 # landing, pricing, docs, changelog, legal
+            ├── components/
+            ├── lib/
+            └── styles/
 ```
 
 ## Quick start
@@ -65,7 +63,7 @@ pnpm --filter @skill-recorder/crx build        # produces apps/crx/dist/
 pnpm --filter @skill-recorder/crx build
 ```
 
-Then in Chrome: `chrome://extensions` → toggle **Developer mode** → **Load unpacked** → select `projects/skill-recorder/apps/crx/dist/`. The icon opens the side panel.
+Then in Chrome: `chrome://extensions` → toggle **Developer mode** → **Load unpacked** → select `apps/crx/dist/`. The icon opens the side panel.
 
 For HMR during extension development:
 
@@ -73,7 +71,7 @@ For HMR during extension development:
 pnpm --filter @skill-recorder/crx dev
 ```
 
-…and load `projects/skill-recorder/apps/crx/dist/` once; the CRXJS plugin handles reload on file change.
+…and load `apps/crx/dist/` once; the CRXJS plugin handles reload on file change.
 
 ## Web app
 
@@ -114,8 +112,8 @@ Two parallel deployment paths, pick whichever fits the situation.
 
 ```bash
 # one-time: fill in the two creds in apps/web/.env.local
-cp projects/skill-recorder/apps/web/.env.example projects/skill-recorder/apps/web/.env.local
-$EDITOR projects/skill-recorder/apps/web/.env.local
+cp apps/web/.env.example apps/web/.env.local
+$EDITOR apps/web/.env.local
 
 # then anytime:
 pnpm --filter @skill-recorder/web deploy
@@ -139,7 +137,7 @@ pnpm --filter @skill-recorder/web deploy
 | `NEXT_PUBLIC_POSTHOG_KEY` | variable (optional) | PostHog public project key |
 | `NEXT_PUBLIC_POSTHOG_HOST` | variable (optional) | Self-hosted PostHog URL if any |
 
-Triggers on pushes to `main` that touch `packages/**` or `projects/skill-recorder/apps/web/**`, plus PRs (preview deploys).
+Triggers on pushes to `main` that touch `packages/**` or `apps/web/**`, plus PRs (preview deploys).
 
 ### `public/_redirects` and `public/_headers`
 
