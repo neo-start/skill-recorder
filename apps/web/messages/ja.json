@@ -1,346 +1,331 @@
 {
   "layout": {
     "nav": {
-      "playground": "Playground",
-      "blog": "Blog",
-      "cta": "Add to Chrome",
-      "signIn": "Sign in",
-      "ctaMobile": "Add to Chrome",
-      "closeMenu": "Close menu",
-      "openMenu": "Open menu",
-      "viewAllArticles": "View all articles",
-      "openPlayground": "Open Playground",
+      "blog": "ブログ",
+      "cta": "Chrome に追加",
+      "signIn": "ログイン",
+      "ctaMobile": "Chrome に追加",
+      "closeMenu": "メニューを閉じる",
+      "openMenu": "メニューを開く",
+      "viewAllArticles": "すべての記事を見る",
       "blogItems": {
-        "ecommerce": "Recording Browser Flows for AI Agents",
-        "noCode": "From Click to SKILL.md: A Complete Walkthrough",
-        "leads": "How to Distill a Recording into a Reusable Skill",
-        "pagination": "Replaying Flows with the browse CLI"
+        "ecommerce": "AI エージェントのためにブラウザ操作を記録する",
+        "noCode": "クリックから SKILL.md へ:完全ウォークスルー",
+        "leads": "録画を再利用可能なスキルへ昇華する方法",
+        "pagination": "browse CLI でフローを再生する"
       }
     },
     "footer": {
-      "tagline": "Record once. Replay forever.",
-      "playground": "Playground",
-      "blog": "Blog",
-      "blogHome": "All Articles",
-      "blogEcommerce": "Recording Browser Flows for AI Agents",
-      "blogNoCode": "From Click to SKILL.md",
-      "blogLeads": "Distilling a Recording into a Skill",
-      "legal": "Support",
-      "privacy": "Privacy Policy",
-      "terms": "Terms of Service",
+      "tagline": "一度記録すれば、何度でも再生。",
+      "blog": "ブログ",
+      "blogHome": "すべての記事",
+      "blogEcommerce": "AI エージェントのためにブラウザ操作を記録する",
+      "blogNoCode": "クリックから SKILL.md へ",
+      "blogLeads": "録画をスキルへ昇華する",
+      "legal": "サポート",
+      "privacy": "プライバシーポリシー",
+      "terms": "利用規約",
       "copyright": "© 2026 Skill Recorder. All rights reserved."
     }
   },
   "blog": {
     "meta": {
-      "title": "Blog | Skill Recorder — Browser Automation for AI Agents",
-      "description": "Guides and notes on recording browser flows, distilling them into SKILL.md files, and replaying them with AI agents.",
-      "keywords": "skill recorder blog, browser automation, claude code skills, browse cli, SKILL.md"
+      "title": "ブログ | Skill Recorder — AI エージェントのためのブラウザ自動化",
+      "description": "ブラウザ操作の記録、SKILL.md ファイルへの昇華、AI エージェントによる再生に関するガイドとノート。",
+      "keywords": "skill recorder ブログ, ブラウザ自動化, claude code スキル, browse cli, SKILL.md"
     },
     "hero": {
-      "title": "Recording & Replay Guides",
-      "description": "Practical tutorials on capturing browser flows, distilling them into portable SKILL.md files, and replaying them with Claude Code.",
-      "articles": "Articles",
-      "categories": "Categories",
-      "free": "Free",
-      "toRead": "To Read"
+      "title": "記録と再生のガイド",
+      "description": "ブラウザ操作を記録し、ポータブルな SKILL.md ファイルへ昇華して Claude Code で再生する実践的なチュートリアル。",
+      "articles": "記事",
+      "categories": "カテゴリ",
+      "free": "無料",
+      "toRead": "あとで読む"
     },
-    "loadMore": "Load More",
-    "readMore": "Read More",
-    "minRead": "min read",
+    "loadMore": "もっと見る",
+    "readMore": "続きを読む",
+    "minRead": "分で読了",
     "breadcrumbs": {
-      "home": "Home",
-      "blog": "Blog"
+      "home": "ホーム",
+      "blog": "ブログ"
     },
-    "recentArticles": "Recent Articles",
-    "relatedArticles": "Related Articles"
+    "recentArticles": "最近の記事",
+    "relatedArticles": "関連記事"
   },
   "main": {
     "meta": {
-      "title": "Skill Recorder | Turn Browser Flows into SKILL.md Files",
-      "description": "Record any browser flow with a Chrome extension and distill it into a SKILL.md file that AI agents like Claude Code can re-run autonomously.",
-      "keywords": "skill recorder, browser automation, claude code skills, SKILL.md, browse cli, ai agent automation, chrome extension"
+      "title": "Skill Recorder | ブラウザ操作を SKILL.md ファイルへ",
+      "description": "Chrome 拡張であらゆるブラウザ操作を記録し、Claude Code のような AI エージェントが自律実行できる SKILL.md ファイルへ昇華します。",
+      "keywords": "skill recorder, ブラウザ自動化, claude code スキル, SKILL.md, browse cli, AI エージェント 自動化, chrome 拡張"
     },
     "hero": {
-      "title": "Record a Flow Once. Let AI Replay It Forever.",
-      "subtitle": "A Chrome extension that captures your browser flow and distills it into a SKILL.md AI agents can re-run.",
-      "ctaPrimary": "Install Now",
-      "ctaSecondary": "Try in Playground",
-      "note": "Free during beta. No account required."
+      "title": "一度記録すれば、AI が何度でも再生。",
+      "subtitle": "ブラウザ操作をキャプチャし、AI エージェントが再実行できる SKILL.md へ昇華する Chrome 拡張。",
+      "ctaPrimary": "今すぐインストール",
+      "note": "ベータ期間中は完全無料。登録不要。"
     },
     "howItWorks": {
-      "title": "From Browser Demo to Replayable Skill in <accent>3 Steps</accent>",
+      "title": "ブラウザでのデモから再生可能なスキルへ、わずか <accent>3 ステップ</accent>",
       "steps": {
         "install": {
           "number": "01",
-          "title": "Install the Extension",
-          "desc": "Add Skill Recorder to Chrome in seconds.",
-          "imgAlt": "Install the Skill Recorder Chrome extension"
+          "title": "拡張機能をインストール",
+          "desc": "Skill Recorder を数秒で Chrome に追加。",
+          "imgAlt": "Skill Recorder Chrome 拡張をインストール"
         },
         "scrape": {
           "number": "02",
-          "title": "Record Your Flow",
-          "desc": "Click Start, walk through the task once, and we capture every action.",
-          "imgAlt": "Record a browser flow with one click"
+          "title": "操作を記録",
+          "desc": "スタートを押してタスクを一度こなすだけで、すべての操作をキャプチャ。",
+          "imgAlt": "ワンクリックでブラウザ操作を記録"
         },
         "export": {
           "number": "03",
-          "title": "Export as SKILL.md",
-          "desc": "Save the distilled markdown file straight into your Claude Code skills folder.",
-          "imgAlt": "Download a SKILL.md file ready for Claude Code"
+          "title": "SKILL.md としてエクスポート",
+          "desc": "昇華した Markdown ファイルを Claude Code のスキルフォルダへそのまま保存。",
+          "imgAlt": "Claude Code 用の SKILL.md ファイルをダウンロード"
         }
       }
     },
     "features": {
-      "title": "Capture Every Click, <accent>Distill Every Skill</accent>",
+      "title": "すべてのクリックを記録し、<accent>すべてをスキルへ昇華</accent>",
       "ctas": {
-        "f1": "Record Now",
-        "f2": "Distill Cleanly",
-        "f3": "Replay Anywhere",
-        "f4": "Hand Off to Claude"
+        "f1": "今すぐ記録",
+        "f2": "クリーンに昇華",
+        "f3": "どこでも再生",
+        "f4": "Claude に引き渡す"
       },
       "f1": {
-        "title": "Just Hit Record",
-        "desc": "No scripts, no selectors. Click Start and demo the task like you would for a coworker. We capture <highlight>every click, keystroke, and navigation</highlight> in real time. When you stop, you have a perfect replay ready to distill.",
-        "imgAlt": "One-click recording of a browser flow"
+        "title": "押すだけで記録開始",
+        "desc": "スクリプトもセレクタも不要。スタートを押して、同僚に教えるようにタスクをデモするだけ。<highlight>すべてのクリック、キー入力、画面遷移</highlight> をリアルタイムでキャプチャします。停止した瞬間、昇華の準備が整った完璧な再生データが手に入ります。",
+        "imgAlt": "ワンクリックでブラウザ操作を記録"
       },
       "f2": {
-        "title": "Smart Distillation, Out of the Box",
-        "desc": "The dialog auto-strips noise, <highlight>turns every typed value into a parameter</highlight>, and flags clicks on dynamic lists with ⚠️ warnings so agents replay them safely. No manual cleanup, no regex wrangling.",
-        "imgAlt": "Distilling a recording into a clean SKILL.md"
+        "title": "賢い昇華が、すぐに動く",
+        "desc": "ダイアログがノイズを自動で取り除き、<highlight>入力値をすべてパラメーター化</highlight>、動的リスト上のクリックには ⚠️ 警告を付与し、エージェントが安全に再生できるようにします。手動クリーンアップも正規表現との格闘も不要。",
+        "imgAlt": "録画をクリーンな SKILL.md へ昇華"
       },
       "f3": {
-        "title": "Replay on Any AI Agent",
-        "desc": "The output is a portable <highlight>SKILL.md</highlight> file — plain markdown an AI agent can read. Drop it into Claude Code's skills directory and the agent replays the flow via the <highlight>browse</highlight> CLI without any glue code.",
-        "imgAlt": "Replaying a SKILL.md flow with Claude Code"
+        "title": "どんな AI エージェントでも再生可能",
+        "desc": "出力はポータブルな <highlight>SKILL.md</highlight> ファイル — AI エージェントが読める素の Markdown です。Claude Code のスキルディレクトリへ置けば、エージェントは <highlight>browse</highlight> CLI 経由でフローを再生します。グルーコードは一切不要。",
+        "imgAlt": "Claude Code で SKILL.md フローを再生"
       },
       "f4": {
-        "title": "Privacy-First by Design",
-        "desc": "All recording lives in your browser. Nothing uploads. Auth tokens never leave your machine — we detect them, mark them as <highlight>Precondition: signed in</highlight>, and let the agent prompt you when it's time to authenticate.",
-        "imgAlt": "Skill Recorder runs locally with no upload"
+        "title": "設計から徹底したプライバシー重視",
+        "desc": "記録はすべてブラウザ内に留まります。アップロードは一切ありません。認証トークンが端末から出ることもありません — 自動検知し、<highlight>Precondition: signed in</highlight> としてマークし、認証が必要なタイミングでエージェントが人にプロンプトを返します。",
+        "imgAlt": "Skill Recorder はローカルで動作しアップロードしない"
       }
     },
     "useCases": {
-      "title": "Built for Every Repetitive Browser Task",
+      "title": "繰り返しのブラウザ作業すべてのために",
       "cases": {
         "ecommerce": {
-          "title": "Automate Repetitive Forms",
-          "desc": "Record a single submission and hand the SKILL.md to Claude. The agent fills in dozens of variants overnight without you babysitting.",
-          "cta": "Record Forms"
+          "title": "繰り返しのフォーム入力を自動化",
+          "desc": "1 回の送信を記録し、SKILL.md を Claude に渡すだけ。エージェントが夜のうちに何十件ものバリエーションを入力してくれます。",
+          "cta": "フォームを記録"
         },
         "reviews": {
-          "title": "Run Daily Dashboard Checks",
-          "desc": "Capture the click path through your analytics dashboard once. Let an agent pull the same numbers every morning and post them to Slack.",
-          "cta": "Record Dashboards"
+          "title": "毎日のダッシュボード確認を自動化",
+          "desc": "分析ダッシュボードのクリック手順を一度記録するだけ。毎朝同じ数値を取得して Slack に投稿するところまで、エージェントに任せられます。",
+          "cta": "ダッシュボードを記録"
         },
         "seo": {
-          "title": "Audit Competitor Sites Weekly",
-          "desc": "Demo the audit checklist on one site. The skill replays it across your whole tracking list, every Monday at 9am.",
-          "cta": "Record Audits"
+          "title": "競合サイトを毎週監査",
+          "desc": "1 サイトで監査チェックリストをデモするだけ。スキルが追跡対象すべてに対して、毎週月曜 9 時に同じ処理を再生します。",
+          "cta": "監査を記録"
         },
         "leads": {
-          "title": "Build Lead Lists Repeatedly",
-          "desc": "Walk through one search query on a business directory. Reuse the recording for new search terms forever, no scripts needed.",
-          "cta": "Record Searches"
+          "title": "リードリストを繰り返し生成",
+          "desc": "企業ディレクトリでの 1 回の検索を辿るだけ。スクリプト不要で、新しい検索条件でも何度でも録画を再利用できます。",
+          "cta": "検索を記録"
         },
         "jobs": {
-          "title": "Track Job Boards",
-          "desc": "Show the filter + scroll + export flow once. Your agent runs it daily across every board you care about.",
-          "cta": "Record Job Boards"
+          "title": "求人サイトを追跡",
+          "desc": "フィルタ、スクロール、エクスポートの流れを一度見せるだけ。気になるすべての求人サイトで、エージェントが毎日同じ操作を実行します。",
+          "cta": "求人サイトを記録"
         },
         "realestate": {
-          "title": "Monitor Property Listings",
-          "desc": "Record one listings search with your filters. The agent re-runs it on a schedule and surfaces new matches.",
-          "cta": "Record Listings"
+          "title": "物件情報を監視",
+          "desc": "条件付きの物件検索を一度記録するだけ。エージェントが定期的に再実行し、新着の該当物件を浮かび上がらせます。",
+          "cta": "物件情報を記録"
         },
         "hotels": {
-          "title": "Compare Travel Prices",
-          "desc": "Demo your typical hotel search once. Let agents poll prices across dates and platforms without manual effort.",
-          "cta": "Record Searches"
+          "title": "旅行料金を比較",
+          "desc": "いつものホテル検索を一度デモするだけで、複数の日程とプラットフォームの料金を、エージェントが手作業なしでチェックし続けます。",
+          "cta": "検索を記録"
         }
       }
     },
     "testimonials": {
-      "title": "What Builders Are Saying",
+      "title": "ビルダーの声",
       "items": [
         {
-          "quote": "I used to write 200 lines of Playwright every time I onboarded a new repetitive workflow. Now I record it once in the browser, hand the SKILL.md to Claude, and it just works.",
+          "quote": "繰り返しのワークフローを取り込むたびに、Playwright を 200 行書いていました。今はブラウザで一度記録して SKILL.md を Claude に渡すだけ。それだけで動きます。",
           "name": "Lena R.",
-          "role": "Staff Engineer"
+          "role": "スタッフ エンジニア"
         },
         {
-          "quote": "The distillation step is what sells it. Every typed value becomes a parameter automatically, so the same recording covers an entire batch of inputs.",
+          "quote": "決め手は昇華のステップです。入力値が自動でパラメーター化されるので、1 つの録画でひと束分のバッチ入力をまかなえます。",
           "name": "Marcus T.",
-          "role": "AI Workflow Lead"
+          "role": "AI ワークフロー リード"
         },
         {
-          "quote": "Our ops team records flows. The agents replay them. Nobody on either side needs to touch code or selectors. That gap closing is huge.",
+          "quote": "運用チームがフローを記録し、エージェントが再生する。双方ともコードもセレクタも触らなくていい。この溝が埋まったのは本当に大きい。",
           "name": "Priya N.",
-          "role": "Head of Internal Tools"
+          "role": "社内ツール責任者"
         },
         {
-          "quote": "Auth detection is what made this production-ready for us. The skill pauses at the login step, prompts the human, and resumes. No leaked tokens.",
+          "quote": "認証検知のおかげでプロダクション投入できました。スキルがログイン手順で一時停止し、ユーザーにプロンプトを出して再開する。トークン漏れはゼロです。",
           "name": "Sam K.",
-          "role": "Security Engineer"
+          "role": "セキュリティ エンジニア"
         },
         {
-          "quote": "I built three skills before lunch. Each one replaced a half-hour browser ritual. The browse CLI integration is exactly the API I wanted.",
+          "quote": "午前中だけで 3 つのスキルを作りました。それぞれが 30 分のブラウザ作業を置き換えてくれます。browse CLI 連携は、まさに望んでいた API そのものです。",
           "name": "Ahmed S.",
-          "role": "Indie Hacker"
+          "role": "インディー ハッカー"
         },
         {
-          "quote": "I used to maintain Selenium scripts that broke every time a button moved. With SKILL.md the agent reads the intent, not the selector. Maintenance dropped 80%.",
+          "quote": "ボタンが動くたびに壊れる Selenium スクリプトをメンテしていました。SKILL.md ならエージェントはセレクタではなく意図を読みます。メンテ工数は 80% 減りました。",
           "name": "Yuki H.",
-          "role": "QA Automation Engineer"
+          "role": "QA オートメーション エンジニア"
         },
         {
-          "quote": "The privacy story sealed it. Nothing leaves the browser, auth tokens never touch any server. Compliance signed off in one meeting.",
+          "quote": "プライバシー設計が決め手でした。ブラウザから何も出さず、認証トークンがサーバーに触れない。コンプライアンスのレビューは 1 回で通りました。",
           "name": "Diana F.",
-          "role": "Platform Engineer"
+          "role": "プラットフォーム エンジニア"
         }
       ]
     },
     "faq": {
-      "title": "Frequently asked questions",
-      "contact": "Can't find the answer? Reach us at",
+      "title": "よくある質問",
+      "contact": "答えが見つかりませんか?こちらまで",
       "items": [
         {
-          "question": "Is it really free?",
-          "answer": "Yes — Skill Recorder is free during beta. Install the extension and start recording immediately. No account, no payment details required."
+          "question": "本当に無料ですか?",
+          "answer": "はい — Skill Recorder はベータ期間中、完全無料です。拡張機能をインストールすれば、すぐに記録を開始できます。アカウントも支払い情報も不要です。"
         },
         {
-          "question": "Where does the recording data live?",
-          "answer": "Entirely in your browser. We never upload your recordings, your auth tokens, or your page content. Recordings stay on your device until you choose to export the distilled SKILL.md file."
+          "question": "記録データはどこに保存されますか?",
+          "answer": "すべてブラウザ内です。録画、認証トークン、ページコンテンツをアップロードすることはありません。録画は、昇華した SKILL.md ファイルをご自身でエクスポートするまで、お使いのデバイスに留まります。"
         },
         {
-          "question": "What is SKILL.md and how is it used?",
-          "answer": "SKILL.md is a portable markdown file that describes an automated browser flow as a sequence of steps. AI agents like Claude Code load it from a skills directory and replay it via the browse CLI — no extra glue code."
+          "question": "SKILL.md とは何で、どのように使われますか?",
+          "answer": "SKILL.md は、自動化されたブラウザ操作を一連の手順として記述した、ポータブルな Markdown ファイルです。Claude Code のような AI エージェントがスキルディレクトリから読み込み、browse CLI 経由で再生します — 追加のグルーコードは不要です。"
         },
         {
-          "question": "How does it handle login pages?",
-          "answer": "Skill Recorder auto-detects auth boundaries and inserts a Precondition: signed in marker. When an agent replays the skill, it pauses at the auth step and prompts the human, instead of leaking session tokens."
+          "question": "ログインページはどう扱われますか?",
+          "answer": "Skill Recorder は認証の境界を自動検知し、Precondition: signed in マーカーを挿入します。エージェントがスキルを再生する際、認証ステップで一時停止して人にプロンプトを返すため、セッショントークンが漏れることはありません。"
         },
         {
-          "question": "What if the page changes? Will my skill break?",
-          "answer": "The distillation step records semantic intent (\"click the Submit button\") and falls back across multiple selectors. Skills tolerate small DOM changes far better than hard-coded Selenium scripts."
+          "question": "ページが変わったら、スキルは壊れますか?",
+          "answer": "昇華のステップで意味的な意図(「送信ボタンをクリック」など)を記録し、複数のセレクタへフォールバックします。スキルは、ハードコードされた Selenium スクリプトよりも、わずかな DOM 変更に対して遥かに耐性があります。"
         },
         {
-          "question": "Do I need Claude Code to use the output?",
-          "answer": "Claude Code is the primary integration today, but the format is plain markdown. Any agent that supports the browse CLI conventions can consume a SKILL.md file."
+          "question": "出力を使うのに Claude Code は必須ですか?",
+          "answer": "現時点では Claude Code がメインの連携先ですが、フォーマットは素の Markdown です。browse CLI の規約に対応するエージェントなら、どれでも SKILL.md ファイルを読み込めます。"
         }
       ]
     },
     "cta": {
-      "title": "Record Your First Skill in 60 Seconds",
-      "button": "Install Now",
-      "note": "Free during beta. No account required."
+      "title": "60 秒で最初のスキルを記録",
+      "button": "今すぐインストール",
+      "note": "ベータ期間中は完全無料。登録不要。"
     },
     "stats": [
-      { "value": "↓ 80%", "label": "Maintenance vs Selenium" },
-      { "value": "0",      "label": "Lines of Code Needed" },
-      { "value": "1 click","label": "To Start a Recording" },
-      { "value": "↑ 100%", "label": "Local — Nothing Uploaded" }
-    ],
-    "playground": {
-      "back": "Home",
-      "title": "Playground",
-      "desc": "Pick a sample flow below, install the extension, and hit Record to capture it end-to-end into a SKILL.md.",
-      "openPanel": "Open Side Panel",
-      "installExtension": "Install Extension",
-      "sceneLabel": "Scene",
-      "scenes": {
-        "ecommerce": "Form Filling",
-        "leads": "Directory Search",
-        "social": "Dashboard Export",
-        "realestate": "Listings Filter",
-        "hospitality": "Travel Search"
-      }
-    }
+      { "value": "↓ 80%", "label": "Selenium 比のメンテ工数" },
+      { "value": "0", "label": "必要なコード行数" },
+      { "value": "1クリック", "label": "記録開始までの操作" },
+      { "value": "↑ 100%", "label": "完全ローカル — アップロードなし" }
+    ]
   },
   "notFound": {
-    "message": "Redirecting…",
-    "backHome": "Back to Home"
+    "message": "リダイレクト中…",
+    "backHome": "ホームに戻る"
   },
   "policy": {
     "privacy": {
       "meta": {
-        "title": "Privacy Policy | Skill Recorder",
-        "description": "How Skill Recorder handles your recordings, browser data, and any information you generate while using the extension.",
-        "keywords": "skill recorder privacy, browser extension privacy, recording privacy, data protection"
+        "title": "プライバシーポリシー | Skill Recorder",
+        "description": "Skill Recorder が録画、ブラウザデータ、および拡張機能の利用中に生成される情報をどのように取り扱うかについて。",
+        "keywords": "skill recorder プライバシー, ブラウザ拡張 プライバシー, 録画 プライバシー, データ保護"
       },
-      "title": "Privacy Policy",
-      "effectiveDate": "Effective Date: January 1, 2026",
-      "intro": "Skill Recorder is a Chrome extension that captures browser flows you explicitly record and distills them into SKILL.md files. This Privacy Policy explains what information stays on your device, what we don't collect, and your rights regarding your data.",
+      "title": "プライバシーポリシー",
+      "effectiveDate": "発効日:2026 年 1 月 1 日",
+      "intro": "Skill Recorder は、お客様が明示的に記録したブラウザ操作をキャプチャし、SKILL.md ファイルへ昇華する Chrome 拡張です。本プライバシーポリシーは、お客様のデバイス上に留まる情報、当社が収集しない情報、データに関するお客様の権利について説明します。",
       "sections": [
         {
-          "heading": "1. Information We Collect",
+          "heading": "1. 収集する情報",
           "paragraphs": [
-            "Skill Recorder is designed to operate locally. The extension processes the following on your device:"
+            "Skill Recorder はローカルで動作するように設計されています。拡張機能はお客様のデバイス上で以下を処理します:"
           ],
           "bullets": [
-            { "label": "Recorded Actions:",   "text": "Clicks, keystrokes, navigations, and DOM snapshots from flows you explicitly start recording. Stored locally in your browser's IndexedDB." },
-            { "label": "Distilled Skills:",   "text": "The SKILL.md files you generate. Stored locally until you export or delete them." },
-            { "label": "Anonymous Telemetry:","text": "Basic event counts (e.g., \"recording started\", \"skill exported\") to help us improve the product. No page content, no auth tokens, no PII." }
+            { "label": "記録された操作:", "text": "お客様が明示的に記録を開始したフローのクリック、キー入力、画面遷移、DOM スナップショット。お使いのブラウザの IndexedDB にローカル保存されます。" },
+            { "label": "昇華されたスキル:", "text": "お客様が生成した SKILL.md ファイル。エクスポートまたは削除するまでローカルに保存されます。" },
+            { "label": "匿名テレメトリ:", "text": "プロダクト改善のための基本的なイベント数(「記録開始」「スキル エクスポート」など)。ページコンテンツ、認証トークン、個人情報は一切含まれません。" }
           ],
-          "trailing": "Skill Recorder does not collect passwords, payment information, or any page content from sessions you have not explicitly recorded."
+          "trailing": "Skill Recorder は、パスワード、決済情報、またはお客様が明示的に記録していないセッションのページコンテンツを収集しません。"
         },
         {
-          "heading": "2. How We Use Your Information",
-          "paragraphs": [ "Information processed by Skill Recorder is used solely to:" ],
+          "heading": "2. 情報の利用方法",
+          "paragraphs": [
+            "Skill Recorder が処理する情報は、以下の目的にのみ使用されます:"
+          ],
           "bullets": [
-            { "label": "", "text": "Reconstruct a faithful replay of the flow you recorded." },
-            { "label": "", "text": "Run the distillation pipeline that turns a raw recording into a clean SKILL.md." },
-            { "label": "", "text": "Enable export of the SKILL.md file to your filesystem when you click Download." },
-            { "label": "", "text": "Improve product usability through anonymized event counts." }
+            { "label": "", "text": "お客様が記録したフローを忠実に再生する。" },
+            { "label": "", "text": "生の録画をクリーンな SKILL.md に変換する昇華パイプラインを実行する。" },
+            { "label": "", "text": "ダウンロードをクリックした際に、SKILL.md ファイルをファイルシステムへエクスポートする。" },
+            { "label": "", "text": "匿名化されたイベント数を通じて、製品の使いやすさを改善する。" }
           ],
-          "trailing": "We do not use your data for advertising, behavioural profiling, or cross-site tracking."
+          "trailing": "お客様のデータを広告、行動プロファイリング、クロスサイト トラッキングに利用することはありません。"
         },
         {
-          "heading": "3. Data Storage and Retention",
+          "heading": "3. データの保存と保持",
           "paragraphs": [],
           "bullets": [
-            { "label": "Local Storage:", "text": "Recordings, distilled skills, and preferences live in your browser's IndexedDB and chrome.storage. They remain on your device until you delete them." },
-            { "label": "No Cloud Sync:", "text": "Skill Recorder does not upload your recordings to any server. There is no account, no cloud history, no shared workspace." }
+            { "label": "ローカル ストレージ:", "text": "録画、昇華されたスキル、設定は、お使いのブラウザの IndexedDB および chrome.storage に保存されます。これらは、お客様が削除しない限りデバイス上に残ります。" },
+            { "label": "クラウド同期なし:", "text": "Skill Recorder は録画をサーバーへアップロードしません。アカウントもクラウド履歴も、共有ワークスペースもありません。" }
           ],
-          "trailing": "You may clear all locally stored data at any time through the extension's settings or by uninstalling the extension."
+          "trailing": "拡張機能の設定からいつでも、または拡張機能をアンインストールすることで、ローカルに保存されたすべてのデータを削除できます。"
         },
         {
-          "heading": "4. Third-Party Services",
+          "heading": "4. 第三者サービス",
           "paragraphs": [
-            "Skill Recorder does not send recording data to third parties. The only network calls the extension makes are to:",
-            "These calls do not include any page content or recorded actions."
+            "Skill Recorder は録画データを第三者に送信しません。拡張機能が行うネットワーク通信は、以下に限定されます:",
+            "これらの通信にはページコンテンツや記録された操作は一切含まれません。"
           ],
           "bullets": [
-            { "label": "Update Check:", "text": "Chrome Web Store, to receive extension updates." },
-            { "label": "Telemetry:",    "text": "An anonymized analytics endpoint, used only to count opt-in events. Disabled if you opt out." }
+            { "label": "アップデート確認:", "text": "拡張機能の更新を受け取るため、Chrome ウェブストアに接続します。" },
+            { "label": "テレメトリ:", "text": "オプトインされたイベント数のカウントにのみ使用される、匿名化されたアナリティクス エンドポイント。オプトアウトすると無効になります。" }
           ]
         },
         {
-          "heading": "5. Extension Permissions",
-          "paragraphs": [ "Skill Recorder requests the following permissions to operate:" ],
+          "heading": "5. 拡張機能の権限",
+          "paragraphs": [
+            "Skill Recorder は動作のために以下の権限を要求します:"
+          ],
           "bullets": [
-            { "label": "activeTab:",  "text": "Access the tab you explicitly choose to record." },
-            { "label": "scripting:",  "text": "Inject the content script that captures clicks, keystrokes, and navigations during a recording." },
-            { "label": "storage:",    "text": "Persist recordings and distilled skills locally on your device." },
-            { "label": "sidePanel:",  "text": "Open the recording sidepanel that lists your captured flows." }
+            { "label": "activeTab:", "text": "お客様が記録対象として明示的に選択したタブにアクセスします。" },
+            { "label": "scripting:", "text": "記録中にクリック、キー入力、画面遷移をキャプチャするコンテンツ スクリプトを注入します。" },
+            { "label": "storage:", "text": "録画と昇華されたスキルを、お客様のデバイスにローカル保存します。" },
+            { "label": "sidePanel:", "text": "キャプチャ済みのフローを一覧表示する記録用サイドパネルを開きます。" }
           ]
         },
         {
-          "heading": "6. Data Security",
+          "heading": "6. データ セキュリティ",
           "paragraphs": [
-            "Because all data stays on your device, the surface area is limited to your browser's local storage. We implement reasonable measures to prevent injection from untrusted page content into the recording pipeline."
+            "すべてのデータがお客様のデバイスに留まるため、攻撃対象範囲はブラウザのローカル ストレージに限定されます。信頼できないページコンテンツから記録パイプラインへ不正な内容が注入されることを防ぐため、合理的な対策を講じています。"
           ]
         },
         {
-          "heading": "7. Changes to This Policy",
+          "heading": "7. 本ポリシーの変更",
           "paragraphs": [
-            "This Privacy Policy may be updated periodically. Updates will be posted on this page with a revised effective date."
+            "本プライバシーポリシーは定期的に更新されることがあります。更新内容は本ページに掲載され、発効日が更新されます。"
           ]
         },
         {
-          "heading": "8. Contact",
+          "heading": "8. お問い合わせ",
           "paragraphs": [
-            "If you have questions about this Privacy Policy, please contact us at:"
+            "本プライバシーポリシーに関するご質問は、以下までお問い合わせください:"
           ],
           "contactEmail": "support@skill-recorder.dev"
         }
@@ -348,71 +333,73 @@
     },
     "terms": {
       "meta": {
-        "title": "Terms of Service | Skill Recorder",
-        "description": "The rules and conditions that govern your use of the Skill Recorder browser extension and website.",
-        "keywords": "skill recorder terms, terms of service, browser extension terms"
+        "title": "利用規約 | Skill Recorder",
+        "description": "Skill Recorder ブラウザ拡張および Web サイトの利用を規定するルールと条件。",
+        "keywords": "skill recorder 規約, 利用規約, ブラウザ拡張 規約"
       },
-      "title": "Terms of Service",
-      "effectiveDate": "Effective Date: January 1, 2026",
-      "intro": "These Terms of Service (\"Terms\") govern your use of the Skill Recorder browser extension and website (collectively, the \"Service\"). By installing or using Skill Recorder, you agree to these Terms.",
+      "title": "利用規約",
+      "effectiveDate": "発効日:2026 年 1 月 1 日",
+      "intro": "本利用規約(以下「本規約」)は、お客様による Skill Recorder ブラウザ拡張および Web サイト(以下総称して「本サービス」)の利用を規定します。Skill Recorder をインストールまたは利用することにより、お客様は本規約に同意したものとみなされます。",
       "sections": [
         {
-          "heading": "1. Description of Service",
+          "heading": "1. サービスの説明",
           "paragraphs": [
-            "Skill Recorder is a browser extension that captures user-driven browser flows and distills them into portable SKILL.md files for use with AI agents. The Service is provided \"as is\" and may be updated or modified at any time."
+            "Skill Recorder は、ユーザー主導のブラウザ操作をキャプチャし、AI エージェントで使用するためのポータブルな SKILL.md ファイルへ昇華するブラウザ拡張です。本サービスは「現状有姿」で提供され、いつでも更新または変更されることがあります。"
           ]
         },
         {
-          "heading": "2. Permitted Use",
-          "paragraphs": [ "You may use Skill Recorder for lawful purposes only. You agree not to:" ],
-          "bullets": [
-            { "label": "", "text": "Record or automate flows in violation of a website's Terms of Service or robots.txt directives." },
-            { "label": "", "text": "Use Skill Recorder to collect personal data about individuals without their consent." },
-            { "label": "", "text": "Use the Service to engage in any illegal activity, including unauthorized account access, spam, or fraud." },
-            { "label": "", "text": "Attempt to reverse-engineer, modify, or redistribute the extension without permission." }
+          "heading": "2. 許可された利用",
+          "paragraphs": [
+            "お客様は Skill Recorder を合法的な目的にのみ利用できます。以下の行為を行わないことに同意するものとします:"
           ],
-          "trailing": "You are solely responsible for ensuring your use of Skill Recorder complies with applicable laws and the terms of any website you record."
+          "bullets": [
+            { "label": "", "text": "対象 Web サイトの利用規約または robots.txt 指示に違反する形でフローを記録または自動化すること。" },
+            { "label": "", "text": "本人の同意なく、Skill Recorder を利用して個人に関するデータを収集すること。" },
+            { "label": "", "text": "本サービスを違法行為(無断アカウント アクセス、スパム、詐欺を含むがこれらに限らない)に利用すること。" },
+            { "label": "", "text": "許可なく拡張機能のリバースエンジニアリング、改変、再配布を試みること。" }
+          ],
+          "trailing": "お客様は、Skill Recorder の利用が適用法および記録対象 Web サイトの規約に準拠していることを確保する唯一の責任を負います。"
         },
         {
-          "heading": "3. Intellectual Property",
+          "heading": "3. 知的財産権",
           "paragraphs": [
-            "The Skill Recorder extension, website, and all associated content are owned by Skill Recorder and protected by applicable intellectual property laws. You are granted a limited, non-exclusive, non-transferable license to use the Service for personal or commercial purposes in accordance with these Terms."
+            "Skill Recorder の拡張機能、Web サイトおよびすべての関連コンテンツは Skill Recorder が所有し、適用される知的財産権法によって保護されています。お客様には、本規約に従って本サービスを個人または商業目的で利用するための、限定的、非独占的、譲渡不能なライセンスが付与されます。"
           ]
         },
         {
-          "heading": "4. Free Tier and Paid Plans",
+          "heading": "4. 無料プランと有料プラン",
           "paragraphs": [
-            "Skill Recorder is currently free during beta. Paid plans may be introduced in the future with advance notice. We reserve the right to modify feature scope and pricing with reasonable notice."
+            "Skill Recorder は現在、ベータ期間中は無料で提供されています。将来的に事前通知のうえ有料プランを導入することがあります。当社は、合理的な通知をもって機能範囲と価格を変更する権利を留保します。"
           ]
         },
         {
-          "heading": "5. Disclaimer of Warranties",
+          "heading": "5. 保証の免責",
           "paragraphs": [
-            "The Service is provided \"as is\" without warranties of any kind, express or implied. We do not guarantee that the Service will be uninterrupted, error-free, or that distilled SKILL.md outputs will replay correctly on every website. Browser flow replay depends on the structure of third-party websites, which may change without notice."
+            "本サービスは、明示・黙示を問わずいかなる保証もなく「現状有姿」で提供されます。当社は、本サービスが中断のない、エラーのないものであること、または昇華された SKILL.md の出力がすべての Web サイトで正しく再生されることを保証しません。ブラウザ操作の再生は、予告なく変更される可能性のある第三者 Web サイトの構造に依存します。"
           ]
         },
         {
-          "heading": "6. Limitation of Liability",
+          "heading": "6. 責任の制限",
           "paragraphs": [
-            "To the fullest extent permitted by law, Skill Recorder shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the Service, including but not limited to data loss, reliance on replayed flows, or legal claims arising from your recording activities."
+            "適用法で認められる最大限の範囲において、Skill Recorder は本サービスの利用から生じる間接的、付随的、特別的、または結果的損害(データ損失、再生されたフローへの依存、お客様の記録活動に起因する法的請求を含むがこれらに限らない)について一切責任を負いません。"
           ]
         },
         {
-          "heading": "7. Termination",
+          "heading": "7. 終了",
           "paragraphs": [
-            "We reserve the right to suspend or terminate access to the Service at any time for violations of these Terms or for any other reason at our discretion."
+            "当社は、本規約違反、その他当社が判断する理由により、本サービスへのアクセスをいつでも停止または終了する権利を留保します。"
           ]
         },
         {
-          "heading": "8. Changes to These Terms",
+          "heading": "8. 本規約の変更",
           "paragraphs": [
-            "We may update these Terms periodically. Continued use of the Service after changes are posted constitutes acceptance of the revised Terms."
+            "当社は本規約を随時更新することがあります。変更が掲載された後も本サービスを継続して利用することにより、改訂後の規約に同意したものとみなされます。"
           ]
         },
         {
-          "heading": "9. Contact",
+          "heading": "9. お問い合わせ",
           "paragraphs": [
-            "For questions about these Terms, please contact us at:"
+            "本規約に関するご質問は、以下までお問い合わせください:"
           ],
           "contactEmail": "support@skill-recorder.dev"
         }

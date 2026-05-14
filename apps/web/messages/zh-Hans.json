@@ -1,346 +1,331 @@
 {
   "layout": {
     "nav": {
-      "playground": "Playground",
-      "blog": "Blog",
-      "cta": "Add to Chrome",
-      "signIn": "Sign in",
-      "ctaMobile": "Add to Chrome",
-      "closeMenu": "Close menu",
-      "openMenu": "Open menu",
-      "viewAllArticles": "View all articles",
-      "openPlayground": "Open Playground",
+      "blog": "博客",
+      "cta": "添加到 Chrome",
+      "signIn": "登录",
+      "ctaMobile": "添加到 Chrome",
+      "closeMenu": "关闭菜单",
+      "openMenu": "打开菜单",
+      "viewAllArticles": "查看全部文章",
       "blogItems": {
-        "ecommerce": "Recording Browser Flows for AI Agents",
-        "noCode": "From Click to SKILL.md: A Complete Walkthrough",
-        "leads": "How to Distill a Recording into a Reusable Skill",
-        "pagination": "Replaying Flows with the browse CLI"
+        "ecommerce": "为 AI 智能体录制浏览器流程",
+        "noCode": "从点击到 SKILL.md：完整实战",
+        "leads": "如何把一次录制提炼成可复用技能",
+        "pagination": "用 browse CLI 回放浏览器流程"
       }
     },
     "footer": {
-      "tagline": "Record once. Replay forever.",
-      "playground": "Playground",
-      "blog": "Blog",
-      "blogHome": "All Articles",
-      "blogEcommerce": "Recording Browser Flows for AI Agents",
-      "blogNoCode": "From Click to SKILL.md",
-      "blogLeads": "Distilling a Recording into a Skill",
-      "legal": "Support",
-      "privacy": "Privacy Policy",
-      "terms": "Terms of Service",
-      "copyright": "© 2026 Skill Recorder. All rights reserved."
+      "tagline": "录制一次，永久回放。",
+      "blog": "博客",
+      "blogHome": "所有文章",
+      "blogEcommerce": "为 AI 智能体录制浏览器流程",
+      "blogNoCode": "从点击到 SKILL.md",
+      "blogLeads": "把一次录制提炼成技能",
+      "legal": "支持",
+      "privacy": "隐私政策",
+      "terms": "服务条款",
+      "copyright": "© 2026 Skill Recorder. 保留所有权利。"
     }
   },
   "blog": {
     "meta": {
-      "title": "Blog | Skill Recorder — Browser Automation for AI Agents",
-      "description": "Guides and notes on recording browser flows, distilling them into SKILL.md files, and replaying them with AI agents.",
-      "keywords": "skill recorder blog, browser automation, claude code skills, browse cli, SKILL.md"
+      "title": "博客 | Skill Recorder — 为 AI 智能体打造的浏览器自动化",
+      "description": "关于录制浏览器流程、将其提炼为 SKILL.md 文件、并用 AI 智能体回放的指南与笔记。",
+      "keywords": "skill recorder 博客, 浏览器自动化, claude code 技能, browse cli, SKILL.md"
     },
     "hero": {
-      "title": "Recording & Replay Guides",
-      "description": "Practical tutorials on capturing browser flows, distilling them into portable SKILL.md files, and replaying them with Claude Code.",
-      "articles": "Articles",
-      "categories": "Categories",
-      "free": "Free",
-      "toRead": "To Read"
+      "title": "录制与回放指南",
+      "description": "实用教程：捕获浏览器流程，提炼为可移植的 SKILL.md 文件，并交由 Claude Code 回放。",
+      "articles": "文章",
+      "categories": "分类",
+      "free": "免费",
+      "toRead": "待读"
     },
-    "loadMore": "Load More",
-    "readMore": "Read More",
-    "minRead": "min read",
+    "loadMore": "加载更多",
+    "readMore": "阅读全文",
+    "minRead": "分钟阅读",
     "breadcrumbs": {
-      "home": "Home",
-      "blog": "Blog"
+      "home": "首页",
+      "blog": "博客"
     },
-    "recentArticles": "Recent Articles",
-    "relatedArticles": "Related Articles"
+    "recentArticles": "近期文章",
+    "relatedArticles": "相关文章"
   },
   "main": {
     "meta": {
-      "title": "Skill Recorder | Turn Browser Flows into SKILL.md Files",
-      "description": "Record any browser flow with a Chrome extension and distill it into a SKILL.md file that AI agents like Claude Code can re-run autonomously.",
-      "keywords": "skill recorder, browser automation, claude code skills, SKILL.md, browse cli, ai agent automation, chrome extension"
+      "title": "Skill Recorder | 把浏览器流程变成 SKILL.md 文件",
+      "description": "用 Chrome 扩展录制任意浏览器流程，并提炼为 SKILL.md 文件，让 Claude Code 等 AI 智能体自主回放。",
+      "keywords": "skill recorder, 浏览器自动化, claude code 技能, SKILL.md, browse cli, ai 智能体自动化, chrome 扩展"
     },
     "hero": {
-      "title": "Record a Flow Once. Let AI Replay It Forever.",
-      "subtitle": "A Chrome extension that captures your browser flow and distills it into a SKILL.md AI agents can re-run.",
-      "ctaPrimary": "Install Now",
-      "ctaSecondary": "Try in Playground",
-      "note": "Free during beta. No account required."
+      "title": "录制一次流程，让 AI 永久回放。",
+      "subtitle": "一款 Chrome 扩展，捕获你的浏览器流程，并提炼为 AI 智能体可回放的 SKILL.md。",
+      "ctaPrimary": "立即安装",
+      "note": "公测期间免费，无需注册。"
     },
     "howItWorks": {
-      "title": "From Browser Demo to Replayable Skill in <accent>3 Steps</accent>",
+      "title": "从浏览器演示到可回放技能，仅需 <accent>3 步</accent>",
       "steps": {
         "install": {
           "number": "01",
-          "title": "Install the Extension",
-          "desc": "Add Skill Recorder to Chrome in seconds.",
-          "imgAlt": "Install the Skill Recorder Chrome extension"
+          "title": "安装扩展",
+          "desc": "几秒内将 Skill Recorder 添加到 Chrome。",
+          "imgAlt": "安装 Skill Recorder Chrome 扩展"
         },
         "scrape": {
           "number": "02",
-          "title": "Record Your Flow",
-          "desc": "Click Start, walk through the task once, and we capture every action.",
-          "imgAlt": "Record a browser flow with one click"
+          "title": "录制你的流程",
+          "desc": "点击开始，把任务走一遍，我们会捕获每一步操作。",
+          "imgAlt": "一键录制浏览器流程"
         },
         "export": {
           "number": "03",
-          "title": "Export as SKILL.md",
-          "desc": "Save the distilled markdown file straight into your Claude Code skills folder.",
-          "imgAlt": "Download a SKILL.md file ready for Claude Code"
+          "title": "导出为 SKILL.md",
+          "desc": "把提炼后的 markdown 文件直接保存到你的 Claude Code 技能目录。",
+          "imgAlt": "下载可供 Claude Code 使用的 SKILL.md 文件"
         }
       }
     },
     "features": {
-      "title": "Capture Every Click, <accent>Distill Every Skill</accent>",
+      "title": "捕获每一次点击，<accent>提炼每一项技能</accent>",
       "ctas": {
-        "f1": "Record Now",
-        "f2": "Distill Cleanly",
-        "f3": "Replay Anywhere",
-        "f4": "Hand Off to Claude"
+        "f1": "立即录制",
+        "f2": "干净提炼",
+        "f3": "随处回放",
+        "f4": "交给 Claude"
       },
       "f1": {
-        "title": "Just Hit Record",
-        "desc": "No scripts, no selectors. Click Start and demo the task like you would for a coworker. We capture <highlight>every click, keystroke, and navigation</highlight> in real time. When you stop, you have a perfect replay ready to distill.",
-        "imgAlt": "One-click recording of a browser flow"
+        "title": "按下录制就这么简单",
+        "desc": "无需脚本，无需选择器。点击开始，像演示给同事看一样把任务走一遍。我们实时捕获 <highlight>每一次点击、按键与跳转</highlight>。停止录制时，你就得到了一份可提炼的完美回放。",
+        "imgAlt": "一键录制浏览器流程"
       },
       "f2": {
-        "title": "Smart Distillation, Out of the Box",
-        "desc": "The dialog auto-strips noise, <highlight>turns every typed value into a parameter</highlight>, and flags clicks on dynamic lists with ⚠️ warnings so agents replay them safely. No manual cleanup, no regex wrangling.",
-        "imgAlt": "Distilling a recording into a clean SKILL.md"
+        "title": "开箱即用的智能提炼",
+        "desc": "对话会自动剔除噪音，<highlight>将每个输入值转为参数</highlight>，并用 ⚠️ 标记动态列表上的点击，让智能体安全回放。无需手动清理，无需折腾正则。",
+        "imgAlt": "把录制提炼为干净的 SKILL.md"
       },
       "f3": {
-        "title": "Replay on Any AI Agent",
-        "desc": "The output is a portable <highlight>SKILL.md</highlight> file — plain markdown an AI agent can read. Drop it into Claude Code's skills directory and the agent replays the flow via the <highlight>browse</highlight> CLI without any glue code.",
-        "imgAlt": "Replaying a SKILL.md flow with Claude Code"
+        "title": "在任意 AI 智能体上回放",
+        "desc": "输出是一份可移植的 <highlight>SKILL.md</highlight> 文件——AI 智能体能读懂的纯 markdown。把它放进 Claude Code 的技能目录，智能体即可通过 <highlight>browse</highlight> CLI 回放整个流程，无需任何粘合代码。",
+        "imgAlt": "用 Claude Code 回放 SKILL.md 流程"
       },
       "f4": {
-        "title": "Privacy-First by Design",
-        "desc": "All recording lives in your browser. Nothing uploads. Auth tokens never leave your machine — we detect them, mark them as <highlight>Precondition: signed in</highlight>, and let the agent prompt you when it's time to authenticate.",
-        "imgAlt": "Skill Recorder runs locally with no upload"
+        "title": "隐私优先设计",
+        "desc": "所有录制都留在你的浏览器里，不会上传任何内容。认证令牌绝不离开你的设备——我们会自动检测它们，标记为 <highlight>Precondition: signed in</highlight>，并在该认证时由智能体提示你完成登录。",
+        "imgAlt": "Skill Recorder 完全本地运行，无任何上传"
       }
     },
     "useCases": {
-      "title": "Built for Every Repetitive Browser Task",
+      "title": "为每一项重复的浏览器任务而生",
       "cases": {
         "ecommerce": {
-          "title": "Automate Repetitive Forms",
-          "desc": "Record a single submission and hand the SKILL.md to Claude. The agent fills in dozens of variants overnight without you babysitting.",
-          "cta": "Record Forms"
+          "title": "自动化重复表单",
+          "desc": "录制一次提交流程，把 SKILL.md 交给 Claude。智能体会连夜处理几十种变体，无需你盯着屏幕。",
+          "cta": "录制表单"
         },
         "reviews": {
-          "title": "Run Daily Dashboard Checks",
-          "desc": "Capture the click path through your analytics dashboard once. Let an agent pull the same numbers every morning and post them to Slack.",
-          "cta": "Record Dashboards"
+          "title": "每日仪表盘巡检",
+          "desc": "录制一次穿过分析仪表盘的点击路径。让智能体每天早晨拉取同样的数据并发到 Slack。",
+          "cta": "录制仪表盘"
         },
         "seo": {
-          "title": "Audit Competitor Sites Weekly",
-          "desc": "Demo the audit checklist on one site. The skill replays it across your whole tracking list, every Monday at 9am.",
-          "cta": "Record Audits"
+          "title": "每周审计竞品站点",
+          "desc": "在一个站点上演示一次审计清单。技能会在你的整张追踪列表上回放，每周一早 9 点准时运行。",
+          "cta": "录制审计"
         },
         "leads": {
-          "title": "Build Lead Lists Repeatedly",
-          "desc": "Walk through one search query on a business directory. Reuse the recording for new search terms forever, no scripts needed.",
-          "cta": "Record Searches"
+          "title": "反复构建客户名单",
+          "desc": "在某个商业目录上走一次搜索流程。同一份录制可永久复用于新的搜索关键词，无需写脚本。",
+          "cta": "录制搜索"
         },
         "jobs": {
-          "title": "Track Job Boards",
-          "desc": "Show the filter + scroll + export flow once. Your agent runs it daily across every board you care about.",
-          "cta": "Record Job Boards"
+          "title": "追踪招聘网站",
+          "desc": "演示一次筛选 + 滚动 + 导出流程。智能体会在你关心的每个招聘网站上每天自动运行。",
+          "cta": "录制招聘网站"
         },
         "realestate": {
-          "title": "Monitor Property Listings",
-          "desc": "Record one listings search with your filters. The agent re-runs it on a schedule and surfaces new matches.",
-          "cta": "Record Listings"
+          "title": "监控房源列表",
+          "desc": "录制一次带筛选条件的房源搜索。智能体按计划重跑，第一时间为你发现新匹配。",
+          "cta": "录制房源"
         },
         "hotels": {
-          "title": "Compare Travel Prices",
-          "desc": "Demo your typical hotel search once. Let agents poll prices across dates and platforms without manual effort.",
-          "cta": "Record Searches"
+          "title": "比价旅行价格",
+          "desc": "演示一次你常用的酒店搜索。让智能体跨日期与平台轮询价格，无需任何手动操作。",
+          "cta": "录制搜索"
         }
       }
     },
     "testimonials": {
-      "title": "What Builders Are Saying",
+      "title": "构建者们怎么说",
       "items": [
         {
-          "quote": "I used to write 200 lines of Playwright every time I onboarded a new repetitive workflow. Now I record it once in the browser, hand the SKILL.md to Claude, and it just works.",
+          "quote": "以前每接入一个重复流程，我都要写 200 行 Playwright。现在在浏览器里录一次，把 SKILL.md 交给 Claude，事情就办妥了。",
           "name": "Lena R.",
-          "role": "Staff Engineer"
+          "role": "资深工程师"
         },
         {
-          "quote": "The distillation step is what sells it. Every typed value becomes a parameter automatically, so the same recording covers an entire batch of inputs.",
+          "quote": "提炼这一步才是亮点。每个输入值都会自动变成参数，所以同一份录制就能覆盖一整批输入。",
           "name": "Marcus T.",
-          "role": "AI Workflow Lead"
+          "role": "AI 工作流负责人"
         },
         {
-          "quote": "Our ops team records flows. The agents replay them. Nobody on either side needs to touch code or selectors. That gap closing is huge.",
+          "quote": "运维团队负责录制流程，智能体负责回放。两边都不用碰代码或选择器。这条鸿沟被填平，意义重大。",
           "name": "Priya N.",
-          "role": "Head of Internal Tools"
+          "role": "内部工具负责人"
         },
         {
-          "quote": "Auth detection is what made this production-ready for us. The skill pauses at the login step, prompts the human, and resumes. No leaked tokens.",
+          "quote": "认证检测让它真正可以投入生产。技能会在登录步骤暂停、提示真人，然后继续执行，绝不泄漏令牌。",
           "name": "Sam K.",
-          "role": "Security Engineer"
+          "role": "安全工程师"
         },
         {
-          "quote": "I built three skills before lunch. Each one replaced a half-hour browser ritual. The browse CLI integration is exactly the API I wanted.",
+          "quote": "我午饭前就构建了三个技能，每个都替代了一段半小时的浏览器例行操作。browse CLI 集成正是我想要的 API。",
           "name": "Ahmed S.",
-          "role": "Indie Hacker"
+          "role": "独立开发者"
         },
         {
-          "quote": "I used to maintain Selenium scripts that broke every time a button moved. With SKILL.md the agent reads the intent, not the selector. Maintenance dropped 80%.",
+          "quote": "我以前要维护 Selenium 脚本，每次按钮位置一变就会挂掉。有了 SKILL.md，智能体读取的是意图而不是选择器。维护工作减少了 80%。",
           "name": "Yuki H.",
-          "role": "QA Automation Engineer"
+          "role": "QA 自动化工程师"
         },
         {
-          "quote": "The privacy story sealed it. Nothing leaves the browser, auth tokens never touch any server. Compliance signed off in one meeting.",
+          "quote": "隐私这一点最终拍板。没有任何内容离开浏览器，认证令牌也从不接触任何服务器。合规一次会议就过了。",
           "name": "Diana F.",
-          "role": "Platform Engineer"
+          "role": "平台工程师"
         }
       ]
     },
     "faq": {
-      "title": "Frequently asked questions",
-      "contact": "Can't find the answer? Reach us at",
+      "title": "常见问题",
+      "contact": "找不到答案？请联系",
       "items": [
         {
-          "question": "Is it really free?",
-          "answer": "Yes — Skill Recorder is free during beta. Install the extension and start recording immediately. No account, no payment details required."
+          "question": "真的免费吗？",
+          "answer": "是的——Skill Recorder 在公测期间完全免费。安装扩展即可立即开始录制，无需注册，也无需提供支付信息。"
         },
         {
-          "question": "Where does the recording data live?",
-          "answer": "Entirely in your browser. We never upload your recordings, your auth tokens, or your page content. Recordings stay on your device until you choose to export the distilled SKILL.md file."
+          "question": "录制数据保存在哪里？",
+          "answer": "全部保存在你的浏览器里。我们不会上传你的录制、认证令牌或页面内容。录制留在你的设备上，直到你主动导出提炼后的 SKILL.md 文件。"
         },
         {
-          "question": "What is SKILL.md and how is it used?",
-          "answer": "SKILL.md is a portable markdown file that describes an automated browser flow as a sequence of steps. AI agents like Claude Code load it from a skills directory and replay it via the browse CLI — no extra glue code."
+          "question": "什么是 SKILL.md，如何使用？",
+          "answer": "SKILL.md 是一份可移植的 markdown 文件，把自动化浏览器流程描述为一系列步骤。Claude Code 等 AI 智能体会从技能目录加载它，并通过 browse CLI 回放——无需额外的粘合代码。"
         },
         {
-          "question": "How does it handle login pages?",
-          "answer": "Skill Recorder auto-detects auth boundaries and inserts a Precondition: signed in marker. When an agent replays the skill, it pauses at the auth step and prompts the human, instead of leaking session tokens."
+          "question": "它如何处理登录页面？",
+          "answer": "Skill Recorder 会自动检测认证边界，并插入 Precondition: signed in 标记。智能体回放技能时会在登录步骤暂停并提示真人，而不是泄漏会话令牌。"
         },
         {
-          "question": "What if the page changes? Will my skill break?",
-          "answer": "The distillation step records semantic intent (\"click the Submit button\") and falls back across multiple selectors. Skills tolerate small DOM changes far better than hard-coded Selenium scripts."
+          "question": "如果页面变了，我的技能会不会失效？",
+          "answer": "提炼步骤记录的是语义意图（例如\"点击提交按钮\"），并在多个选择器之间回退兜底。技能对小范围的 DOM 变化容忍度远远高于硬编码的 Selenium 脚本。"
         },
         {
-          "question": "Do I need Claude Code to use the output?",
-          "answer": "Claude Code is the primary integration today, but the format is plain markdown. Any agent that supports the browse CLI conventions can consume a SKILL.md file."
+          "question": "我必须使用 Claude Code 才能用这些输出吗？",
+          "answer": "目前 Claude Code 是主要集成，但格式本身是纯 markdown。任何遵循 browse CLI 约定的智能体都能读取 SKILL.md 文件。"
         }
       ]
     },
     "cta": {
-      "title": "Record Your First Skill in 60 Seconds",
-      "button": "Install Now",
-      "note": "Free during beta. No account required."
+      "title": "60 秒录下你的第一个技能",
+      "button": "立即安装",
+      "note": "公测期间免费，无需注册。"
     },
     "stats": [
-      { "value": "↓ 80%", "label": "Maintenance vs Selenium" },
-      { "value": "0",      "label": "Lines of Code Needed" },
-      { "value": "1 click","label": "To Start a Recording" },
-      { "value": "↑ 100%", "label": "Local — Nothing Uploaded" }
-    ],
-    "playground": {
-      "back": "Home",
-      "title": "Playground",
-      "desc": "Pick a sample flow below, install the extension, and hit Record to capture it end-to-end into a SKILL.md.",
-      "openPanel": "Open Side Panel",
-      "installExtension": "Install Extension",
-      "sceneLabel": "Scene",
-      "scenes": {
-        "ecommerce": "Form Filling",
-        "leads": "Directory Search",
-        "social": "Dashboard Export",
-        "realestate": "Listings Filter",
-        "hospitality": "Travel Search"
-      }
-    }
+      { "value": "↓ 80%", "label": "相较 Selenium 的维护量" },
+      { "value": "0", "label": "所需代码行数" },
+      { "value": "1 次点击", "label": "即可开始录制" },
+      { "value": "↑ 100%", "label": "全本地——零上传" }
+    ]
   },
   "notFound": {
-    "message": "Redirecting…",
-    "backHome": "Back to Home"
+    "message": "正在跳转…",
+    "backHome": "返回首页"
   },
   "policy": {
     "privacy": {
       "meta": {
-        "title": "Privacy Policy | Skill Recorder",
-        "description": "How Skill Recorder handles your recordings, browser data, and any information you generate while using the extension.",
-        "keywords": "skill recorder privacy, browser extension privacy, recording privacy, data protection"
+        "title": "隐私政策 | Skill Recorder",
+        "description": "Skill Recorder 如何处理你的录制、浏览器数据以及在使用扩展过程中产生的任何信息。",
+        "keywords": "skill recorder 隐私, 浏览器扩展隐私, 录制隐私, 数据保护"
       },
-      "title": "Privacy Policy",
-      "effectiveDate": "Effective Date: January 1, 2026",
-      "intro": "Skill Recorder is a Chrome extension that captures browser flows you explicitly record and distills them into SKILL.md files. This Privacy Policy explains what information stays on your device, what we don't collect, and your rights regarding your data.",
+      "title": "隐私政策",
+      "effectiveDate": "生效日期：2026 年 1 月 1 日",
+      "intro": "Skill Recorder 是一款 Chrome 扩展，捕获你明确录制的浏览器流程，并将其提炼为 SKILL.md 文件。本隐私政策说明哪些信息留存在你的设备上、我们不收集哪些数据，以及你对自身数据享有的权利。",
       "sections": [
         {
-          "heading": "1. Information We Collect",
+          "heading": "1. 我们收集的信息",
           "paragraphs": [
-            "Skill Recorder is designed to operate locally. The extension processes the following on your device:"
+            "Skill Recorder 以本地运行为设计目标。扩展会在你的设备上处理以下数据："
           ],
           "bullets": [
-            { "label": "Recorded Actions:",   "text": "Clicks, keystrokes, navigations, and DOM snapshots from flows you explicitly start recording. Stored locally in your browser's IndexedDB." },
-            { "label": "Distilled Skills:",   "text": "The SKILL.md files you generate. Stored locally until you export or delete them." },
-            { "label": "Anonymous Telemetry:","text": "Basic event counts (e.g., \"recording started\", \"skill exported\") to help us improve the product. No page content, no auth tokens, no PII." }
+            { "label": "录制操作：", "text": "你明确开始录制的流程中的点击、按键、跳转与 DOM 快照，本地存储在浏览器的 IndexedDB 中。" },
+            { "label": "提炼技能：", "text": "你生成的 SKILL.md 文件，在你导出或删除之前都仅在本地保存。" },
+            { "label": "匿名遥测：", "text": "基础事件计数（例如\"开始录制\"、\"导出技能\"），用于帮助我们改进产品。不包含任何页面内容、认证令牌或个人身份信息。" }
           ],
-          "trailing": "Skill Recorder does not collect passwords, payment information, or any page content from sessions you have not explicitly recorded."
+          "trailing": "Skill Recorder 不会收集密码、支付信息，也不会收集你未明确录制的会话中的任何页面内容。"
         },
         {
-          "heading": "2. How We Use Your Information",
-          "paragraphs": [ "Information processed by Skill Recorder is used solely to:" ],
+          "heading": "2. 我们如何使用你的信息",
+          "paragraphs": [
+            "Skill Recorder 处理的信息仅用于："
+          ],
           "bullets": [
-            { "label": "", "text": "Reconstruct a faithful replay of the flow you recorded." },
-            { "label": "", "text": "Run the distillation pipeline that turns a raw recording into a clean SKILL.md." },
-            { "label": "", "text": "Enable export of the SKILL.md file to your filesystem when you click Download." },
-            { "label": "", "text": "Improve product usability through anonymized event counts." }
+            { "label": "", "text": "忠实重建你录制流程的回放。" },
+            { "label": "", "text": "运行提炼流水线，将原始录制转化为干净的 SKILL.md。" },
+            { "label": "", "text": "在你点击下载时，将 SKILL.md 文件导出到你的文件系统。" },
+            { "label": "", "text": "通过匿名事件计数改进产品可用性。" }
           ],
-          "trailing": "We do not use your data for advertising, behavioural profiling, or cross-site tracking."
+          "trailing": "我们不会将你的数据用于广告、行为画像或跨站追踪。"
         },
         {
-          "heading": "3. Data Storage and Retention",
+          "heading": "3. 数据存储与保留",
           "paragraphs": [],
           "bullets": [
-            { "label": "Local Storage:", "text": "Recordings, distilled skills, and preferences live in your browser's IndexedDB and chrome.storage. They remain on your device until you delete them." },
-            { "label": "No Cloud Sync:", "text": "Skill Recorder does not upload your recordings to any server. There is no account, no cloud history, no shared workspace." }
+            { "label": "本地存储：", "text": "录制、提炼后的技能与偏好都存储在浏览器的 IndexedDB 与 chrome.storage 中。除非你删除，否则它们将一直留在你的设备上。" },
+            { "label": "无云端同步：", "text": "Skill Recorder 不会将你的录制上传到任何服务器。没有账户，没有云端历史，没有共享工作区。" }
           ],
-          "trailing": "You may clear all locally stored data at any time through the extension's settings or by uninstalling the extension."
+          "trailing": "你可以随时通过扩展设置或卸载扩展，清除全部本地存储的数据。"
         },
         {
-          "heading": "4. Third-Party Services",
+          "heading": "4. 第三方服务",
           "paragraphs": [
-            "Skill Recorder does not send recording data to third parties. The only network calls the extension makes are to:",
-            "These calls do not include any page content or recorded actions."
+            "Skill Recorder 不会将录制数据发送给第三方。扩展发起的网络请求仅限于：",
+            "这些请求不包含任何页面内容或录制的操作。"
           ],
           "bullets": [
-            { "label": "Update Check:", "text": "Chrome Web Store, to receive extension updates." },
-            { "label": "Telemetry:",    "text": "An anonymized analytics endpoint, used only to count opt-in events. Disabled if you opt out." }
+            { "label": "更新检查：", "text": "Chrome 应用商店，用于接收扩展更新。" },
+            { "label": "遥测：", "text": "一个匿名化的分析端点，仅用于统计你已选择加入的事件。退出后即停用。" }
           ]
         },
         {
-          "heading": "5. Extension Permissions",
-          "paragraphs": [ "Skill Recorder requests the following permissions to operate:" ],
+          "heading": "5. 扩展权限",
+          "paragraphs": [
+            "Skill Recorder 申请以下权限以正常运行："
+          ],
           "bullets": [
-            { "label": "activeTab:",  "text": "Access the tab you explicitly choose to record." },
-            { "label": "scripting:",  "text": "Inject the content script that captures clicks, keystrokes, and navigations during a recording." },
-            { "label": "storage:",    "text": "Persist recordings and distilled skills locally on your device." },
-            { "label": "sidePanel:",  "text": "Open the recording sidepanel that lists your captured flows." }
+            { "label": "activeTab:", "text": "访问你明确选择录制的标签页。" },
+            { "label": "scripting:", "text": "注入内容脚本，在录制期间捕获点击、按键与跳转。" },
+            { "label": "storage:", "text": "在你的设备上本地保存录制与提炼后的技能。" },
+            { "label": "sidePanel:", "text": "打开录制侧边栏，列出你已捕获的流程。" }
           ]
         },
         {
-          "heading": "6. Data Security",
+          "heading": "6. 数据安全",
           "paragraphs": [
-            "Because all data stays on your device, the surface area is limited to your browser's local storage. We implement reasonable measures to prevent injection from untrusted page content into the recording pipeline."
+            "由于所有数据都留在你的设备上，攻击面被限定在浏览器的本地存储之内。我们采取合理措施，防止不可信的页面内容向录制流水线注入数据。"
           ]
         },
         {
-          "heading": "7. Changes to This Policy",
+          "heading": "7. 政策变更",
           "paragraphs": [
-            "This Privacy Policy may be updated periodically. Updates will be posted on this page with a revised effective date."
+            "本隐私政策可能不定期更新。更新内容将在本页面发布，并标注新的生效日期。"
           ]
         },
         {
-          "heading": "8. Contact",
+          "heading": "8. 联系我们",
           "paragraphs": [
-            "If you have questions about this Privacy Policy, please contact us at:"
+            "如对本隐私政策有任何疑问，请联系："
           ],
           "contactEmail": "support@skill-recorder.dev"
         }
@@ -348,71 +333,73 @@
     },
     "terms": {
       "meta": {
-        "title": "Terms of Service | Skill Recorder",
-        "description": "The rules and conditions that govern your use of the Skill Recorder browser extension and website.",
-        "keywords": "skill recorder terms, terms of service, browser extension terms"
+        "title": "服务条款 | Skill Recorder",
+        "description": "管理你使用 Skill Recorder 浏览器扩展与网站的规则与条件。",
+        "keywords": "skill recorder 条款, 服务条款, 浏览器扩展条款"
       },
-      "title": "Terms of Service",
-      "effectiveDate": "Effective Date: January 1, 2026",
-      "intro": "These Terms of Service (\"Terms\") govern your use of the Skill Recorder browser extension and website (collectively, the \"Service\"). By installing or using Skill Recorder, you agree to these Terms.",
+      "title": "服务条款",
+      "effectiveDate": "生效日期：2026 年 1 月 1 日",
+      "intro": "本服务条款（\"条款\"）管理你对 Skill Recorder 浏览器扩展及网站（统称\"服务\"）的使用。安装或使用 Skill Recorder 即表示你同意本条款。",
       "sections": [
         {
-          "heading": "1. Description of Service",
+          "heading": "1. 服务说明",
           "paragraphs": [
-            "Skill Recorder is a browser extension that captures user-driven browser flows and distills them into portable SKILL.md files for use with AI agents. The Service is provided \"as is\" and may be updated or modified at any time."
+            "Skill Recorder 是一款浏览器扩展，捕获用户驱动的浏览器流程，并将其提炼为可移植的 SKILL.md 文件，供 AI 智能体使用。本服务按\"原样\"提供，并可能随时更新或修改。"
           ]
         },
         {
-          "heading": "2. Permitted Use",
-          "paragraphs": [ "You may use Skill Recorder for lawful purposes only. You agree not to:" ],
-          "bullets": [
-            { "label": "", "text": "Record or automate flows in violation of a website's Terms of Service or robots.txt directives." },
-            { "label": "", "text": "Use Skill Recorder to collect personal data about individuals without their consent." },
-            { "label": "", "text": "Use the Service to engage in any illegal activity, including unauthorized account access, spam, or fraud." },
-            { "label": "", "text": "Attempt to reverse-engineer, modify, or redistribute the extension without permission." }
+          "heading": "2. 允许的使用",
+          "paragraphs": [
+            "你只能将 Skill Recorder 用于合法目的。你同意不得："
           ],
-          "trailing": "You are solely responsible for ensuring your use of Skill Recorder complies with applicable laws and the terms of any website you record."
+          "bullets": [
+            { "label": "", "text": "违反目标网站的服务条款或 robots.txt 规则录制或自动化任何流程。" },
+            { "label": "", "text": "未经当事人同意，使用 Skill Recorder 收集个人数据。" },
+            { "label": "", "text": "利用本服务从事任何非法活动，包括未授权的账户访问、垃圾信息或欺诈。" },
+            { "label": "", "text": "未经许可，尝试逆向工程、修改或分发本扩展。" }
+          ],
+          "trailing": "你独自负责确保对 Skill Recorder 的使用符合适用法律以及所录制网站的条款。"
         },
         {
-          "heading": "3. Intellectual Property",
+          "heading": "3. 知识产权",
           "paragraphs": [
-            "The Skill Recorder extension, website, and all associated content are owned by Skill Recorder and protected by applicable intellectual property laws. You are granted a limited, non-exclusive, non-transferable license to use the Service for personal or commercial purposes in accordance with these Terms."
+            "Skill Recorder 扩展、网站及所有相关内容归 Skill Recorder 所有，并受适用的知识产权法律保护。我们授予你有限、非独占、不可转让的许可，可按本条款将本服务用于个人或商业用途。"
           ]
         },
         {
-          "heading": "4. Free Tier and Paid Plans",
+          "heading": "4. 免费版与付费方案",
           "paragraphs": [
-            "Skill Recorder is currently free during beta. Paid plans may be introduced in the future with advance notice. We reserve the right to modify feature scope and pricing with reasonable notice."
+            "Skill Recorder 在公测期间完全免费。付费方案可能在未来推出，并提前通知。我们保留在合理通知下调整功能范围与价格的权利。"
           ]
         },
         {
-          "heading": "5. Disclaimer of Warranties",
+          "heading": "5. 免责声明",
           "paragraphs": [
-            "The Service is provided \"as is\" without warranties of any kind, express or implied. We do not guarantee that the Service will be uninterrupted, error-free, or that distilled SKILL.md outputs will replay correctly on every website. Browser flow replay depends on the structure of third-party websites, which may change without notice."
+            "本服务按\"原样\"提供，不附任何明示或暗示的保证。我们不保证服务永不中断、绝无错误，亦不保证提炼后的 SKILL.md 输出在每个网站上都能正确回放。浏览器流程的回放依赖于第三方网站的结构，而该结构可能在不通知的情况下变更。"
           ]
         },
         {
-          "heading": "6. Limitation of Liability",
+          "heading": "6. 责任限制",
           "paragraphs": [
-            "To the fullest extent permitted by law, Skill Recorder shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the Service, including but not limited to data loss, reliance on replayed flows, or legal claims arising from your recording activities."
+            "在法律允许的最大范围内，对于因使用本服务而产生的任何间接、附带、特殊或后果性损害（包括但不限于数据丢失、对回放流程的依赖，或因录制活动引发的法律索赔），Skill Recorder 概不负责。"
           ]
         },
         {
-          "heading": "7. Termination",
+          "heading": "7. 终止",
           "paragraphs": [
-            "We reserve the right to suspend or terminate access to the Service at any time for violations of these Terms or for any other reason at our discretion."
+            "对于违反本条款或我们认定的其他原因，我们保留随时暂停或终止本服务访问权的权利。"
           ]
         },
         {
-          "heading": "8. Changes to These Terms",
+          "heading": "8. 条款变更",
           "paragraphs": [
-            "We may update these Terms periodically. Continued use of the Service after changes are posted constitutes acceptance of the revised Terms."
+            "我们可能不定期更新本条款。条款变更发布后继续使用本服务，即视为接受修订后的条款。"
           ]
         },
         {
-          "heading": "9. Contact",
+          "heading": "9. 联系我们",
           "paragraphs": [
-            "For questions about these Terms, please contact us at:"
+            "如对本条款有任何疑问，请联系："
           ],
           "contactEmail": "support@skill-recorder.dev"
         }

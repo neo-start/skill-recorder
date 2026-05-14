@@ -108,15 +108,7 @@ const Copyright = styled.p`
 
 export default function Footer() {
   const t = useTranslations('layout.footer');
-  const tScenes = useTranslations('main.playground.scenes');
 
-  const playgroundLinks = [
-    { label: tScenes('ecommerce'),   href: '/playground?scene=ecommerce' },
-    { label: tScenes('leads'),       href: '/playground?scene=leads' },
-    { label: tScenes('realestate'),  href: '/playground?scene=realestate' },
-    { label: tScenes('social'),      href: '/playground?scene=social' },
-    { label: tScenes('hospitality'), href: '/playground?scene=hospitality' },
-  ];
   const legalLinks = [
     { label: t('privacy'), href: '/policy/privacy' },
     { label: t('terms'),   href: '/policy/terms' },
@@ -134,15 +126,6 @@ export default function Footer() {
         </Brand>
 
         <Cols>
-          <Col>
-            <ColTitle>{t('playground')}</ColTitle>
-            {playgroundLinks.map(l => (
-              <FooterLink key={l.label} href={l.href}>
-                {l.label}
-              </FooterLink>
-            ))}
-          </Col>
-
           <Col>
             <ColTitle>{t('legal')}</ColTitle>
             {legalLinks.map(l => (

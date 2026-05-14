@@ -1,346 +1,331 @@
 {
   "layout": {
     "nav": {
-      "playground": "Playground",
       "blog": "Blog",
-      "cta": "Add to Chrome",
-      "signIn": "Sign in",
-      "ctaMobile": "Add to Chrome",
-      "closeMenu": "Close menu",
-      "openMenu": "Open menu",
-      "viewAllArticles": "View all articles",
-      "openPlayground": "Open Playground",
+      "cta": "Ajouter à Chrome",
+      "signIn": "Se connecter",
+      "ctaMobile": "Ajouter à Chrome",
+      "closeMenu": "Fermer le menu",
+      "openMenu": "Ouvrir le menu",
+      "viewAllArticles": "Voir tous les articles",
       "blogItems": {
-        "ecommerce": "Recording Browser Flows for AI Agents",
-        "noCode": "From Click to SKILL.md: A Complete Walkthrough",
-        "leads": "How to Distill a Recording into a Reusable Skill",
-        "pagination": "Replaying Flows with the browse CLI"
+        "ecommerce": "Enregistrer des parcours navigateur pour les agents IA",
+        "noCode": "Du clic au SKILL.md : guide complet",
+        "leads": "Comment distiller un enregistrement en compétence réutilisable",
+        "pagination": "Rejouer des parcours avec le CLI browse"
       }
     },
     "footer": {
-      "tagline": "Record once. Replay forever.",
-      "playground": "Playground",
+      "tagline": "Enregistrez une fois. Rejouez à l'infini.",
       "blog": "Blog",
-      "blogHome": "All Articles",
-      "blogEcommerce": "Recording Browser Flows for AI Agents",
-      "blogNoCode": "From Click to SKILL.md",
-      "blogLeads": "Distilling a Recording into a Skill",
+      "blogHome": "Tous les articles",
+      "blogEcommerce": "Enregistrer des parcours navigateur pour les agents IA",
+      "blogNoCode": "Du clic au SKILL.md",
+      "blogLeads": "Distiller un enregistrement en compétence",
       "legal": "Support",
-      "privacy": "Privacy Policy",
-      "terms": "Terms of Service",
-      "copyright": "© 2026 Skill Recorder. All rights reserved."
+      "privacy": "Politique de confidentialité",
+      "terms": "Conditions d'utilisation",
+      "copyright": "© 2026 Skill Recorder. Tous droits réservés."
     }
   },
   "blog": {
     "meta": {
-      "title": "Blog | Skill Recorder — Browser Automation for AI Agents",
-      "description": "Guides and notes on recording browser flows, distilling them into SKILL.md files, and replaying them with AI agents.",
-      "keywords": "skill recorder blog, browser automation, claude code skills, browse cli, SKILL.md"
+      "title": "Blog | Skill Recorder — Automatisation de navigateur pour agents IA",
+      "description": "Guides et notes sur l'enregistrement de parcours navigateur, leur distillation en fichiers SKILL.md et leur rejeu par des agents IA.",
+      "keywords": "blog skill recorder, automatisation navigateur, compétences claude code, browse cli, SKILL.md"
     },
     "hero": {
-      "title": "Recording & Replay Guides",
-      "description": "Practical tutorials on capturing browser flows, distilling them into portable SKILL.md files, and replaying them with Claude Code.",
+      "title": "Guides d'enregistrement et de rejeu",
+      "description": "Tutoriels pratiques pour capturer des parcours navigateur, les distiller en fichiers SKILL.md portables et les rejouer avec Claude Code.",
       "articles": "Articles",
-      "categories": "Categories",
-      "free": "Free",
-      "toRead": "To Read"
+      "categories": "Catégories",
+      "free": "Gratuit",
+      "toRead": "À lire"
     },
-    "loadMore": "Load More",
-    "readMore": "Read More",
-    "minRead": "min read",
+    "loadMore": "Charger plus",
+    "readMore": "Lire la suite",
+    "minRead": "min de lecture",
     "breadcrumbs": {
-      "home": "Home",
+      "home": "Accueil",
       "blog": "Blog"
     },
-    "recentArticles": "Recent Articles",
-    "relatedArticles": "Related Articles"
+    "recentArticles": "Articles récents",
+    "relatedArticles": "Articles liés"
   },
   "main": {
     "meta": {
-      "title": "Skill Recorder | Turn Browser Flows into SKILL.md Files",
-      "description": "Record any browser flow with a Chrome extension and distill it into a SKILL.md file that AI agents like Claude Code can re-run autonomously.",
-      "keywords": "skill recorder, browser automation, claude code skills, SKILL.md, browse cli, ai agent automation, chrome extension"
+      "title": "Skill Recorder | Transformez vos parcours navigateur en fichiers SKILL.md",
+      "description": "Enregistrez n'importe quel parcours navigateur avec une extension Chrome et distillez-le en fichier SKILL.md que des agents IA comme Claude Code peuvent rejouer en autonomie.",
+      "keywords": "skill recorder, automatisation navigateur, compétences claude code, SKILL.md, browse cli, automatisation agent ia, extension chrome"
     },
     "hero": {
-      "title": "Record a Flow Once. Let AI Replay It Forever.",
-      "subtitle": "A Chrome extension that captures your browser flow and distills it into a SKILL.md AI agents can re-run.",
-      "ctaPrimary": "Install Now",
-      "ctaSecondary": "Try in Playground",
-      "note": "Free during beta. No account required."
+      "title": "Enregistrez un parcours une fois. Laissez l'IA le rejouer à l'infini.",
+      "subtitle": "Une extension Chrome qui capture votre parcours navigateur et le distille en SKILL.md que les agents IA peuvent rejouer.",
+      "ctaPrimary": "Installer maintenant",
+      "note": "Gratuit pendant la bêta. Aucun compte requis."
     },
     "howItWorks": {
-      "title": "From Browser Demo to Replayable Skill in <accent>3 Steps</accent>",
+      "title": "De la démo navigateur à la compétence rejouable en <accent>3 étapes</accent>",
       "steps": {
         "install": {
           "number": "01",
-          "title": "Install the Extension",
-          "desc": "Add Skill Recorder to Chrome in seconds.",
-          "imgAlt": "Install the Skill Recorder Chrome extension"
+          "title": "Installez l'extension",
+          "desc": "Ajoutez Skill Recorder à Chrome en quelques secondes.",
+          "imgAlt": "Installer l'extension Chrome Skill Recorder"
         },
         "scrape": {
           "number": "02",
-          "title": "Record Your Flow",
-          "desc": "Click Start, walk through the task once, and we capture every action.",
-          "imgAlt": "Record a browser flow with one click"
+          "title": "Enregistrez votre parcours",
+          "desc": "Cliquez sur Démarrer, exécutez la tâche une fois et nous capturons chaque action.",
+          "imgAlt": "Enregistrer un parcours navigateur en un clic"
         },
         "export": {
           "number": "03",
-          "title": "Export as SKILL.md",
-          "desc": "Save the distilled markdown file straight into your Claude Code skills folder.",
-          "imgAlt": "Download a SKILL.md file ready for Claude Code"
+          "title": "Exportez en SKILL.md",
+          "desc": "Enregistrez le fichier markdown distillé directement dans votre dossier de compétences Claude Code.",
+          "imgAlt": "Télécharger un fichier SKILL.md prêt pour Claude Code"
         }
       }
     },
     "features": {
-      "title": "Capture Every Click, <accent>Distill Every Skill</accent>",
+      "title": "Capturez chaque clic, <accent>distillez chaque compétence</accent>",
       "ctas": {
-        "f1": "Record Now",
-        "f2": "Distill Cleanly",
-        "f3": "Replay Anywhere",
-        "f4": "Hand Off to Claude"
+        "f1": "Enregistrer maintenant",
+        "f2": "Distiller proprement",
+        "f3": "Rejouer partout",
+        "f4": "Confier à Claude"
       },
       "f1": {
-        "title": "Just Hit Record",
-        "desc": "No scripts, no selectors. Click Start and demo the task like you would for a coworker. We capture <highlight>every click, keystroke, and navigation</highlight> in real time. When you stop, you have a perfect replay ready to distill.",
-        "imgAlt": "One-click recording of a browser flow"
+        "title": "Appuyez simplement sur Enregistrer",
+        "desc": "Pas de scripts, pas de sélecteurs. Cliquez sur Démarrer et démontrez la tâche comme vous le feriez pour un collègue. Nous capturons <highlight>chaque clic, frappe et navigation</highlight> en temps réel. Quand vous arrêtez, vous obtenez un rejeu parfait, prêt à être distillé.",
+        "imgAlt": "Enregistrement en un clic d'un parcours navigateur"
       },
       "f2": {
-        "title": "Smart Distillation, Out of the Box",
-        "desc": "The dialog auto-strips noise, <highlight>turns every typed value into a parameter</highlight>, and flags clicks on dynamic lists with ⚠️ warnings so agents replay them safely. No manual cleanup, no regex wrangling.",
-        "imgAlt": "Distilling a recording into a clean SKILL.md"
+        "title": "Distillation intelligente, prête à l'emploi",
+        "desc": "Le dialogue retire automatiquement le bruit, <highlight>transforme chaque valeur saisie en paramètre</highlight> et signale les clics sur des listes dynamiques avec des avertissements ⚠️ pour que les agents les rejouent en toute sécurité. Aucun nettoyage manuel, aucune galère de regex.",
+        "imgAlt": "Distillation d'un enregistrement en SKILL.md propre"
       },
       "f3": {
-        "title": "Replay on Any AI Agent",
-        "desc": "The output is a portable <highlight>SKILL.md</highlight> file — plain markdown an AI agent can read. Drop it into Claude Code's skills directory and the agent replays the flow via the <highlight>browse</highlight> CLI without any glue code.",
-        "imgAlt": "Replaying a SKILL.md flow with Claude Code"
+        "title": "Rejouez sur n'importe quel agent IA",
+        "desc": "Le résultat est un fichier <highlight>SKILL.md</highlight> portable — du markdown brut qu'un agent IA peut lire. Déposez-le dans le répertoire de compétences de Claude Code et l'agent rejoue le parcours via le CLI <highlight>browse</highlight>, sans aucune ligne de code de liaison.",
+        "imgAlt": "Rejeu d'un parcours SKILL.md avec Claude Code"
       },
       "f4": {
-        "title": "Privacy-First by Design",
-        "desc": "All recording lives in your browser. Nothing uploads. Auth tokens never leave your machine — we detect them, mark them as <highlight>Precondition: signed in</highlight>, and let the agent prompt you when it's time to authenticate.",
-        "imgAlt": "Skill Recorder runs locally with no upload"
+        "title": "Confidentialité par conception",
+        "desc": "Tout l'enregistrement reste dans votre navigateur. Rien n'est envoyé. Les jetons d'authentification ne quittent jamais votre machine — nous les détectons, les marquons comme <highlight>Précondition : connecté</highlight> et laissons l'agent vous solliciter lorsqu'il est temps de vous authentifier.",
+        "imgAlt": "Skill Recorder fonctionne localement, sans envoi"
       }
     },
     "useCases": {
-      "title": "Built for Every Repetitive Browser Task",
+      "title": "Pensé pour chaque tâche répétitive dans le navigateur",
       "cases": {
         "ecommerce": {
-          "title": "Automate Repetitive Forms",
-          "desc": "Record a single submission and hand the SKILL.md to Claude. The agent fills in dozens of variants overnight without you babysitting.",
-          "cta": "Record Forms"
+          "title": "Automatisez les formulaires répétitifs",
+          "desc": "Enregistrez une seule soumission et confiez le SKILL.md à Claude. L'agent remplit des dizaines de variantes pendant la nuit, sans surveillance.",
+          "cta": "Enregistrer des formulaires"
         },
         "reviews": {
-          "title": "Run Daily Dashboard Checks",
-          "desc": "Capture the click path through your analytics dashboard once. Let an agent pull the same numbers every morning and post them to Slack.",
-          "cta": "Record Dashboards"
+          "title": "Effectuez vos contrôles quotidiens de tableau de bord",
+          "desc": "Capturez une fois le chemin de clics dans votre tableau de bord analytique. Laissez un agent extraire les mêmes chiffres chaque matin et les publier sur Slack.",
+          "cta": "Enregistrer des tableaux de bord"
         },
         "seo": {
-          "title": "Audit Competitor Sites Weekly",
-          "desc": "Demo the audit checklist on one site. The skill replays it across your whole tracking list, every Monday at 9am.",
-          "cta": "Record Audits"
+          "title": "Auditez les sites concurrents chaque semaine",
+          "desc": "Démontrez la check-list d'audit sur un site. La compétence la rejoue sur l'ensemble de votre liste de suivi, chaque lundi à 9 h.",
+          "cta": "Enregistrer des audits"
         },
         "leads": {
-          "title": "Build Lead Lists Repeatedly",
-          "desc": "Walk through one search query on a business directory. Reuse the recording for new search terms forever, no scripts needed.",
-          "cta": "Record Searches"
+          "title": "Constituez des listes de prospects en continu",
+          "desc": "Exécutez une requête de recherche dans un annuaire d'entreprises. Réutilisez l'enregistrement pour de nouveaux termes à l'infini, sans aucun script.",
+          "cta": "Enregistrer des recherches"
         },
         "jobs": {
-          "title": "Track Job Boards",
-          "desc": "Show the filter + scroll + export flow once. Your agent runs it daily across every board you care about.",
-          "cta": "Record Job Boards"
+          "title": "Surveillez les sites d'emploi",
+          "desc": "Montrez le parcours filtre + défilement + export une seule fois. Votre agent l'exécute chaque jour sur tous les sites qui comptent pour vous.",
+          "cta": "Enregistrer des sites d'emploi"
         },
         "realestate": {
-          "title": "Monitor Property Listings",
-          "desc": "Record one listings search with your filters. The agent re-runs it on a schedule and surfaces new matches.",
-          "cta": "Record Listings"
+          "title": "Surveillez les annonces immobilières",
+          "desc": "Enregistrez une recherche d'annonces avec vos filtres. L'agent la relance selon un planning et fait remonter les nouvelles correspondances.",
+          "cta": "Enregistrer des annonces"
         },
         "hotels": {
-          "title": "Compare Travel Prices",
-          "desc": "Demo your typical hotel search once. Let agents poll prices across dates and platforms without manual effort.",
-          "cta": "Record Searches"
+          "title": "Comparez les prix de voyage",
+          "desc": "Démontrez votre recherche d'hôtel habituelle une seule fois. Laissez les agents interroger les prix sur plusieurs dates et plateformes sans effort manuel.",
+          "cta": "Enregistrer des recherches"
         }
       }
     },
     "testimonials": {
-      "title": "What Builders Are Saying",
+      "title": "Ce qu'en disent les bâtisseurs",
       "items": [
         {
-          "quote": "I used to write 200 lines of Playwright every time I onboarded a new repetitive workflow. Now I record it once in the browser, hand the SKILL.md to Claude, and it just works.",
+          "quote": "J'écrivais 200 lignes de Playwright à chaque nouveau workflow répétitif. Maintenant je l'enregistre une fois dans le navigateur, je confie le SKILL.md à Claude, et ça fonctionne tout seul.",
           "name": "Lena R.",
           "role": "Staff Engineer"
         },
         {
-          "quote": "The distillation step is what sells it. Every typed value becomes a parameter automatically, so the same recording covers an entire batch of inputs.",
+          "quote": "C'est l'étape de distillation qui fait toute la différence. Chaque valeur saisie devient automatiquement un paramètre, donc le même enregistrement couvre tout un lot d'entrées.",
           "name": "Marcus T.",
-          "role": "AI Workflow Lead"
+          "role": "Responsable des workflows IA"
         },
         {
-          "quote": "Our ops team records flows. The agents replay them. Nobody on either side needs to touch code or selectors. That gap closing is huge.",
+          "quote": "Notre équipe ops enregistre les parcours. Les agents les rejouent. Personne, d'un côté ou de l'autre, n'a besoin de toucher au code ou aux sélecteurs. Ce pont qui se ferme, c'est énorme.",
           "name": "Priya N.",
-          "role": "Head of Internal Tools"
+          "role": "Responsable des outils internes"
         },
         {
-          "quote": "Auth detection is what made this production-ready for us. The skill pauses at the login step, prompts the human, and resumes. No leaked tokens.",
+          "quote": "La détection d'authentification est ce qui l'a rendu prêt pour la production chez nous. La compétence s'arrête à l'étape de connexion, sollicite l'humain et reprend. Aucun jeton qui fuit.",
           "name": "Sam K.",
-          "role": "Security Engineer"
+          "role": "Ingénieur sécurité"
         },
         {
-          "quote": "I built three skills before lunch. Each one replaced a half-hour browser ritual. The browse CLI integration is exactly the API I wanted.",
+          "quote": "J'ai construit trois compétences avant le déjeuner. Chacune a remplacé une demi-heure de rituel dans le navigateur. L'intégration avec le CLI browse est exactement l'API que je voulais.",
           "name": "Ahmed S.",
-          "role": "Indie Hacker"
+          "role": "Indie hacker"
         },
         {
-          "quote": "I used to maintain Selenium scripts that broke every time a button moved. With SKILL.md the agent reads the intent, not the selector. Maintenance dropped 80%.",
+          "quote": "Je maintenais des scripts Selenium qui cassaient à chaque déplacement de bouton. Avec SKILL.md, l'agent lit l'intention, pas le sélecteur. La maintenance a baissé de 80 %.",
           "name": "Yuki H.",
-          "role": "QA Automation Engineer"
+          "role": "Ingénieure QA automatisation"
         },
         {
-          "quote": "The privacy story sealed it. Nothing leaves the browser, auth tokens never touch any server. Compliance signed off in one meeting.",
+          "quote": "L'argument confidentialité a tout scellé. Rien ne sort du navigateur, les jetons d'authentification ne touchent aucun serveur. La conformité a validé en une seule réunion.",
           "name": "Diana F.",
-          "role": "Platform Engineer"
+          "role": "Ingénieure plateforme"
         }
       ]
     },
     "faq": {
-      "title": "Frequently asked questions",
-      "contact": "Can't find the answer? Reach us at",
+      "title": "Questions fréquentes",
+      "contact": "Vous ne trouvez pas la réponse ? Contactez-nous à",
       "items": [
         {
-          "question": "Is it really free?",
-          "answer": "Yes — Skill Recorder is free during beta. Install the extension and start recording immediately. No account, no payment details required."
+          "question": "Est-ce vraiment gratuit ?",
+          "answer": "Oui — Skill Recorder est gratuit pendant la bêta. Installez l'extension et commencez à enregistrer immédiatement. Aucun compte, aucune information de paiement requise."
         },
         {
-          "question": "Where does the recording data live?",
-          "answer": "Entirely in your browser. We never upload your recordings, your auth tokens, or your page content. Recordings stay on your device until you choose to export the distilled SKILL.md file."
+          "question": "Où sont stockées les données d'enregistrement ?",
+          "answer": "Entièrement dans votre navigateur. Nous n'envoyons jamais vos enregistrements, vos jetons d'authentification ni le contenu de vos pages. Les enregistrements restent sur votre appareil jusqu'à ce que vous choisissiez d'exporter le fichier SKILL.md distillé."
         },
         {
-          "question": "What is SKILL.md and how is it used?",
-          "answer": "SKILL.md is a portable markdown file that describes an automated browser flow as a sequence of steps. AI agents like Claude Code load it from a skills directory and replay it via the browse CLI — no extra glue code."
+          "question": "Qu'est-ce que SKILL.md et comment l'utilise-t-on ?",
+          "answer": "SKILL.md est un fichier markdown portable qui décrit un parcours navigateur automatisé sous forme de séquence d'étapes. Les agents IA comme Claude Code le chargent depuis un dossier de compétences et le rejouent via le CLI browse — sans code de liaison supplémentaire."
         },
         {
-          "question": "How does it handle login pages?",
-          "answer": "Skill Recorder auto-detects auth boundaries and inserts a Precondition: signed in marker. When an agent replays the skill, it pauses at the auth step and prompts the human, instead of leaking session tokens."
+          "question": "Comment gère-t-il les pages de connexion ?",
+          "answer": "Skill Recorder détecte automatiquement les frontières d'authentification et insère un marqueur Précondition : connecté. Lorsqu'un agent rejoue la compétence, il s'arrête à l'étape d'authentification et sollicite l'humain, au lieu de laisser fuir des jetons de session."
         },
         {
-          "question": "What if the page changes? Will my skill break?",
-          "answer": "The distillation step records semantic intent (\"click the Submit button\") and falls back across multiple selectors. Skills tolerate small DOM changes far better than hard-coded Selenium scripts."
+          "question": "Et si la page change ? Ma compétence va-t-elle casser ?",
+          "answer": "L'étape de distillation enregistre l'intention sémantique (« cliquer sur le bouton Envoyer ») et bascule sur plusieurs sélecteurs en repli. Les compétences tolèrent les petits changements du DOM bien mieux que des scripts Selenium codés en dur."
         },
         {
-          "question": "Do I need Claude Code to use the output?",
-          "answer": "Claude Code is the primary integration today, but the format is plain markdown. Any agent that supports the browse CLI conventions can consume a SKILL.md file."
+          "question": "Faut-il Claude Code pour utiliser le résultat ?",
+          "answer": "Claude Code est l'intégration principale aujourd'hui, mais le format est du markdown brut. Tout agent qui prend en charge les conventions du CLI browse peut consommer un fichier SKILL.md."
         }
       ]
     },
     "cta": {
-      "title": "Record Your First Skill in 60 Seconds",
-      "button": "Install Now",
-      "note": "Free during beta. No account required."
+      "title": "Enregistrez votre première compétence en 60 secondes",
+      "button": "Installer maintenant",
+      "note": "Gratuit pendant la bêta. Aucun compte requis."
     },
     "stats": [
       { "value": "↓ 80%", "label": "Maintenance vs Selenium" },
-      { "value": "0",      "label": "Lines of Code Needed" },
-      { "value": "1 click","label": "To Start a Recording" },
-      { "value": "↑ 100%", "label": "Local — Nothing Uploaded" }
-    ],
-    "playground": {
-      "back": "Home",
-      "title": "Playground",
-      "desc": "Pick a sample flow below, install the extension, and hit Record to capture it end-to-end into a SKILL.md.",
-      "openPanel": "Open Side Panel",
-      "installExtension": "Install Extension",
-      "sceneLabel": "Scene",
-      "scenes": {
-        "ecommerce": "Form Filling",
-        "leads": "Directory Search",
-        "social": "Dashboard Export",
-        "realestate": "Listings Filter",
-        "hospitality": "Travel Search"
-      }
-    }
+      { "value": "0", "label": "Lignes de code nécessaires" },
+      { "value": "1 clic", "label": "Pour démarrer un enregistrement" },
+      { "value": "↑ 100%", "label": "Local — rien n'est envoyé" }
+    ]
   },
   "notFound": {
-    "message": "Redirecting…",
-    "backHome": "Back to Home"
+    "message": "Redirection…",
+    "backHome": "Retour à l'accueil"
   },
   "policy": {
     "privacy": {
       "meta": {
-        "title": "Privacy Policy | Skill Recorder",
-        "description": "How Skill Recorder handles your recordings, browser data, and any information you generate while using the extension.",
-        "keywords": "skill recorder privacy, browser extension privacy, recording privacy, data protection"
+        "title": "Politique de confidentialité | Skill Recorder",
+        "description": "Comment Skill Recorder gère vos enregistrements, vos données de navigateur et toute information générée lors de l'utilisation de l'extension.",
+        "keywords": "confidentialité skill recorder, confidentialité extension navigateur, confidentialité enregistrement, protection des données"
       },
-      "title": "Privacy Policy",
-      "effectiveDate": "Effective Date: January 1, 2026",
-      "intro": "Skill Recorder is a Chrome extension that captures browser flows you explicitly record and distills them into SKILL.md files. This Privacy Policy explains what information stays on your device, what we don't collect, and your rights regarding your data.",
+      "title": "Politique de confidentialité",
+      "effectiveDate": "Date d'effet : 1er janvier 2026",
+      "intro": "Skill Recorder est une extension Chrome qui capture les parcours navigateur que vous enregistrez explicitement et les distille en fichiers SKILL.md. Cette politique de confidentialité explique quelles informations restent sur votre appareil, ce que nous ne collectons pas, et vos droits concernant vos données.",
       "sections": [
         {
-          "heading": "1. Information We Collect",
+          "heading": "1. Informations que nous collectons",
           "paragraphs": [
-            "Skill Recorder is designed to operate locally. The extension processes the following on your device:"
+            "Skill Recorder est conçu pour fonctionner localement. L'extension traite ce qui suit sur votre appareil :"
           ],
           "bullets": [
-            { "label": "Recorded Actions:",   "text": "Clicks, keystrokes, navigations, and DOM snapshots from flows you explicitly start recording. Stored locally in your browser's IndexedDB." },
-            { "label": "Distilled Skills:",   "text": "The SKILL.md files you generate. Stored locally until you export or delete them." },
-            { "label": "Anonymous Telemetry:","text": "Basic event counts (e.g., \"recording started\", \"skill exported\") to help us improve the product. No page content, no auth tokens, no PII." }
+            { "label": "Actions enregistrées :", "text": "Clics, frappes au clavier, navigations et instantanés du DOM provenant des parcours dont vous démarrez explicitement l'enregistrement. Stockés localement dans l'IndexedDB de votre navigateur." },
+            { "label": "Compétences distillées :", "text": "Les fichiers SKILL.md que vous générez. Stockés localement jusqu'à ce que vous les exportiez ou les supprimiez." },
+            { "label": "Télémétrie anonyme :", "text": "Comptages d'événements basiques (par ex. « enregistrement démarré », « compétence exportée ») pour nous aider à améliorer le produit. Aucun contenu de page, aucun jeton d'authentification, aucune donnée personnelle." }
           ],
-          "trailing": "Skill Recorder does not collect passwords, payment information, or any page content from sessions you have not explicitly recorded."
+          "trailing": "Skill Recorder ne collecte ni mots de passe, ni informations de paiement, ni contenu de page provenant de sessions que vous n'avez pas explicitement enregistrées."
         },
         {
-          "heading": "2. How We Use Your Information",
-          "paragraphs": [ "Information processed by Skill Recorder is used solely to:" ],
+          "heading": "2. Comment nous utilisons vos informations",
+          "paragraphs": [
+            "Les informations traitées par Skill Recorder servent uniquement à :"
+          ],
           "bullets": [
-            { "label": "", "text": "Reconstruct a faithful replay of the flow you recorded." },
-            { "label": "", "text": "Run the distillation pipeline that turns a raw recording into a clean SKILL.md." },
-            { "label": "", "text": "Enable export of the SKILL.md file to your filesystem when you click Download." },
-            { "label": "", "text": "Improve product usability through anonymized event counts." }
+            { "label": "", "text": "Reconstruire un rejeu fidèle du parcours que vous avez enregistré." },
+            { "label": "", "text": "Exécuter le pipeline de distillation qui transforme un enregistrement brut en SKILL.md propre." },
+            { "label": "", "text": "Permettre l'export du fichier SKILL.md vers votre système de fichiers lorsque vous cliquez sur Télécharger." },
+            { "label": "", "text": "Améliorer l'utilisabilité du produit via des comptages d'événements anonymisés." }
           ],
-          "trailing": "We do not use your data for advertising, behavioural profiling, or cross-site tracking."
+          "trailing": "Nous n'utilisons pas vos données à des fins publicitaires, de profilage comportemental ou de suivi inter-sites."
         },
         {
-          "heading": "3. Data Storage and Retention",
+          "heading": "3. Stockage et conservation des données",
           "paragraphs": [],
           "bullets": [
-            { "label": "Local Storage:", "text": "Recordings, distilled skills, and preferences live in your browser's IndexedDB and chrome.storage. They remain on your device until you delete them." },
-            { "label": "No Cloud Sync:", "text": "Skill Recorder does not upload your recordings to any server. There is no account, no cloud history, no shared workspace." }
+            { "label": "Stockage local :", "text": "Les enregistrements, compétences distillées et préférences résident dans l'IndexedDB et chrome.storage de votre navigateur. Ils restent sur votre appareil jusqu'à ce que vous les supprimiez." },
+            { "label": "Aucune synchronisation cloud :", "text": "Skill Recorder n'envoie vos enregistrements à aucun serveur. Il n'y a ni compte, ni historique cloud, ni espace de travail partagé." }
           ],
-          "trailing": "You may clear all locally stored data at any time through the extension's settings or by uninstalling the extension."
+          "trailing": "Vous pouvez effacer toutes les données stockées localement à tout moment via les paramètres de l'extension ou en désinstallant l'extension."
         },
         {
-          "heading": "4. Third-Party Services",
+          "heading": "4. Services tiers",
           "paragraphs": [
-            "Skill Recorder does not send recording data to third parties. The only network calls the extension makes are to:",
-            "These calls do not include any page content or recorded actions."
+            "Skill Recorder n'envoie aucune donnée d'enregistrement à des tiers. Les seuls appels réseau effectués par l'extension sont :",
+            "Ces appels ne contiennent aucun contenu de page ni aucune action enregistrée."
           ],
           "bullets": [
-            { "label": "Update Check:", "text": "Chrome Web Store, to receive extension updates." },
-            { "label": "Telemetry:",    "text": "An anonymized analytics endpoint, used only to count opt-in events. Disabled if you opt out." }
+            { "label": "Vérification des mises à jour :", "text": "Chrome Web Store, pour recevoir les mises à jour de l'extension." },
+            { "label": "Télémétrie :", "text": "Un point de terminaison d'analytique anonymisé, utilisé uniquement pour compter des événements consentis. Désactivé si vous vous y opposez." }
           ]
         },
         {
-          "heading": "5. Extension Permissions",
-          "paragraphs": [ "Skill Recorder requests the following permissions to operate:" ],
+          "heading": "5. Permissions de l'extension",
+          "paragraphs": [
+            "Skill Recorder demande les permissions suivantes pour fonctionner :"
+          ],
           "bullets": [
-            { "label": "activeTab:",  "text": "Access the tab you explicitly choose to record." },
-            { "label": "scripting:",  "text": "Inject the content script that captures clicks, keystrokes, and navigations during a recording." },
-            { "label": "storage:",    "text": "Persist recordings and distilled skills locally on your device." },
-            { "label": "sidePanel:",  "text": "Open the recording sidepanel that lists your captured flows." }
+            { "label": "activeTab:", "text": "Accéder à l'onglet que vous choisissez explicitement d'enregistrer." },
+            { "label": "scripting:", "text": "Injecter le script de contenu qui capture les clics, frappes et navigations pendant un enregistrement." },
+            { "label": "storage:", "text": "Conserver localement les enregistrements et les compétences distillées sur votre appareil." },
+            { "label": "sidePanel:", "text": "Ouvrir le panneau latéral d'enregistrement qui liste vos parcours capturés." }
           ]
         },
         {
-          "heading": "6. Data Security",
+          "heading": "6. Sécurité des données",
           "paragraphs": [
-            "Because all data stays on your device, the surface area is limited to your browser's local storage. We implement reasonable measures to prevent injection from untrusted page content into the recording pipeline."
+            "Comme toutes les données restent sur votre appareil, la surface d'exposition se limite au stockage local de votre navigateur. Nous mettons en place des mesures raisonnables pour empêcher l'injection de contenu de page non fiable dans le pipeline d'enregistrement."
           ]
         },
         {
-          "heading": "7. Changes to This Policy",
+          "heading": "7. Modifications de cette politique",
           "paragraphs": [
-            "This Privacy Policy may be updated periodically. Updates will be posted on this page with a revised effective date."
+            "Cette politique de confidentialité peut être mise à jour périodiquement. Les mises à jour seront publiées sur cette page avec une date d'effet révisée."
           ]
         },
         {
           "heading": "8. Contact",
           "paragraphs": [
-            "If you have questions about this Privacy Policy, please contact us at:"
+            "Pour toute question concernant cette politique de confidentialité, merci de nous contacter à :"
           ],
           "contactEmail": "support@skill-recorder.dev"
         }
@@ -348,71 +333,73 @@
     },
     "terms": {
       "meta": {
-        "title": "Terms of Service | Skill Recorder",
-        "description": "The rules and conditions that govern your use of the Skill Recorder browser extension and website.",
-        "keywords": "skill recorder terms, terms of service, browser extension terms"
+        "title": "Conditions d'utilisation | Skill Recorder",
+        "description": "Les règles et conditions qui régissent votre utilisation de l'extension de navigateur et du site web Skill Recorder.",
+        "keywords": "conditions skill recorder, conditions d'utilisation, conditions extension navigateur"
       },
-      "title": "Terms of Service",
-      "effectiveDate": "Effective Date: January 1, 2026",
-      "intro": "These Terms of Service (\"Terms\") govern your use of the Skill Recorder browser extension and website (collectively, the \"Service\"). By installing or using Skill Recorder, you agree to these Terms.",
+      "title": "Conditions d'utilisation",
+      "effectiveDate": "Date d'effet : 1er janvier 2026",
+      "intro": "Les présentes Conditions d'utilisation (« Conditions ») régissent votre utilisation de l'extension de navigateur et du site web Skill Recorder (collectivement, le « Service »). En installant ou en utilisant Skill Recorder, vous acceptez ces Conditions.",
       "sections": [
         {
-          "heading": "1. Description of Service",
+          "heading": "1. Description du Service",
           "paragraphs": [
-            "Skill Recorder is a browser extension that captures user-driven browser flows and distills them into portable SKILL.md files for use with AI agents. The Service is provided \"as is\" and may be updated or modified at any time."
+            "Skill Recorder est une extension de navigateur qui capture des parcours navigateur initiés par l'utilisateur et les distille en fichiers SKILL.md portables, destinés à être utilisés avec des agents IA. Le Service est fourni « en l'état » et peut être mis à jour ou modifié à tout moment."
           ]
         },
         {
-          "heading": "2. Permitted Use",
-          "paragraphs": [ "You may use Skill Recorder for lawful purposes only. You agree not to:" ],
-          "bullets": [
-            { "label": "", "text": "Record or automate flows in violation of a website's Terms of Service or robots.txt directives." },
-            { "label": "", "text": "Use Skill Recorder to collect personal data about individuals without their consent." },
-            { "label": "", "text": "Use the Service to engage in any illegal activity, including unauthorized account access, spam, or fraud." },
-            { "label": "", "text": "Attempt to reverse-engineer, modify, or redistribute the extension without permission." }
+          "heading": "2. Utilisation autorisée",
+          "paragraphs": [
+            "Vous pouvez utiliser Skill Recorder à des fins licites uniquement. Vous vous engagez à ne pas :"
           ],
-          "trailing": "You are solely responsible for ensuring your use of Skill Recorder complies with applicable laws and the terms of any website you record."
+          "bullets": [
+            { "label": "", "text": "Enregistrer ou automatiser des parcours en violation des conditions d'utilisation d'un site ou de ses directives robots.txt." },
+            { "label": "", "text": "Utiliser Skill Recorder pour collecter des données personnelles sur des personnes sans leur consentement." },
+            { "label": "", "text": "Utiliser le Service pour mener une activité illégale, y compris l'accès non autorisé à des comptes, le spam ou la fraude." },
+            { "label": "", "text": "Tenter de procéder à de l'ingénierie inverse, de modifier ou de redistribuer l'extension sans autorisation." }
+          ],
+          "trailing": "Vous êtes seul responsable de vous assurer que votre utilisation de Skill Recorder respecte les lois applicables et les conditions de tout site que vous enregistrez."
         },
         {
-          "heading": "3. Intellectual Property",
+          "heading": "3. Propriété intellectuelle",
           "paragraphs": [
-            "The Skill Recorder extension, website, and all associated content are owned by Skill Recorder and protected by applicable intellectual property laws. You are granted a limited, non-exclusive, non-transferable license to use the Service for personal or commercial purposes in accordance with these Terms."
+            "L'extension Skill Recorder, le site web et tous les contenus associés appartiennent à Skill Recorder et sont protégés par les lois applicables en matière de propriété intellectuelle. Une licence limitée, non exclusive et non transférable vous est accordée pour utiliser le Service à des fins personnelles ou commerciales, conformément aux présentes Conditions."
           ]
         },
         {
-          "heading": "4. Free Tier and Paid Plans",
+          "heading": "4. Offre gratuite et formules payantes",
           "paragraphs": [
-            "Skill Recorder is currently free during beta. Paid plans may be introduced in the future with advance notice. We reserve the right to modify feature scope and pricing with reasonable notice."
+            "Skill Recorder est actuellement gratuit pendant la bêta. Des formules payantes pourront être introduites à l'avenir avec un préavis. Nous nous réservons le droit de modifier le périmètre des fonctionnalités et la tarification moyennant un préavis raisonnable."
           ]
         },
         {
-          "heading": "5. Disclaimer of Warranties",
+          "heading": "5. Exclusion de garanties",
           "paragraphs": [
-            "The Service is provided \"as is\" without warranties of any kind, express or implied. We do not guarantee that the Service will be uninterrupted, error-free, or that distilled SKILL.md outputs will replay correctly on every website. Browser flow replay depends on the structure of third-party websites, which may change without notice."
+            "Le Service est fourni « en l'état », sans garantie d'aucune sorte, expresse ou implicite. Nous ne garantissons pas que le Service sera ininterrompu, exempt d'erreurs, ni que les sorties SKILL.md distillées rejoueront correctement sur tous les sites. Le rejeu d'un parcours navigateur dépend de la structure des sites tiers, qui peut changer sans préavis."
           ]
         },
         {
-          "heading": "6. Limitation of Liability",
+          "heading": "6. Limitation de responsabilité",
           "paragraphs": [
-            "To the fullest extent permitted by law, Skill Recorder shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the Service, including but not limited to data loss, reliance on replayed flows, or legal claims arising from your recording activities."
+            "Dans toute la mesure permise par la loi, Skill Recorder ne pourra être tenu responsable de tout dommage indirect, accessoire, spécial ou consécutif découlant de votre utilisation du Service, y compris, sans s'y limiter, la perte de données, la dépendance à des parcours rejoués, ou les réclamations juridiques découlant de vos activités d'enregistrement."
           ]
         },
         {
-          "heading": "7. Termination",
+          "heading": "7. Résiliation",
           "paragraphs": [
-            "We reserve the right to suspend or terminate access to the Service at any time for violations of these Terms or for any other reason at our discretion."
+            "Nous nous réservons le droit de suspendre ou de résilier l'accès au Service à tout moment en cas de violation des présentes Conditions ou pour toute autre raison, à notre discrétion."
           ]
         },
         {
-          "heading": "8. Changes to These Terms",
+          "heading": "8. Modifications des présentes Conditions",
           "paragraphs": [
-            "We may update these Terms periodically. Continued use of the Service after changes are posted constitutes acceptance of the revised Terms."
+            "Nous pouvons mettre à jour ces Conditions périodiquement. L'utilisation continue du Service après la publication des modifications vaut acceptation des Conditions révisées."
           ]
         },
         {
           "heading": "9. Contact",
           "paragraphs": [
-            "For questions about these Terms, please contact us at:"
+            "Pour toute question concernant les présentes Conditions, merci de nous contacter à :"
           ],
           "contactEmail": "support@skill-recorder.dev"
         }

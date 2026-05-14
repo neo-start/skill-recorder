@@ -1,7 +1,6 @@
 {
   "layout": {
     "nav": {
-      "playground": "Playground",
       "blog": "Blog",
       "cta": "Add to Chrome",
       "signIn": "Sign in",
@@ -9,7 +8,6 @@
       "closeMenu": "Close menu",
       "openMenu": "Open menu",
       "viewAllArticles": "View all articles",
-      "openPlayground": "Open Playground",
       "blogItems": {
         "ecommerce": "Recording Browser Flows for AI Agents",
         "noCode": "From Click to SKILL.md: A Complete Walkthrough",
@@ -19,7 +17,6 @@
     },
     "footer": {
       "tagline": "Record once. Replay forever.",
-      "playground": "Playground",
       "blog": "Blog",
       "blogHome": "All Articles",
       "blogEcommerce": "Recording Browser Flows for AI Agents",
@@ -65,7 +62,6 @@
       "title": "Record a Flow Once. Let AI Replay It Forever.",
       "subtitle": "A Chrome extension that captures your browser flow and distills it into a SKILL.md AI agents can re-run.",
       "ctaPrimary": "Install Now",
-      "ctaSecondary": "Try in Playground",
       "note": "Free during beta. No account required."
     },
     "howItWorks": {
@@ -237,25 +233,10 @@
     },
     "stats": [
       { "value": "↓ 80%", "label": "Maintenance vs Selenium" },
-      { "value": "0",      "label": "Lines of Code Needed" },
-      { "value": "1 click","label": "To Start a Recording" },
+      { "value": "0", "label": "Lines of Code Needed" },
+      { "value": "1 click", "label": "To Start a Recording" },
       { "value": "↑ 100%", "label": "Local — Nothing Uploaded" }
-    ],
-    "playground": {
-      "back": "Home",
-      "title": "Playground",
-      "desc": "Pick a sample flow below, install the extension, and hit Record to capture it end-to-end into a SKILL.md.",
-      "openPanel": "Open Side Panel",
-      "installExtension": "Install Extension",
-      "sceneLabel": "Scene",
-      "scenes": {
-        "ecommerce": "Form Filling",
-        "leads": "Directory Search",
-        "social": "Dashboard Export",
-        "realestate": "Listings Filter",
-        "hospitality": "Travel Search"
-      }
-    }
+    ]
   },
   "notFound": {
     "message": "Redirecting…",
@@ -278,15 +259,17 @@
             "Skill Recorder is designed to operate locally. The extension processes the following on your device:"
           ],
           "bullets": [
-            { "label": "Recorded Actions:",   "text": "Clicks, keystrokes, navigations, and DOM snapshots from flows you explicitly start recording. Stored locally in your browser's IndexedDB." },
-            { "label": "Distilled Skills:",   "text": "The SKILL.md files you generate. Stored locally until you export or delete them." },
-            { "label": "Anonymous Telemetry:","text": "Basic event counts (e.g., \"recording started\", \"skill exported\") to help us improve the product. No page content, no auth tokens, no PII." }
+            { "label": "Recorded Actions:", "text": "Clicks, keystrokes, navigations, and DOM snapshots from flows you explicitly start recording. Stored locally in your browser's IndexedDB." },
+            { "label": "Distilled Skills:", "text": "The SKILL.md files you generate. Stored locally until you export or delete them." },
+            { "label": "Anonymous Telemetry:", "text": "Basic event counts (e.g., \"recording started\", \"skill exported\") to help us improve the product. No page content, no auth tokens, no PII." }
           ],
           "trailing": "Skill Recorder does not collect passwords, payment information, or any page content from sessions you have not explicitly recorded."
         },
         {
           "heading": "2. How We Use Your Information",
-          "paragraphs": [ "Information processed by Skill Recorder is used solely to:" ],
+          "paragraphs": [
+            "Information processed by Skill Recorder is used solely to:"
+          ],
           "bullets": [
             { "label": "", "text": "Reconstruct a faithful replay of the flow you recorded." },
             { "label": "", "text": "Run the distillation pipeline that turns a raw recording into a clean SKILL.md." },
@@ -312,17 +295,19 @@
           ],
           "bullets": [
             { "label": "Update Check:", "text": "Chrome Web Store, to receive extension updates." },
-            { "label": "Telemetry:",    "text": "An anonymized analytics endpoint, used only to count opt-in events. Disabled if you opt out." }
+            { "label": "Telemetry:", "text": "An anonymized analytics endpoint, used only to count opt-in events. Disabled if you opt out." }
           ]
         },
         {
           "heading": "5. Extension Permissions",
-          "paragraphs": [ "Skill Recorder requests the following permissions to operate:" ],
+          "paragraphs": [
+            "Skill Recorder requests the following permissions to operate:"
+          ],
           "bullets": [
-            { "label": "activeTab:",  "text": "Access the tab you explicitly choose to record." },
-            { "label": "scripting:",  "text": "Inject the content script that captures clicks, keystrokes, and navigations during a recording." },
-            { "label": "storage:",    "text": "Persist recordings and distilled skills locally on your device." },
-            { "label": "sidePanel:",  "text": "Open the recording sidepanel that lists your captured flows." }
+            { "label": "activeTab:", "text": "Access the tab you explicitly choose to record." },
+            { "label": "scripting:", "text": "Inject the content script that captures clicks, keystrokes, and navigations during a recording." },
+            { "label": "storage:", "text": "Persist recordings and distilled skills locally on your device." },
+            { "label": "sidePanel:", "text": "Open the recording sidepanel that lists your captured flows." }
           ]
         },
         {
@@ -364,7 +349,9 @@
         },
         {
           "heading": "2. Permitted Use",
-          "paragraphs": [ "You may use Skill Recorder for lawful purposes only. You agree not to:" ],
+          "paragraphs": [
+            "You may use Skill Recorder for lawful purposes only. You agree not to:"
+          ],
           "bullets": [
             { "label": "", "text": "Record or automate flows in violation of a website's Terms of Service or robots.txt directives." },
             { "label": "", "text": "Use Skill Recorder to collect personal data about individuals without their consent." },
