@@ -45,7 +45,7 @@ Prereqs: Node 20.11.1 (`nvm use`), pnpm ≥ 10.
 
 ```bash
 pnpm install            # installs every workspace
-pnpm dev                # runs turbo dev — web on :3000, crx vite watch
+pnpm dev                # runs turbo dev — web on :3300, crx vite watch
 pnpm build              # builds everything respecting the graph
 pnpm typecheck          # tsc -b across every workspace
 ```
@@ -77,8 +77,8 @@ pnpm --filter @skill-recorder/crx dev
 
 ```bash
 pnpm --filter @skill-recorder/web dev
-# → http://localhost:3000  (EN)
-# → http://localhost:3000/zh  (ZH)
+# → http://localhost:3300  (EN)
+# → http://localhost:3300/zh  (ZH)
 ```
 
 Production build for Cloudflare Pages:
