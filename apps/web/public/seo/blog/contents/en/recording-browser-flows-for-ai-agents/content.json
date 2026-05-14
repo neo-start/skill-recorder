@@ -1,0 +1,18 @@
+{
+  "id": "recording-browser-flows-for-ai-agents",
+  "title": "Recording Browser Flows for AI Agents",
+  "description": "Why a SKILL.md is a better hand-off to an AI agent than a Selenium script, and how Skill Recorder's distillation pipeline keeps the gap small.",
+  "type": "guide",
+  "readingTime": 5,
+  "publishedTime": "2026-04-10T00:00:00.000Z",
+  "updatedTime": "2026-04-10T00:00:00.000Z",
+  "author": "Skill Recorder Team",
+  "tags": ["ai-agents", "claude-code", "automation"],
+  "meta": {
+    "title": "Recording Browser Flows for AI Agents | Skill Recorder",
+    "description": "Why a SKILL.md is a better hand-off to an AI agent than a Selenium script.",
+    "keywords": "ai agent automation, browser recording, SKILL.md, claude code",
+    "image": ""
+  },
+  "markdown": "## Why intent beats selectors\n\nClassic browser automation hands an AI agent **selectors**: `#submit-btn`, `.product-row:nth-child(3)`. The moment the page renders differently — a redesigned dashboard, an A/B test, a tooltip overlay — the script breaks and the agent stops cold.\n\nSkill Recorder ships **intent** instead: a markdown file that describes _what the human was trying to do_, with selectors as a fallback rather than the contract.\n\n## The recording loop\n\nWhen you click Start, Skill Recorder captures every event in real time:\n\n- pointer clicks with semantic context (button text, ARIA labels, surrounding heading)\n- keystroke groups (a 12-character typed value becomes one event, not 12)\n- navigations and URL changes\n- DOM snapshots at meaningful boundaries\n\nAt the end you have a faithful, replayable timeline. The interesting part is what happens next.\n\n## Distillation, not transcription\n\nA raw recording is too noisy to give an agent. The distillation step:\n\n- collapses duplicate clicks into one\n- promotes every typed value into a `{parameter}`\n- detects auth boundaries and inserts a `Precondition: signed in` marker\n- flags clicks on dynamic-list items with a ⚠️ warning so the agent knows the index might shift\n\nThe output is a SKILL.md the agent can read once and replay confidently.\n\n## Hand-off\n\nDrop the file into `~/.claude/skills/<name>/SKILL.md` and Claude Code picks it up on next launch. The agent calls `browse skill <name> --arg1 value` and the flow runs end-to-end. No selectors to maintain. No glue code to write.\n"
+}

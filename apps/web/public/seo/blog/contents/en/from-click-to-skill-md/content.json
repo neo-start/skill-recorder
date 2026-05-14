@@ -1,0 +1,18 @@
+{
+  "id": "from-click-to-skill-md",
+  "title": "From Click to SKILL.md: A Complete Walkthrough",
+  "description": "A step-by-step tour through a real recording: capturing 30 actions, watching the distillation strip noise, and dropping the result into Claude Code.",
+  "type": "tutorial",
+  "readingTime": 6,
+  "publishedTime": "2026-04-01T00:00:00.000Z",
+  "updatedTime": "2026-04-01T00:00:00.000Z",
+  "author": "Skill Recorder Team",
+  "tags": ["tutorial", "walkthrough", "getting-started"],
+  "meta": {
+    "title": "From Click to SKILL.md | Skill Recorder",
+    "description": "A step-by-step walkthrough from a raw recording to a Claude-Code-ready SKILL.md.",
+    "keywords": "skill recorder tutorial, browser automation walkthrough, SKILL.md guide",
+    "image": ""
+  },
+  "markdown": "## The flow we want to automate\n\nLet's say every Monday morning you go through this dance:\n\n1. Open the analytics dashboard\n2. Set the date range to _Last 7 Days_\n3. Open the CSV export menu\n4. Download the report\n5. Email the file to the team\n\nA typical 90-second click ritual. We'll record it once and let an agent run it every Monday.\n\n## Step 1 — record\n\nClick the Skill Recorder icon → **Start recording**. Walk through the flow exactly as you normally would. The side panel shows a live counter; nothing leaves your browser.\n\nWhen you click _Stop_, you have a raw recording: ~30 atomic events, with timestamps, selectors, and DOM context.\n\n## Step 2 — review the distillation\n\nClick **Save as Skill** and the distillation dialog opens. You'll see:\n\n- _Last 7 Days_ has been promoted to a `{dateRange}` parameter — change it and the same skill runs for `Last 30 Days`\n- The duplicate _Export_ click has been collapsed to one\n- The login redirect has been marked with `Precondition: signed in to analytics`\n\nReview the steps, edit any wording, and click **Download SKILL.md**.\n\n## Step 3 — hand off to Claude\n\nMove the file into your Claude Code skills folder:\n\n```bash\nmkdir -p ~/.claude/skills/weekly-analytics-export\nmv ~/Downloads/skill-recorder-skills/*.SKILL.md \\\n   ~/.claude/skills/weekly-analytics-export/SKILL.md\n```\n\nNext time you ask Claude `\"export this week's analytics\"`, the agent will:\n\n- find the matching skill\n- prompt you to sign in (precondition)\n- run the four steps via `browse`\n- attach the downloaded CSV to the conversation\n\nFour minutes of recording. Forever of replay.\n"
+}

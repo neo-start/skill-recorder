@@ -1,0 +1,28 @@
+{
+  "title": "Skill Recorder Blog",
+  "description": "Practical guides on recording browser flows, distilling them into SKILL.md files, and replaying them with Claude Code.",
+  "blogs": [
+    {
+      "id": "recording-browser-flows-for-ai-agents",
+      "title": "Recording Browser Flows for AI Agents",
+      "description": "Why a SKILL.md is a better hand-off to an AI agent than a Selenium script, and how Skill Recorder's distillation pipeline keeps the gap small.",
+      "published": true,
+      "recommended": true,
+      "image": "",
+      "author": "Skill Recorder Team",
+      "publishedTime": "2026-04-10T00:00:00.000Z",
+      "readingTime": 5
+    },
+    {
+      "id": "from-click-to-skill-md",
+      "title": "From Click to SKILL.md: A Complete Walkthrough",
+      "description": "A step-by-step tour through a real recording: capturing 30 actions, watching the distillation strip noise, and dropping the result into Claude Code.",
+      "published": true,
+      "recommended": true,
+      "image": "",
+      "author": "Skill Recorder Team",
+      "publishedTime": "2026-04-01T00:00:00.000Z",
+      "readingTime": 6
+    }
+  ]
+}
