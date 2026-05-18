@@ -1,0 +1,858 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>F3 · Jira-style sprint board</title>
+    <style>
+      :root {
+        --bg: #fafbfc;
+        --surface: #ffffff;
+        --text: #172b4d;
+        --muted: #6b778c;
+        --border: #dfe1e6;
+        --accent: #0052cc;
+        --accent-hover: #0747a6;
+        --topbar: #0747a6;
+        --green: #36b37e;
+        --orange: #ff8b00;
+        --red: #de350b;
+        --purple: #6554c0;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; }
+      body {
+        font: 13px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        color: var(--text);
+        background: var(--bg);
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      button { font: inherit; cursor: pointer; }
+
+      /* ── Stage host ──────────────────────────────────────────────── */
+      .stage { display: none; flex: 1; flex-direction: column; }
+      .stage.active { display: flex; }
+
+      /* ── Stage 1: login ─────────────────────────────────────────── */
+      .login-wrap {
+        flex: 1; display: flex; align-items: center; justify-content: center;
+      }
+      .login-card {
+        background: white; border: 1px solid var(--border);
+        padding: 32px 36px; border-radius: 6px;
+        width: 360px; display: flex; flex-direction: column; gap: 10px;
+        box-shadow: 0 4px 12px rgba(9, 30, 66, 0.08);
+      }
+      .login-title { font-size: 20px; margin: 0 0 8px; font-weight: 600; text-align: center; }
+      .login-card label { font-size: 12px; color: var(--muted); }
+      .login-card input {
+        padding: 7px 10px;
+        font: inherit;
+        border: 1px solid var(--border); border-radius: 3px;
+      }
+      .login-card input:focus { border-color: var(--accent); outline: none; }
+      .login-error { color: var(--red); font-size: 12px; min-height: 16px; }
+      .primary-btn {
+        background: var(--accent); color: white; border: 0;
+        padding: 7px 12px; border-radius: 3px;
+        font-weight: 500;
+      }
+      .primary-btn:hover { background: var(--accent-hover); }
+      .ghost-btn {
+        background: white; border: 1px solid var(--border);
+        color: var(--text); padding: 6px 10px; border-radius: 3px;
+      }
+
+      /* ── Stage 2: 2FA ────────────────────────────────────────────── */
+      .twofa-card { width: 340px; text-align: center; }
+      .twofa-digits {
+        display: flex; gap: 8px; justify-content: center;
+      }
+      .twofa-digits input {
+        width: 40px; height: 50px;
+        font-size: 22px; text-align: center;
+        border: 1px solid var(--border); border-radius: 4px;
+      }
+      .twofa-digits input:focus { border-color: var(--accent); }
+
+      /* ── Stage 3: board ──────────────────────────────────────────── */
+      .topbar {
+        background: var(--topbar); color: white;
+        height: 44px; display: flex; align-items: center;
+        padding: 0 16px; gap: 12px;
+      }
+      .topbar .brand { font-weight: 700; }
+      .topbar .nav-link {
+        color: rgba(255,255,255,0.85);
+        padding: 4px 8px; cursor: pointer; border-radius: 3px;
+      }
+      .topbar .nav-link:hover { background: rgba(255,255,255,0.1); }
+      .topbar-spacer { flex: 1; }
+      .topbar .user-chip {
+        position: relative;
+        background: rgba(255,255,255,0.1);
+        padding: 4px 10px; border-radius: 3px; cursor: pointer;
+        font-size: 12px;
+      }
+      .user-dropdown {
+        position: absolute; right: 0; top: 110%;
+        background: white; color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 3px; padding: 6px; width: 240px;
+        display: none; z-index: 50;
+        box-shadow: 0 6px 18px rgba(9, 30, 66, 0.15);
+      }
+      .user-dropdown.open { display: block; }
+      .user-dropdown .field { display: flex; gap: 8px; align-items: center; padding: 4px 6px; }
+      .user-dropdown .field-label { font-size: 11px; color: var(--muted); width: 64px; }
+      .user-dropdown input {
+        flex: 1; padding: 4px 6px; border: 1px solid var(--border); border-radius: 3px; font: inherit;
+      }
+
+      /* Project picker */
+      .proj-picker {
+        position: relative;
+      }
+      .proj-trigger {
+        background: white; color: var(--text);
+        padding: 4px 10px; border-radius: 3px;
+        border: 0; cursor: pointer;
+      }
+      .proj-pop {
+        position: absolute; top: 110%; left: 0;
+        background: white; border: 1px solid var(--border);
+        border-radius: 3px; min-width: 180px;
+        z-index: 50;
+        display: none;
+        box-shadow: 0 6px 18px rgba(9, 30, 66, 0.15);
+      }
+      .proj-pop.open { display: block; }
+      .proj-opt {
+        padding: 6px 10px; cursor: pointer; font-size: 13px;
+      }
+      .proj-opt:hover { background: var(--bg); }
+      .proj-opt[aria-selected="true"] { background: rgba(0, 82, 204, 0.08); }
+
+      /* Board area */
+      .board-head {
+        padding: 14px 18px; background: white;
+        border-bottom: 1px solid var(--border);
+        display: flex; align-items: center; gap: 12px;
+      }
+      .board-title { font-size: 18px; font-weight: 600; margin: 0; }
+      .board-actions { margin-left: auto; display: flex; gap: 6px; }
+      .board {
+        flex: 1; padding: 14px;
+        display: flex; gap: 12px; overflow-x: auto;
+      }
+      .col {
+        flex: 0 0 280px;
+        background: var(--bg); border: 1px solid var(--border);
+        border-radius: 6px;
+        display: flex; flex-direction: column;
+        min-height: 300px;
+      }
+      .col-head {
+        padding: 8px 12px;
+        font-size: 11px; color: var(--muted);
+        text-transform: uppercase; font-weight: 700;
+        letter-spacing: 0.04em;
+        border-bottom: 1px solid var(--border);
+      }
+      .col-body { padding: 8px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+      .col.dragover .col-body { background: rgba(0, 82, 204, 0.04); }
+      .card {
+        background: white; border: 1px solid var(--border);
+        border-radius: 3px; padding: 8px 10px;
+        cursor: grab; user-select: none;
+        display: flex; flex-direction: column; gap: 4px;
+        font-size: 13px;
+      }
+      .card:active { cursor: grabbing; }
+      .card.dragging { opacity: 0.5; }
+      .card .card-id { font-size: 11px; color: var(--muted); font-family: monospace; }
+      .card .card-title { font-weight: 500; }
+      .card .card-meta {
+        display: flex; align-items: center; gap: 6px;
+        font-size: 11px; color: var(--muted);
+        margin-top: 2px;
+      }
+      .badge {
+        font-size: 10px; padding: 2px 6px; border-radius: 2px;
+        background: rgba(101, 84, 192, 0.15); color: var(--purple);
+        font-weight: 600; letter-spacing: 0.04em;
+      }
+      .badge.in-progress { background: rgba(255, 139, 0, 0.18); color: var(--orange); }
+      .badge.done       { background: rgba(54, 179, 126, 0.18); color: var(--green); }
+
+      /* Side flyout */
+      .flyout {
+        position: fixed; right: 0; top: 0; height: 100vh;
+        width: 480px;
+        background: white; border-left: 1px solid var(--border);
+        transform: translateX(100%);
+        transition: transform 0.18s ease-out;
+        z-index: 60;
+        display: flex; flex-direction: column;
+      }
+      .flyout.open { transform: translateX(0); }
+      .fly-head {
+        display: flex; align-items: center; gap: 10px;
+        padding: 12px 14px; border-bottom: 1px solid var(--border);
+      }
+      .fly-id { font-family: monospace; color: var(--muted); font-size: 12px; }
+      .fly-close { margin-left: auto; background: transparent; border: 0; color: var(--muted); font-size: 18px; }
+      .fly-body { flex: 1; overflow: auto; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+      .fly-title {
+        font-size: 18px; font-weight: 600;
+        outline: none; padding: 4px;
+      }
+      .field-grid {
+        display: grid; grid-template-columns: 120px 1fr;
+        gap: 6px 12px; padding: 4px 0;
+        align-items: center;
+      }
+      .field-label { color: var(--muted); font-size: 12px; }
+      .field-value { font-size: 13px; }
+      .cb-trigger {
+        background: var(--bg); border: 1px solid transparent;
+        padding: 4px 8px; border-radius: 3px;
+        cursor: pointer; font-size: 12px;
+      }
+      .cb-trigger:hover { border-color: var(--border); background: white; }
+
+      .toolbar { display: flex; gap: 4px; margin-bottom: 4px; }
+      .toolbar-btn {
+        background: white; border: 1px solid var(--border);
+        padding: 2px 6px; border-radius: 2px; font: inherit; font-size: 12px;
+      }
+      .toolbar-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+      .composer {
+        min-height: 80px;
+        border: 1px solid var(--border); border-radius: 3px;
+        padding: 8px;
+        outline: none; font: inherit;
+      }
+      .composer:focus { border-color: var(--accent); }
+
+      .attach-zone {
+        border: 2px dashed var(--border);
+        border-radius: 3px;
+        padding: 24px 14px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 12px;
+        cursor: pointer;
+      }
+      .attach-zone.dragover { background: rgba(0, 82, 204, 0.05); border-color: var(--accent); }
+      .attach-list {
+        display: flex; flex-direction: column; gap: 4px;
+        font-size: 12px;
+      }
+      .attach-item {
+        background: var(--bg); border: 1px solid var(--border);
+        padding: 4px 8px; border-radius: 3px;
+        display: flex; gap: 8px; align-items: center;
+      }
+
+      /* Date picker flyout */
+      .date-pop {
+        position: absolute; z-index: 80;
+        background: white; border: 1px solid var(--border);
+        border-radius: 3px; padding: 8px;
+        box-shadow: 0 6px 18px rgba(9, 30, 66, 0.15);
+        min-width: 260px;
+      }
+      .date-pop[hidden] { display: none; }
+      .date-grid {
+        display: grid; grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+        font-size: 12px;
+      }
+      .date-cell {
+        text-align: center; padding: 4px 0;
+        cursor: pointer; border-radius: 2px;
+      }
+      .date-cell:hover { background: rgba(0, 82, 204, 0.1); }
+      .date-cell.selected { background: var(--accent); color: white; }
+      .date-head {
+        text-align: center; color: var(--muted);
+        font-size: 11px; padding: 4px 0;
+      }
+      .date-month { font-weight: 600; padding: 4px 0; text-align: center; }
+
+      /* Combobox popover */
+      .cb-pop {
+        position: absolute; z-index: 80;
+        background: white; border: 1px solid var(--border);
+        border-radius: 3px; min-width: 180px;
+        padding: 4px;
+        box-shadow: 0 6px 18px rgba(9, 30, 66, 0.15);
+      }
+      .cb-pop[hidden] { display: none; }
+      .cb-opt {
+        padding: 5px 8px; border-radius: 2px;
+        cursor: pointer; font-size: 13px;
+      }
+      .cb-opt[aria-selected="true"] { background: rgba(0, 82, 204, 0.1); }
+
+      /* Wiki iframe */
+      .wiki-frame {
+        width: 100%; height: 280px;
+        border: 1px solid var(--border); border-radius: 3px;
+      }
+
+      .toast {
+        position: fixed; bottom: 20px; right: 20px;
+        background: var(--surface); color: var(--text);
+        border: 1px solid var(--border);
+        padding: 8px 12px; border-radius: 3px;
+        font-size: 12px; z-index: 200;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .toast[hidden] { display: none; }
+    </style>
+  </head>
+  <body>
+    <!-- ── Stage 1: login ──────────────────────────────────────────── -->
+    <div class="stage active" id="stage-login">
+      <div class="login-wrap">
+        <form class="login-card" id="loginForm">
+          <div class="login-title">Sign in to Atlassian</div>
+          <label>Email <input type="email" name="email" data-testid="login-email" required value="dev@example.com" /></label>
+          <label>Password <input type="password" name="password" data-testid="login-password" required /></label>
+          <div class="login-error" id="loginError"></div>
+          <button class="primary-btn" type="submit" data-testid="login-submit">Sign in</button>
+          <a href="#" style="font-size: 12px; color: var(--accent); text-align: center;">Can't log in?</a>
+        </form>
+      </div>
+    </div>
+
+    <!-- ── Stage 2: 2FA ────────────────────────────────────────────── -->
+    <div class="stage" id="stage-2fa">
+      <div class="login-wrap">
+        <div class="login-card twofa-card">
+          <div class="login-title">Two-factor authentication</div>
+          <p style="color: var(--muted); font-size: 13px;">Enter the 6-digit code from your authenticator app.</p>
+          <div class="twofa-digits">
+            <input data-testid="2fa-1" maxlength="1" inputmode="numeric" />
+            <input data-testid="2fa-2" maxlength="1" inputmode="numeric" />
+            <input data-testid="2fa-3" maxlength="1" inputmode="numeric" />
+            <input data-testid="2fa-4" maxlength="1" inputmode="numeric" />
+            <input data-testid="2fa-5" maxlength="1" inputmode="numeric" />
+            <input data-testid="2fa-6" maxlength="1" inputmode="numeric" />
+          </div>
+          <button class="primary-btn" id="twofaVerify" data-testid="2fa-verify">Verify</button>
+          <a href="#" style="font-size: 12px; color: var(--accent);">Resend code</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Stage 3: board ──────────────────────────────────────────── -->
+    <div class="stage" id="stage-board">
+      <div class="topbar">
+        <span class="brand">Atlassian</span>
+        <div class="proj-picker">
+          <button class="proj-trigger" id="projTrigger" data-testid="proj-trigger">▾ BROW · Browse-Service</button>
+          <div class="proj-pop" id="projPop" role="listbox"></div>
+        </div>
+        <span class="nav-link" data-route="board" data-i18n-key="nav.board">Board</span>
+        <span class="nav-link" data-route="backlog" data-i18n-key="nav.backlog">Backlog</span>
+        <span class="nav-link" data-route="reports" data-i18n-key="nav.reports">Reports</span>
+        <div class="topbar-spacer"></div>
+        <div class="user-chip" id="userChip">
+          DC · dev@example.com
+          <div class="user-dropdown" id="userDropdown">
+            <div class="field"><div class="field-label">Phone</div><input type="tel" value="+1 415 555 0100" data-testid="profile-phone" /></div>
+            <div class="field"><div class="field-label">Email</div><input value="dev@example.com" data-testid="profile-email" /></div>
+            <button class="ghost-btn" style="width: 100%; margin-top: 8px;" data-testid="signout">Sign out</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="board-head">
+        <h2 class="board-title">Sprint 12 board</h2>
+        <div class="board-actions">
+          <button class="ghost-btn" data-testid="print-preview">🖨 Print preview</button>
+          <button class="primary-btn" data-testid="board-create-issue">+ Create issue</button>
+        </div>
+      </div>
+
+      <div class="board" id="board"></div>
+    </div>
+
+    <!-- ── Side flyout ─────────────────────────────────────────────── -->
+    <aside class="flyout" id="flyout">
+      <div class="fly-head">
+        <span class="fly-id" id="flyId">BROW-0</span>
+        <button class="fly-close" id="flyClose" data-testid="fly-close" aria-label="Close">✕</button>
+      </div>
+      <div class="fly-body">
+        <div class="fly-title" id="flyTitle" contenteditable="true" data-testid="fly-title"></div>
+
+        <div class="field-grid">
+          <div class="field-label">Status</div>
+          <div><button class="cb-trigger" data-cb="status" data-testid="fly-status">○ To Do</button></div>
+          <div class="field-label">Assignee</div>
+          <div><button class="cb-trigger" data-cb="assignee" data-testid="fly-assignee">— Unassigned</button></div>
+          <div class="field-label">Due date</div>
+          <div style="position: relative;"><button class="cb-trigger" id="dueTrigger" data-testid="fly-due">— Pick a date</button></div>
+          <div class="field-label">Watchers</div>
+          <div><button class="cb-trigger" data-cb="watchers" data-testid="fly-watchers">+ Add</button></div>
+        </div>
+
+        <div>
+          <div style="font-weight: 600; margin-bottom: 6px;">Comments</div>
+          <div id="flyComments" style="display: flex; flex-direction: column; gap: 6px;"></div>
+          <div class="toolbar">
+            <button class="toolbar-btn" data-cmd="bold" data-testid="cmd-bold"><b>B</b></button>
+            <button class="toolbar-btn" data-cmd="italic" data-testid="cmd-italic"><i>I</i></button>
+            <button class="toolbar-btn" data-cmd="createLink" data-testid="cmd-link">🔗</button>
+          </div>
+          <div class="composer" contenteditable="true" id="composer" data-testid="composer" data-placeholder="Write a comment…"></div>
+        </div>
+
+        <div>
+          <div style="font-weight: 600; margin: 12px 0 6px;">Attachments</div>
+          <div class="attach-list" id="attachList"></div>
+          <div class="attach-zone" id="attachZone" data-testid="attach-zone">
+            <input type="file" id="attachInput" data-testid="attach-input" hidden />
+            Drag a file here or <span style="color: var(--accent); text-decoration: underline;">click to browse</span>
+          </div>
+        </div>
+
+        <div>
+          <div style="font-weight: 600; margin: 12px 0 6px;">Linked wiki</div>
+          <iframe class="wiki-frame" src="./F3-jira-wiki.html" data-testid="wiki-frame" title="Embedded wiki"></iframe>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Shared popovers -->
+    <div class="cb-pop" id="cbPop" role="listbox" hidden></div>
+    <div class="date-pop" id="datePop" hidden></div>
+    <div class="toast" id="toast" hidden></div>
+
+    <script>
+      // ─── Stage switcher ──────────────────────────────────────────
+      function showStage(id) {
+        document.querySelectorAll('.stage').forEach((s) => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+      }
+
+      // ─── Login (C2 password mask) ────────────────────────────────
+      document.getElementById('loginForm').addEventListener('submit', (ev) => {
+        ev.preventDefault();
+        const pw = ev.target.password.value;
+        const errEl = document.getElementById('loginError');
+        if (!pw || pw.length < 4) { errEl.textContent = 'Enter a password of 4+ characters.'; return; }
+        errEl.textContent = '';
+        // B3 lazy-mount of 2FA
+        setTimeout(() => {
+          showStage('stage-2fa');
+          setTimeout(() => document.querySelector('[data-testid="2fa-1"]').focus(), 50);
+        }, 200);
+      });
+
+      // ─── 2FA digits auto-advance ─────────────────────────────────
+      const twofaInputs = document.querySelectorAll('.twofa-digits input');
+      twofaInputs.forEach((inp, idx) => {
+        inp.addEventListener('input', () => {
+          if (inp.value && idx < twofaInputs.length - 1) twofaInputs[idx + 1].focus();
+        });
+      });
+      document.getElementById('twofaVerify').addEventListener('click', () => {
+        const code = Array.from(twofaInputs).map((i) => i.value).join('');
+        if (code.length !== 6) return showToast('Enter all 6 digits');
+        setTimeout(() => {
+          showStage('stage-board');
+          renderBoard();
+          history.pushState({ stage: 'board' }, '', '/browse/BROW');
+        }, 250);
+      });
+
+      // ─── A2: dyn class hash ──────────────────────────────────────
+      const rand = () => Math.random().toString(36).slice(2, 8);
+      function applyDyn(el) { el.classList.add(`atl-${rand()}`); }
+
+      // ─── Issue store ─────────────────────────────────────────────
+      const STATUS = ['todo', 'progress', 'review', 'done'];
+      const STATUS_LABEL = { todo: 'To Do', progress: 'In Progress', review: 'Code Review', done: 'Done' };
+      const PEOPLE = ['Alex Chen', 'Barbara Liu', 'Carlos Reyes', 'Dana Park', 'Eli Mendez'];
+      const ISSUES = [
+        { id: 'BROW-101', title: 'Add retry to webhook delivery',         status: 'todo',     assignee: 'Alex Chen' },
+        { id: 'BROW-102', title: 'Document new env vars',                 status: 'todo',     assignee: 'Barbara Liu' },
+        { id: 'BROW-103', title: 'Document new env vars',                 status: 'todo',     assignee: 'Carlos Reyes' },
+        { id: 'BROW-104', title: 'Wire up Sentry for replay-runner',      status: 'progress', assignee: 'Dana Park' },
+        { id: 'BROW-105', title: 'Tune cache TTL',                        status: 'progress', assignee: 'Eli Mendez' },
+        { id: 'BROW-106', title: 'Audit dependency licenses',             status: 'review',   assignee: 'Alex Chen' },
+        { id: 'BROW-107', title: 'Rotate IDP secret',                     status: 'done',     assignee: 'Barbara Liu' },
+        { id: 'BROW-108', title: 'Move CI from Jenkins to GitHub Actions',status: 'done',     assignee: 'Carlos Reyes' },
+      ];
+      const PROJECTS = [
+        { id: 'BROW', name: 'Browse-Service' },
+        { id: 'AUTH', name: 'Auth platform' },
+        { id: 'OPS',  name: 'Operations' },
+      ];
+      let currentProject = 'BROW';
+      let openIssueId = null;
+      const COMMENTS = {};
+      const ATTACHMENTS = {};
+      const DUE_DATES = {};
+
+      // ─── Project picker (D6) ─────────────────────────────────────
+      const projTrigger = document.getElementById('projTrigger');
+      const projPop = document.getElementById('projPop');
+      projTrigger.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        projPop.innerHTML = '';
+        PROJECTS.forEach((p, idx) => {
+          const opt = document.createElement('div');
+          opt.className = 'proj-opt';
+          opt.setAttribute('role', 'option');
+          opt.id = `proj-opt-${idx}`;
+          if (p.id === currentProject) opt.setAttribute('aria-selected', 'true');
+          opt.textContent = `${p.id} · ${p.name}`;
+          opt.addEventListener('click', () => {
+            currentProject = p.id;
+            projTrigger.textContent = `▾ ${p.id} · ${p.name}`;
+            projPop.classList.remove('open');
+            showToast(`Switched → ${p.name}`);
+          });
+          projPop.appendChild(opt);
+        });
+        projPop.classList.toggle('open');
+      });
+      document.addEventListener('click', (ev) => {
+        if (!ev.target.closest('.proj-picker')) projPop.classList.remove('open');
+      });
+
+      // ─── Board (D1 drag/drop, A2 dyn class, A3 identical) ────────
+      const boardEl = document.getElementById('board');
+      function renderBoard() {
+        boardEl.innerHTML = '';
+        for (const s of STATUS) {
+          const col = document.createElement('div');
+          col.className = 'col';
+          col.dataset.status = s;
+          col.dataset.testid = `col-${s}`;
+          col.innerHTML = `<div class="col-head">${STATUS_LABEL[s]}</div><div class="col-body"></div>`;
+          const body = col.querySelector('.col-body');
+          col.addEventListener('dragover', (ev) => { ev.preventDefault(); col.classList.add('dragover'); });
+          col.addEventListener('dragleave', () => col.classList.remove('dragover'));
+          col.addEventListener('drop', (ev) => {
+            ev.preventDefault();
+            col.classList.remove('dragover');
+            const id = ev.dataTransfer.getData('text/plain');
+            const issue = ISSUES.find((i) => i.id === id);
+            if (issue) {
+              issue.status = s;
+              renderBoard();
+              showToast(`${id} → ${STATUS_LABEL[s]}`);
+            }
+          });
+          for (const issue of ISSUES.filter((i) => i.status === s)) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            applyDyn(card);
+            card.draggable = true;
+            card.dataset.testid = `card-${issue.id}`;
+            card.dataset.i18nKey = `status.${s}`;
+            const badgeClass = s === 'done' ? 'done' : s === 'progress' ? 'in-progress' : '';
+            card.innerHTML = `
+              <div class="card-id">${issue.id}</div>
+              <div class="card-title">${escape(issue.title)}</div>
+              <div class="card-meta">
+                <span class="badge ${badgeClass}" data-i18n-key="status.${s}">${STATUS_LABEL[s]}</span>
+                <span style="margin-left: auto;">${escape(issue.assignee)}</span>
+              </div>
+            `;
+            card.addEventListener('dragstart', (ev) => {
+              card.classList.add('dragging');
+              ev.dataTransfer.setData('text/plain', issue.id);
+              ev.dataTransfer.effectAllowed = 'move';
+            });
+            card.addEventListener('dragend', () => card.classList.remove('dragging'));
+            card.addEventListener('click', () => openIssue(issue.id));
+            body.appendChild(card);
+          }
+          boardEl.appendChild(col);
+        }
+      }
+
+      // ─── Flyout open / close ─────────────────────────────────────
+      const flyout = document.getElementById('flyout');
+      function openIssue(id) {
+        const issue = ISSUES.find((i) => i.id === id);
+        if (!issue) return;
+        openIssueId = id;
+        // B3 lazy-mount.
+        setTimeout(() => {
+          flyout.classList.add('open');
+          document.getElementById('flyId').textContent = id;
+          document.getElementById('flyTitle').textContent = issue.title;
+          document.querySelector('[data-cb="status"]').textContent = `● ${STATUS_LABEL[issue.status]}`;
+          document.querySelector('[data-cb="assignee"]').textContent = issue.assignee;
+          document.getElementById('dueTrigger').textContent = DUE_DATES[id] || '— Pick a date';
+          renderComments(id);
+          renderAttachments(id);
+          history.pushState({ issueId: id }, '', `/browse/${id}`);
+        }, 200);
+      }
+      function closeFly() {
+        flyout.classList.remove('open');
+        openIssueId = null;
+        history.pushState({}, '', '/browse/BROW');
+      }
+      document.getElementById('flyClose').addEventListener('click', closeFly);
+
+      function renderComments(id) {
+        const list = document.getElementById('flyComments');
+        list.innerHTML = '';
+        for (const c of COMMENTS[id] || []) {
+          const el = document.createElement('div');
+          el.style.background = 'var(--bg)';
+          el.style.padding = '6px 8px';
+          el.style.borderRadius = '3px';
+          el.style.fontSize = '12px';
+          el.innerHTML = `<div style="color: var(--muted); font-size: 10px;">${escape(c.author)}</div><div>${c.body}</div>`;
+          list.appendChild(el);
+        }
+      }
+      function renderAttachments(id) {
+        const list = document.getElementById('attachList');
+        list.innerHTML = '';
+        for (const a of ATTACHMENTS[id] || []) {
+          const el = document.createElement('div');
+          el.className = 'attach-item';
+          el.innerHTML = `📎 ${escape(a.name)} <span style="margin-left:auto;color:var(--muted)">${a.size}b</span>`;
+          list.appendChild(el);
+        }
+      }
+
+      // ─── Toolbar buttons (D4 rich text) ──────────────────────────
+      document.querySelectorAll('.toolbar-btn').forEach((btn) => {
+        btn.addEventListener('mousedown', (ev) => ev.preventDefault());
+        btn.addEventListener('click', () => {
+          if (btn.dataset.cmd === 'createLink') {
+            const url = prompt('URL:');
+            if (url) document.execCommand('createLink', false, url);
+          } else {
+            document.execCommand(btn.dataset.cmd, false, null);
+          }
+        });
+      });
+
+      // Composer: paste a URL → auto-linkify (D5)
+      const composer = document.getElementById('composer');
+      composer.addEventListener('paste', (ev) => {
+        const text = ev.clipboardData?.getData('text/plain') || '';
+        if (/^https?:\/\//.test(text)) {
+          ev.preventDefault();
+          const a = document.createElement('a');
+          a.href = text;
+          a.textContent = text;
+          a.style.color = 'var(--accent)';
+          const r = window.getSelection()?.getRangeAt(0);
+          if (r) {
+            r.deleteContents();
+            r.insertNode(a);
+            r.collapse(false);
+          }
+        }
+      });
+      composer.addEventListener('keydown', (ev) => {
+        if ((ev.metaKey || ev.ctrlKey) && ev.key === 'Enter' && openIssueId) {
+          ev.preventDefault();
+          const body = composer.innerHTML.trim();
+          if (!body) return;
+          (COMMENTS[openIssueId] = COMMENTS[openIssueId] || []).push({ author: 'You', body });
+          composer.innerHTML = '';
+          renderComments(openIssueId);
+          showToast('Comment posted');
+        }
+      });
+
+      // ─── Attachments (D1 + D2) ───────────────────────────────────
+      const attachZone = document.getElementById('attachZone');
+      const attachInput = document.getElementById('attachInput');
+      attachZone.addEventListener('click', () => attachInput.click());
+      attachZone.addEventListener('dragover', (ev) => { ev.preventDefault(); attachZone.classList.add('dragover'); });
+      attachZone.addEventListener('dragleave', () => attachZone.classList.remove('dragover'));
+      attachZone.addEventListener('drop', (ev) => {
+        ev.preventDefault();
+        attachZone.classList.remove('dragover');
+        if (!openIssueId) return;
+        for (const file of ev.dataTransfer.files || []) {
+          (ATTACHMENTS[openIssueId] = ATTACHMENTS[openIssueId] || []).push({ name: file.name, size: file.size });
+        }
+        renderAttachments(openIssueId);
+      });
+      attachInput.addEventListener('change', (ev) => {
+        if (!openIssueId) return;
+        for (const file of ev.target.files || []) {
+          (ATTACHMENTS[openIssueId] = ATTACHMENTS[openIssueId] || []).push({ name: file.name, size: file.size });
+        }
+        renderAttachments(openIssueId);
+      });
+
+      // ─── Combobox popover (status/assignee/watchers) ─────────────
+      const cbPop = document.getElementById('cbPop');
+      let cbActive = 0;
+      flyout.addEventListener('click', (ev) => {
+        const trigger = ev.target.closest('.cb-trigger');
+        if (!trigger || !openIssueId) return;
+        const which = trigger.dataset.cb;
+        if (!which) return;
+        const items =
+          which === 'status'   ? STATUS.map((s) => ({ id: s, label: STATUS_LABEL[s] })) :
+          which === 'assignee' ? PEOPLE.map((p) => ({ id: p, label: p })) :
+          PEOPLE.map((p) => ({ id: p, label: p }));
+        cbActive = 0;
+        cbPop.innerHTML = '';
+        items.forEach((it, i) => {
+          const opt = document.createElement('div');
+          opt.className = 'cb-opt';
+          opt.id = `cb-opt-${i}`;
+          opt.setAttribute('role', 'option');
+          if (i === cbActive) opt.setAttribute('aria-selected', 'true');
+          opt.textContent = it.label;
+          opt.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            const issue = ISSUES.find((x) => x.id === openIssueId);
+            if (!issue) return;
+            if (which === 'status') {
+              issue.status = it.id;
+              document.querySelector('[data-cb="status"]').textContent = `● ${it.label}`;
+              renderBoard();
+            } else if (which === 'assignee') {
+              issue.assignee = it.label;
+              document.querySelector('[data-cb="assignee"]').textContent = it.label;
+              renderBoard();
+            } else {
+              showToast(`Watching: ${it.label}`);
+            }
+            cbPop.hidden = true;
+          });
+          cbPop.appendChild(opt);
+        });
+        const r = trigger.getBoundingClientRect();
+        cbPop.style.top = `${window.scrollY + r.bottom + 4}px`;
+        cbPop.style.left = `${r.left}px`;
+        cbPop.hidden = false;
+        trigger.setAttribute('aria-controls', 'cbPop');
+        trigger.setAttribute('aria-activedescendant', 'cb-opt-0');
+      });
+      document.addEventListener('click', (ev) => {
+        if (!cbPop.contains(ev.target) && !ev.target.closest('.cb-trigger')) cbPop.hidden = true;
+      });
+
+      // ─── Date picker (D6 datepicker-flavored) ────────────────────
+      const datePop = document.getElementById('datePop');
+      document.getElementById('dueTrigger').addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        renderDatePicker(new Date());
+        const r = ev.currentTarget.getBoundingClientRect();
+        datePop.style.top = `${window.scrollY + r.bottom + 4}px`;
+        datePop.style.left = `${r.left}px`;
+        datePop.hidden = false;
+      });
+      document.addEventListener('click', (ev) => {
+        if (!datePop.contains(ev.target) && !ev.target.closest('#dueTrigger')) datePop.hidden = true;
+      });
+      function renderDatePicker(month) {
+        datePop.innerHTML = '';
+        const monthLabel = month.toLocaleString('default', { month: 'long', year: 'numeric' });
+        datePop.innerHTML = `<div class="date-month">${monthLabel}</div>`;
+        const grid = document.createElement('div');
+        grid.className = 'date-grid';
+        ['M', 'T', 'W', 'T', 'F', 'S', 'S'].forEach((d) => {
+          const h = document.createElement('div');
+          h.className = 'date-head';
+          h.textContent = d;
+          grid.appendChild(h);
+        });
+        const first = new Date(month.getFullYear(), month.getMonth(), 1);
+        const start = (first.getDay() + 6) % 7; // start Mon
+        for (let i = 0; i < start; i++) {
+          const blank = document.createElement('div');
+          grid.appendChild(blank);
+        }
+        const lastDay = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
+        for (let d = 1; d <= lastDay; d++) {
+          const cell = document.createElement('div');
+          cell.className = 'date-cell';
+          cell.textContent = String(d);
+          cell.setAttribute('role', 'gridcell');
+          cell.setAttribute('aria-label', `${monthLabel.split(' ')[0]} ${d}`);
+          cell.addEventListener('click', () => {
+            const iso = `${month.getFullYear()}-${String(month.getMonth()+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+            DUE_DATES[openIssueId] = iso;
+            document.getElementById('dueTrigger').textContent = iso;
+            datePop.hidden = true;
+            showToast(`Due ${iso}`);
+          });
+          grid.appendChild(cell);
+        }
+        datePop.appendChild(grid);
+      }
+
+      // ─── User dropdown (with sensitive phone field) ──────────────
+      document.getElementById('userChip').addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        document.getElementById('userDropdown').classList.toggle('open');
+      });
+      document.addEventListener('click', (ev) => {
+        if (!ev.target.closest('#userChip')) document.getElementById('userDropdown').classList.remove('open');
+      });
+
+      // ─── Print preview (C4 multi-tab) ────────────────────────────
+      document.querySelector('[data-testid="print-preview"]').addEventListener('click', () => {
+        const win = window.open('about:blank', '_blank');
+        if (!win) return;
+        win.document.title = `Sprint 12 — print preview`;
+        win.document.body.innerHTML = `
+          <h1 style="font-family: sans-serif;">Sprint 12 — Browse-Service</h1>
+          <table style="width: 100%; border-collapse: collapse; font-family: sans-serif; font-size: 13px;">
+            <thead><tr><th style="text-align:left;padding:6px;border-bottom:1px solid #ddd;">ID</th><th style="text-align:left;padding:6px;border-bottom:1px solid #ddd;">Title</th><th style="text-align:left;padding:6px;border-bottom:1px solid #ddd;">Status</th><th style="text-align:left;padding:6px;border-bottom:1px solid #ddd;">Assignee</th></tr></thead>
+            <tbody>
+              ${ISSUES.map((i) => `<tr><td style="padding:6px;border-bottom:1px solid #f0f0f0;">${i.id}</td><td style="padding:6px;border-bottom:1px solid #f0f0f0;">${escape(i.title)}</td><td style="padding:6px;border-bottom:1px solid #f0f0f0;">${STATUS_LABEL[i.status]}</td><td style="padding:6px;border-bottom:1px solid #f0f0f0;">${i.assignee}</td></tr>`).join('')}
+            </tbody>
+          </table>
+        `;
+      });
+
+      // ─── Create issue (board action) ─────────────────────────────
+      document.querySelector('[data-testid="board-create-issue"]').addEventListener('click', () => {
+        const title = prompt('Issue title:');
+        if (!title) return;
+        const id = `BROW-${109 + ISSUES.length}`;
+        ISSUES.push({ id, title, status: 'todo', assignee: PEOPLE[0] });
+        renderBoard();
+        showToast(`Created ${id}`);
+      });
+
+      // ─── Top nav ─────────────────────────────────────────────────
+      document.querySelectorAll('.topbar .nav-link').forEach((link) => {
+        link.addEventListener('click', () => {
+          history.pushState({ route: link.dataset.route }, '', `/${link.dataset.route}`);
+          showToast(`Nav → ${link.textContent.trim()}`);
+        });
+      });
+
+      // ─── Util ────────────────────────────────────────────────────
+      const toastEl = document.getElementById('toast');
+      let toastTimer = null;
+      function showToast(msg) {
+        toastEl.hidden = false;
+        toastEl.textContent = msg;
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => { toastEl.hidden = true; }, 1600);
+      }
+      function escape(s) {
+        return (s || '').replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+      }
+    </script>
+  </body>
+</html>

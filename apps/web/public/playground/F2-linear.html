@@ -1,0 +1,837 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>F2 · Linear-style issue tracker</title>
+    <style>
+      :root {
+        --bg: #0e0e10;
+        --surface: #18181b;
+        --surface-hi: #25252a;
+        --text: #f1f1f3;
+        --muted: #8a8a96;
+        --border: #28282d;
+        --accent: #7a5cf0;
+        --accent-2: #5b62f0;
+        --green: #2ecc71;
+        --orange: #f39c12;
+        --red: #e74c3c;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; }
+      body {
+        font: 13px/1.5 -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+        color: var(--text);
+        background: var(--bg);
+        display: flex;
+        min-height: 100vh;
+      }
+      button { font: inherit; color: inherit; }
+
+      /* ── Sidebar ──────────────────────────────────────────────────── */
+      .sidebar {
+        width: 220px; flex-shrink: 0;
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        padding: 10px 6px;
+        display: flex; flex-direction: column; gap: 2px;
+        font-size: 13px;
+      }
+      .workspace {
+        display: flex; align-items: center; gap: 8px;
+        padding: 6px 8px; border-radius: 5px;
+        cursor: pointer;
+      }
+      .workspace:hover { background: var(--surface-hi); }
+      .ws-logo {
+        width: 22px; height: 22px; border-radius: 5px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 12px;
+      }
+      .ws-name { font-weight: 600; }
+      .nav-section {
+        margin-top: 12px;
+        display: flex; flex-direction: column; gap: 1px;
+      }
+      .nav-title {
+        font-size: 11px; color: var(--muted); padding: 6px 10px 4px;
+        text-transform: uppercase; letter-spacing: 0.05em;
+      }
+      .nav-link {
+        display: flex; align-items: center; gap: 8px;
+        padding: 6px 10px; border-radius: 5px;
+        cursor: pointer;
+        color: var(--text);
+        user-select: none;
+      }
+      .nav-link:hover { background: var(--surface-hi); }
+      .nav-link.active { background: rgba(122, 92, 240, 0.18); color: white; }
+      .nav-link .ic { width: 16px; text-align: center; font-size: 13px; }
+
+      /* ── Main ─────────────────────────────────────────────────────── */
+      .main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+      .topbar {
+        height: 44px; border-bottom: 1px solid var(--border);
+        background: var(--surface);
+        display: flex; align-items: center; gap: 10px;
+        padding: 0 14px;
+      }
+      .tab-group { display: flex; gap: 2px; }
+      .tab-btn {
+        background: transparent; border: 0;
+        padding: 6px 10px; border-radius: 5px;
+        cursor: pointer; color: var(--muted);
+        font-weight: 500;
+      }
+      .tab-btn.active { color: var(--text); background: var(--surface-hi); }
+      .topbar-spacer { flex: 1; }
+      .topbar-btn {
+        background: var(--accent); border: 0;
+        padding: 6px 10px; border-radius: 5px;
+        color: white; font-weight: 600; cursor: pointer;
+        display: inline-flex; gap: 6px; align-items: center;
+      }
+      .topbar-btn.ghost { background: transparent; color: var(--muted); }
+      .topbar-btn.ghost:hover { background: var(--surface-hi); color: var(--text); }
+
+      .filter-bar {
+        display: flex; gap: 8px; padding: 10px 14px;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface);
+      }
+      .filter-input {
+        background: var(--bg); border: 1px solid var(--border);
+        color: var(--text); padding: 5px 10px; border-radius: 5px;
+        font: inherit; min-width: 240px;
+      }
+      .filter-chip {
+        background: var(--surface-hi); border: 1px solid var(--border);
+        padding: 4px 8px; border-radius: 12px;
+        font-size: 12px; color: var(--muted);
+        cursor: pointer;
+      }
+
+      /* ── List view ───────────────────────────────────────────────── */
+      .issue-list { flex: 1; overflow: auto; }
+      .issue-row {
+        display: grid; grid-template-columns: 80px 100px 60px 1fr 120px 110px;
+        align-items: center; gap: 12px;
+        padding: 8px 14px;
+        border-bottom: 1px solid var(--border);
+        cursor: pointer;
+        font-size: 13px;
+      }
+      .issue-row:hover { background: var(--surface); }
+      .issue-row .id { color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+      .issue-row .status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+      .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+      .status-dot.backlog  { background: transparent; border: 1.5px solid var(--muted); }
+      .status-dot.todo     { background: transparent; border: 1.5px solid #c0c0cd; }
+      .status-dot.progress { background: conic-gradient(var(--orange) 0deg 220deg, transparent 220deg 360deg); border: 1.5px solid var(--orange); }
+      .status-dot.done     { background: var(--green); }
+      .status-dot.cancelled{ background: var(--muted); }
+      .priority {
+        font-size: 11px; color: var(--muted);
+        display: inline-flex; align-items: center; gap: 4px;
+      }
+      .priority::before { content: '═'; }
+      .issue-row .title { font-weight: 500; }
+      .issue-row .assignee { color: var(--muted); font-size: 12px; }
+      .issue-row .updated { color: var(--muted); font-size: 12px; }
+      .issue-row .actions { display: flex; gap: 4px; opacity: 0; }
+      .issue-row:hover .actions { opacity: 1; }
+      .row-btn {
+        background: var(--surface-hi); border: 1px solid var(--border);
+        color: var(--muted); padding: 2px 8px; border-radius: 4px;
+        cursor: pointer; font-size: 11px;
+      }
+
+      /* ── Board view ──────────────────────────────────────────────── */
+      .board {
+        flex: 1; display: none;
+        gap: 12px; padding: 14px;
+        overflow-x: auto;
+      }
+      .board.visible { display: flex; }
+      .col {
+        flex: 0 0 280px; display: flex; flex-direction: column;
+        gap: 8px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 10px;
+        min-height: 200px;
+      }
+      .col.dragover { border-color: var(--accent); background: var(--surface-hi); }
+      .col-title { font-size: 12px; color: var(--muted); padding: 2px 0 6px; font-weight: 600; }
+      .card {
+        background: var(--bg); border: 1px solid var(--border);
+        border-radius: 6px; padding: 10px;
+        cursor: grab; user-select: none;
+        display: flex; flex-direction: column; gap: 6px;
+        font-size: 13px;
+      }
+      .card:active { cursor: grabbing; }
+      .card.dragging { opacity: 0.4; }
+      .card .card-id { color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+      .card .card-title { font-weight: 500; }
+
+      /* ── Side panel (issue detail) ───────────────────────────────── */
+      .side-panel {
+        position: fixed; right: 0; top: 0; height: 100vh;
+        width: 440px; background: var(--surface);
+        border-left: 1px solid var(--border);
+        transform: translateX(100%);
+        transition: transform 0.18s ease-out;
+        display: flex; flex-direction: column;
+        z-index: 50;
+      }
+      .side-panel.open { transform: translateX(0); }
+      .side-head {
+        padding: 14px; border-bottom: 1px solid var(--border);
+        display: flex; align-items: center; gap: 10px;
+      }
+      .side-id { color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+      .side-close {
+        margin-left: auto; background: transparent; border: 0;
+        color: var(--muted); cursor: pointer; font-size: 16px;
+      }
+      .side-body {
+        flex: 1; overflow: auto; padding: 14px;
+        display: flex; flex-direction: column; gap: 12px;
+      }
+      .side-title {
+        font-size: 18px; font-weight: 600;
+        outline: none; padding: 4px;
+        border-radius: 4px;
+      }
+      .side-title:focus { background: var(--surface-hi); }
+      .meta-row {
+        display: flex; gap: 14px;
+        padding: 6px 4px;
+      }
+      .meta-row .meta-label {
+        width: 80px; color: var(--muted); font-size: 12px; padding-top: 5px;
+      }
+      .meta-row .meta-value { flex: 1; }
+      .combobox-trigger {
+        background: var(--surface-hi); border: 1px solid var(--border);
+        padding: 5px 10px; border-radius: 5px;
+        cursor: pointer; font-size: 13px;
+        display: inline-flex; align-items: center; gap: 6px;
+      }
+      .comments {
+        margin-top: 12px;
+        display: flex; flex-direction: column; gap: 10px;
+      }
+      .comment {
+        background: var(--bg); border: 1px solid var(--border);
+        border-radius: 6px; padding: 10px;
+        font-size: 13px;
+      }
+      .comment-author { color: var(--muted); font-size: 11px; margin-bottom: 4px; }
+      .composer {
+        background: var(--bg); border: 1px solid var(--border);
+        border-radius: 6px; padding: 8px;
+        min-height: 70px;
+        outline: none; font: inherit;
+      }
+      .composer:focus { border-color: var(--accent); }
+
+      /* ── Command palette ─────────────────────────────────────────── */
+      .palette-back {
+        position: fixed; inset: 0;
+        background: rgba(8, 8, 12, 0.6);
+        display: none; z-index: 100;
+        align-items: flex-start; justify-content: center;
+        padding-top: 80px;
+      }
+      .palette-back.open { display: flex; }
+      .palette {
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: 8px; width: 560px;
+        max-height: 60vh; overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+      }
+      .palette input {
+        width: 100%; padding: 14px 18px; background: transparent;
+        border: 0; outline: none; font: inherit; color: var(--text);
+        border-bottom: 1px solid var(--border);
+        font-size: 14px;
+      }
+      .palette-list { padding: 6px; max-height: 360px; overflow: auto; }
+      .palette-item {
+        display: flex; align-items: center; gap: 10px;
+        padding: 8px 10px; border-radius: 5px; cursor: pointer;
+      }
+      .palette-item[aria-selected="true"] { background: rgba(122, 92, 240, 0.2); }
+      .palette-item .kb {
+        margin-left: auto; color: var(--muted); font-size: 11px;
+        font-family: 'JetBrains Mono', monospace;
+      }
+
+      /* ── New issue modal ─────────────────────────────────────────── */
+      .modal-back {
+        position: fixed; inset: 0;
+        background: rgba(8, 8, 12, 0.5);
+        display: none; z-index: 90;
+        align-items: center; justify-content: center;
+      }
+      .modal-back.open { display: flex; }
+      .modal {
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: 8px; width: 480px;
+        padding: 16px;
+        display: flex; flex-direction: column; gap: 10px;
+      }
+      .modal-title { font-weight: 600; font-size: 15px; }
+      .modal input, .modal textarea {
+        background: var(--bg); border: 1px solid var(--border);
+        color: var(--text); padding: 8px 10px; border-radius: 5px;
+        font: inherit;
+      }
+      .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+      /* ── Combobox popover (status/priority/assignee) ─────────────── */
+      .cb-pop {
+        position: absolute; z-index: 200;
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: 6px; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
+        min-width: 200px; max-height: 280px; overflow: auto;
+        padding: 4px;
+      }
+      .cb-pop[hidden] { display: none; }
+      .cb-opt {
+        display: flex; align-items: center; gap: 8px;
+        padding: 6px 8px; border-radius: 4px; cursor: pointer;
+        font-size: 13px;
+      }
+      .cb-opt[aria-selected="true"] { background: rgba(122, 92, 240, 0.2); }
+      .toast {
+        position: fixed; bottom: 20px; right: 20px;
+        background: var(--surface); border: 1px solid var(--border);
+        padding: 8px 14px; border-radius: 6px;
+        color: var(--text); font-size: 12px;
+      }
+      .toast[hidden] { display: none; }
+    </style>
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="workspace">
+        <div class="ws-logo">L</div>
+        <div class="ws-name">Lumen</div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-title">Workspace</div>
+        <div class="nav-link active" data-route="active" data-i18n-key="nav.active"><span class="ic">▦</span>Active issues</div>
+        <div class="nav-link" data-route="backlog" data-i18n-key="nav.backlog"><span class="ic">═</span>Backlog</div>
+        <div class="nav-link" data-route="my" data-i18n-key="nav.my"><span class="ic">◉</span>My issues</div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-title">Teams</div>
+        <div class="nav-link" data-route="team-eng"><span class="ic">🛠</span>Engineering</div>
+        <div class="nav-link" data-route="team-design"><span class="ic">🎨</span>Design</div>
+        <div class="nav-link" data-route="team-ops"><span class="ic">⚙️</span>Operations</div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="tab-group">
+          <button class="tab-btn active" data-view="list" data-testid="tab-list">List</button>
+          <button class="tab-btn" data-view="board" data-testid="tab-board">Board</button>
+        </div>
+        <div class="topbar-spacer"></div>
+        <button class="topbar-btn ghost" data-testid="cmd-k" title="Press Cmd+K">⌘K</button>
+        <button class="topbar-btn" data-testid="new-issue">+ New issue <span class="kb" style="opacity:0.75">⌘⇧I</span></button>
+      </div>
+
+      <div class="filter-bar">
+        <input class="filter-input" data-testid="filter" placeholder="Filter issues…" />
+        <span class="filter-chip">Status: Any</span>
+        <span class="filter-chip">Priority: Any</span>
+      </div>
+
+      <div class="issue-list" id="issueList"></div>
+      <div class="board" id="board"></div>
+    </main>
+
+    <!-- Side panel -->
+    <aside class="side-panel" id="sidePanel" aria-hidden="true">
+      <div class="side-head">
+        <div class="side-id" id="sidePanelId">LIN-0</div>
+        <button class="side-close" id="sidePanelClose" data-testid="side-close" aria-label="Close">✕</button>
+      </div>
+      <div class="side-body">
+        <div class="side-title" id="sidePanelTitle" contenteditable="true" data-testid="issue-title"></div>
+        <div class="meta-row">
+          <div class="meta-label">Status</div>
+          <div class="meta-value"><button class="combobox-trigger" data-cb="status" data-testid="cb-status">○ Todo</button></div>
+        </div>
+        <div class="meta-row">
+          <div class="meta-label">Priority</div>
+          <div class="meta-value"><button class="combobox-trigger" data-cb="priority" data-testid="cb-priority">═ No priority</button></div>
+        </div>
+        <div class="meta-row">
+          <div class="meta-label">Assignee</div>
+          <div class="meta-value"><button class="combobox-trigger" data-cb="assignee" data-testid="cb-assignee">— Unassigned</button></div>
+        </div>
+        <div class="comments" id="commentsList"></div>
+        <div
+          class="composer"
+          contenteditable="true"
+          data-testid="composer"
+          data-placeholder="Leave a comment…"
+        ></div>
+      </div>
+    </aside>
+
+    <!-- Command palette -->
+    <div class="palette-back" id="paletteBack">
+      <div class="palette" role="dialog" aria-label="Command palette">
+        <input
+          id="paletteInput"
+          data-testid="palette-input"
+          placeholder="Type a command or search…"
+          aria-controls="paletteList"
+          aria-activedescendant=""
+        />
+        <div class="palette-list" id="paletteList" role="listbox"></div>
+      </div>
+    </div>
+
+    <!-- New issue modal -->
+    <div class="modal-back" id="newIssueBack">
+      <div class="modal" role="dialog" aria-label="New issue">
+        <div class="modal-title">New issue</div>
+        <input id="newIssueTitle" data-testid="new-issue-title" placeholder="Issue title" />
+        <textarea id="newIssueBody" data-testid="new-issue-body" placeholder="Description (optional)" rows="3"></textarea>
+        <div class="modal-actions">
+          <button class="topbar-btn ghost" id="newIssueCancel" data-testid="new-issue-cancel">Cancel</button>
+          <button class="topbar-btn" id="newIssueCreate" data-testid="new-issue-create">Create</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Combobox popover (shared) -->
+    <div class="cb-pop" id="cbPop" role="listbox" hidden></div>
+
+    <div class="toast" id="toast" hidden></div>
+
+    <script>
+      // ─── A2: dynamic class hash injector ─────────────────────────
+      const rand = () => Math.random().toString(36).slice(2, 8);
+      function applyDynHash(el) { el.classList.add(`css-${rand()}`); }
+
+      // ─── State ──────────────────────────────────────────────────
+      const STATUS = [
+        { id: 'backlog',  label: 'Backlog',   dot: 'backlog'  },
+        { id: 'todo',     label: 'Todo',      dot: 'todo'     },
+        { id: 'progress', label: 'In Progress', dot: 'progress' },
+        { id: 'done',     label: 'Done',      dot: 'done'     },
+        { id: 'cancelled',label: 'Cancelled', dot: 'cancelled'},
+      ];
+      const PRIORITY = [
+        { id: 'urgent',   label: 'Urgent',  short: '!!' },
+        { id: 'high',     label: 'High',    short: '↑'  },
+        { id: 'medium',   label: 'Medium',  short: '═'  },
+        { id: 'low',      label: 'Low',     short: '↓'  },
+        { id: 'none',     label: 'No priority', short: '—' },
+      ];
+      const PEOPLE = [
+        { id: 'alex',    label: 'Alex Chen' },
+        { id: 'barbara', label: 'Barbara Liu' },
+        { id: 'carlos',  label: 'Carlos Reyes' },
+        { id: 'dana',    label: 'Dana Park' },
+        { id: 'eli',     label: 'Eli Mendez' },
+      ];
+
+      const ISSUES = [
+        { id: 'LIN-101', title: 'Migrate API client to async/await', status: 'progress', priority: 'high',   assignee: 'alex'    },
+        { id: 'LIN-102', title: 'Fix flaky integration test in CI',  status: 'todo',     priority: 'medium', assignee: 'barbara' },
+        { id: 'LIN-103', title: 'Add billing webhook retry',         status: 'todo',     priority: 'urgent', assignee: 'carlos'  },
+        { id: 'LIN-104', title: 'Subscribe',                         status: 'backlog',  priority: 'low',    assignee: 'dana'    },
+        { id: 'LIN-105', title: 'Subscribe',                         status: 'backlog',  priority: 'low',    assignee: 'eli'     },
+        { id: 'LIN-106', title: 'Subscribe',                         status: 'backlog',  priority: 'low',    assignee: 'alex'    },
+        { id: 'LIN-107', title: 'Refactor login flow',               status: 'progress', priority: 'medium', assignee: 'barbara' },
+        { id: 'LIN-108', title: 'Replace deprecated date library',   status: 'done',     priority: 'low',    assignee: 'dana'    },
+        { id: 'LIN-109', title: 'Audit a11y on settings page',       status: 'todo',     priority: 'high',   assignee: 'carlos'  },
+      ];
+
+      let currentView = 'list'; // 'list' | 'board'
+      let openIssueId = null;
+      const COMMENTS = {}; // id -> [{author, body}]
+
+      // ─── Rendering: List view ────────────────────────────────────
+      const listEl = document.getElementById('issueList');
+      const boardEl = document.getElementById('board');
+      function statusOf(id) { return STATUS.find((s) => s.id === id) || STATUS[0]; }
+      function priorityOf(id) { return PRIORITY.find((p) => p.id === id) || PRIORITY[4]; }
+      function personOf(id) { return PEOPLE.find((p) => p.id === id) || null; }
+
+      function renderList(filter = '') {
+        const q = filter.toLowerCase().trim();
+        listEl.innerHTML = '';
+        const matching = ISSUES.filter((i) =>
+          !q || i.title.toLowerCase().includes(q) || i.id.toLowerCase().includes(q),
+        );
+        for (const issue of matching) {
+          const row = document.createElement('div');
+          row.className = 'issue-row';
+          applyDynHash(row);
+          row.dataset.testid = `issue-${issue.id}`;
+          const s = statusOf(issue.status);
+          const p = priorityOf(issue.priority);
+          const person = personOf(issue.assignee);
+          row.innerHTML = `
+            <div class="id">${issue.id}</div>
+            <div class="status"><span class="status-dot ${s.dot}"></span>${s.label}</div>
+            <div class="priority">${p.short}</div>
+            <div class="title">${escape(issue.title)}</div>
+            <div class="assignee">${person ? person.label : '—'}</div>
+            <div class="actions">
+              <button class="row-btn" data-testid="sub-${issue.id}">Subscribe</button>
+              <button class="row-btn" data-testid="more-${issue.id}">More</button>
+            </div>
+          `;
+          row.addEventListener('click', (ev) => {
+            if (ev.target.classList.contains('row-btn')) return;
+            openIssue(issue.id);
+          });
+          listEl.appendChild(row);
+        }
+      }
+
+      function renderBoard() {
+        boardEl.innerHTML = '';
+        for (const s of STATUS) {
+          const col = document.createElement('div');
+          col.className = 'col';
+          col.dataset.status = s.id;
+          col.dataset.testid = `col-${s.id}`;
+          col.innerHTML = `<div class="col-title">${s.label.toUpperCase()}</div>`;
+          col.addEventListener('dragover', (ev) => {
+            ev.preventDefault();
+            col.classList.add('dragover');
+          });
+          col.addEventListener('dragleave', () => col.classList.remove('dragover'));
+          col.addEventListener('drop', (ev) => {
+            ev.preventDefault();
+            col.classList.remove('dragover');
+            const id = ev.dataTransfer.getData('text/plain');
+            const issue = ISSUES.find((i) => i.id === id);
+            if (issue) {
+              issue.status = s.id;
+              renderBoard();
+              showToast(`${issue.id} → ${s.label}`);
+            }
+          });
+          for (const issue of ISSUES.filter((i) => i.status === s.id)) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            applyDynHash(card);
+            card.draggable = true;
+            card.dataset.testid = `card-${issue.id}`;
+            const person = personOf(issue.assignee);
+            card.innerHTML = `
+              <div class="card-id">${issue.id}</div>
+              <div class="card-title">${escape(issue.title)}</div>
+              <div class="card-meta" style="color: var(--muted); font-size: 11px;">${person ? person.label : 'Unassigned'}</div>
+            `;
+            card.addEventListener('dragstart', (ev) => {
+              card.classList.add('dragging');
+              ev.dataTransfer.setData('text/plain', issue.id);
+              ev.dataTransfer.effectAllowed = 'move';
+            });
+            card.addEventListener('dragend', () => card.classList.remove('dragging'));
+            card.addEventListener('click', () => openIssue(issue.id));
+            col.appendChild(card);
+          }
+          boardEl.appendChild(col);
+        }
+      }
+
+      function setView(view) {
+        currentView = view;
+        document.querySelectorAll('.tab-btn').forEach((b) => b.classList.toggle('active', b.dataset.view === view));
+        if (view === 'list') {
+          listEl.style.display = 'block';
+          boardEl.classList.remove('visible');
+        } else {
+          listEl.style.display = 'none';
+          boardEl.classList.add('visible');
+          renderBoard();
+        }
+      }
+
+      document.querySelectorAll('.tab-btn').forEach((b) => {
+        b.addEventListener('click', () => setView(b.dataset.view));
+      });
+
+      // ─── Side panel ──────────────────────────────────────────────
+      const sidePanel = document.getElementById('sidePanel');
+      function openIssue(id) {
+        const issue = ISSUES.find((i) => i.id === id);
+        if (!issue) return;
+        openIssueId = id;
+        // B3: lazy-mount — 200ms delay before showing the panel.
+        setTimeout(() => {
+          sidePanel.classList.add('open');
+          document.getElementById('sidePanelId').textContent = id;
+          document.getElementById('sidePanelTitle').textContent = issue.title;
+          const sCB = sidePanel.querySelector('[data-cb="status"]');
+          const pCB = sidePanel.querySelector('[data-cb="priority"]');
+          const aCB = sidePanel.querySelector('[data-cb="assignee"]');
+          sCB.textContent = `● ${statusOf(issue.status).label}`;
+          pCB.textContent = `${priorityOf(issue.priority).short} ${priorityOf(issue.priority).label}`;
+          aCB.textContent = personOf(issue.assignee)?.label || '— Unassigned';
+          renderComments(id);
+          history.pushState({ issueId: id }, '', `/issue/${id}`);
+        }, 200);
+      }
+      function closeSide() {
+        sidePanel.classList.remove('open');
+        openIssueId = null;
+        history.pushState({}, '', `/team/active`);
+      }
+      document.getElementById('sidePanelClose').addEventListener('click', closeSide);
+
+      function renderComments(id) {
+        const list = document.getElementById('commentsList');
+        list.innerHTML = '';
+        for (const c of COMMENTS[id] || []) {
+          const el = document.createElement('div');
+          el.className = 'comment';
+          el.innerHTML = `<div class="comment-author">${escape(c.author)}</div><div>${c.body}</div>`;
+          list.appendChild(el);
+        }
+      }
+      document.querySelector('.composer').addEventListener('keydown', (ev) => {
+        if ((ev.metaKey || ev.ctrlKey) && ev.key === 'Enter' && openIssueId) {
+          ev.preventDefault();
+          const body = ev.currentTarget.innerHTML.trim();
+          if (!body) return;
+          (COMMENTS[openIssueId] = COMMENTS[openIssueId] || []).push({ author: 'You', body });
+          ev.currentTarget.innerHTML = '';
+          renderComments(openIssueId);
+          showToast('Comment posted');
+        }
+      });
+      // D5: paste URL → linkify
+      document.querySelector('.composer').addEventListener('paste', (ev) => {
+        const text = ev.clipboardData?.getData('text/plain') || '';
+        if (/^https?:\/\//.test(text)) {
+          ev.preventDefault();
+          const range = window.getSelection()?.getRangeAt(0);
+          if (range) {
+            const a = document.createElement('a');
+            a.href = text;
+            a.textContent = text;
+            a.style.color = 'var(--accent)';
+            range.deleteContents();
+            range.insertNode(a);
+            range.collapse(false);
+          }
+        }
+      });
+
+      // ─── Combobox popover ────────────────────────────────────────
+      const cbPop = document.getElementById('cbPop');
+      let cbActiveIdx = 0;
+      let cbItems = [];
+      let cbField = null;
+      function openCb(triggerEl) {
+        const which = triggerEl.dataset.cb;
+        cbField = which;
+        if (which === 'status') cbItems = STATUS.map((s) => ({ id: s.id, label: s.label, prefix: `<span class="status-dot ${s.dot}" style="display:inline-block;margin-right:6px;vertical-align:middle"></span>` }));
+        if (which === 'priority') cbItems = PRIORITY.map((p) => ({ id: p.id, label: p.label, prefix: `<span style="display:inline-block;margin-right:6px">${p.short}</span>` }));
+        if (which === 'assignee') cbItems = PEOPLE.map((p) => ({ id: p.id, label: p.label, prefix: `<span style="display:inline-block;width:18px;height:18px;border-radius:50%;background:#444;color:white;text-align:center;line-height:18px;margin-right:6px;font-size:10px">${p.label.charAt(0)}</span>` }));
+        cbActiveIdx = 0;
+        renderCb();
+        const r = triggerEl.getBoundingClientRect();
+        cbPop.style.top = `${window.scrollY + r.bottom + 4}px`;
+        cbPop.style.left = `${r.left}px`;
+        cbPop.hidden = false;
+        triggerEl.setAttribute('aria-controls', 'cbPop');
+        triggerEl.setAttribute('aria-activedescendant', `cb-opt-0`);
+      }
+      function renderCb() {
+        cbPop.innerHTML = '';
+        cbItems.forEach((it, i) => {
+          const opt = document.createElement('div');
+          opt.className = 'cb-opt';
+          opt.id = `cb-opt-${i}`;
+          opt.setAttribute('role', 'option');
+          if (i === cbActiveIdx) opt.setAttribute('aria-selected', 'true');
+          opt.innerHTML = `${it.prefix}${escape(it.label)}`;
+          opt.addEventListener('mousedown', (ev) => {
+            ev.preventDefault();
+            applyCb(it);
+          });
+          cbPop.appendChild(opt);
+        });
+      }
+      function applyCb(item) {
+        const issue = ISSUES.find((i) => i.id === openIssueId);
+        if (!issue) return;
+        issue[cbField] = item.id;
+        cbPop.hidden = true;
+        // Re-render the side panel cb labels
+        if (cbField === 'status') document.querySelector('[data-cb="status"]').textContent = `● ${item.label}`;
+        if (cbField === 'priority') document.querySelector('[data-cb="priority"]').textContent = `${PRIORITY.find((p) => p.id === item.id).short} ${item.label}`;
+        if (cbField === 'assignee') document.querySelector('[data-cb="assignee"]').textContent = item.label;
+        renderList(document.querySelector('.filter-input').value);
+        if (currentView === 'board') renderBoard();
+        showToast(`${cbField}: ${item.label}`);
+      }
+      sidePanel.addEventListener('click', (ev) => {
+        const trigger = ev.target.closest('.combobox-trigger');
+        if (trigger) openCb(trigger);
+      });
+      document.addEventListener('click', (ev) => {
+        if (!cbPop.contains(ev.target) && !ev.target.closest('.combobox-trigger')) cbPop.hidden = true;
+      });
+
+      // ─── Command palette (Cmd+K) ─────────────────────────────────
+      const paletteBack = document.getElementById('paletteBack');
+      const paletteInput = document.getElementById('paletteInput');
+      const paletteList = document.getElementById('paletteList');
+      const PALETTE_ACTIONS = [
+        { label: 'Go to Active issues',    kb: 'G A',     run: () => location.hash = 'active' },
+        { label: 'Go to Backlog',          kb: 'G B',     run: () => location.hash = 'backlog' },
+        { label: 'Switch to Board view',   kb: 'V B',     run: () => setView('board') },
+        { label: 'Switch to List view',    kb: 'V L',     run: () => setView('list') },
+        { label: 'Create new issue',       kb: '⌘ ⇧ I',  run: () => openNewIssue() },
+        { label: 'Open settings',          kb: '⌘ ,',    run: () => showToast('Settings (not implemented)') },
+      ];
+      let paletteActiveIdx = 0;
+      let paletteItems = PALETTE_ACTIONS;
+      function openPalette() {
+        paletteInput.value = '';
+        paletteItems = PALETTE_ACTIONS;
+        paletteActiveIdx = 0;
+        renderPalette();
+        paletteBack.classList.add('open');
+        // 200ms lazy-mount semantics: actually open immediately for cmd palette.
+        setTimeout(() => paletteInput.focus(), 50);
+      }
+      function closePalette() { paletteBack.classList.remove('open'); }
+      function renderPalette() {
+        paletteList.innerHTML = '';
+        paletteItems.forEach((it, i) => {
+          const el = document.createElement('div');
+          el.className = 'palette-item';
+          el.id = `palette-item-${i}`;
+          el.setAttribute('role', 'option');
+          if (i === paletteActiveIdx) el.setAttribute('aria-selected', 'true');
+          el.innerHTML = `<span>${escape(it.label)}</span><span class="kb">${it.kb}</span>`;
+          el.addEventListener('mousedown', (ev) => {
+            ev.preventDefault();
+            it.run();
+            closePalette();
+          });
+          paletteList.appendChild(el);
+        });
+        paletteInput.setAttribute('aria-activedescendant', `palette-item-${paletteActiveIdx}`);
+      }
+      paletteInput.addEventListener('input', () => {
+        const q = paletteInput.value.toLowerCase();
+        paletteItems = PALETTE_ACTIONS.filter((a) => a.label.toLowerCase().includes(q));
+        paletteActiveIdx = 0;
+        renderPalette();
+      });
+      paletteInput.addEventListener('keydown', (ev) => {
+        if (ev.key === 'ArrowDown') { ev.preventDefault(); paletteActiveIdx = Math.min(paletteActiveIdx + 1, paletteItems.length - 1); renderPalette(); }
+        if (ev.key === 'ArrowUp')   { ev.preventDefault(); paletteActiveIdx = Math.max(paletteActiveIdx - 1, 0); renderPalette(); }
+        if (ev.key === 'Enter')     { ev.preventDefault(); paletteItems[paletteActiveIdx]?.run(); closePalette(); }
+        if (ev.key === 'Escape')    { ev.preventDefault(); closePalette(); }
+      });
+
+      // ─── New issue modal ─────────────────────────────────────────
+      const newIssueBack = document.getElementById('newIssueBack');
+      function openNewIssue() {
+        // B3 lazy-mount.
+        setTimeout(() => {
+          newIssueBack.classList.add('open');
+          document.getElementById('newIssueTitle').value = '';
+          document.getElementById('newIssueBody').value = '';
+          setTimeout(() => document.getElementById('newIssueTitle').focus(), 50);
+        }, 200);
+      }
+      function closeNewIssue() { newIssueBack.classList.remove('open'); }
+      document.getElementById('newIssueCancel').addEventListener('click', closeNewIssue);
+      document.getElementById('newIssueCreate').addEventListener('click', () => {
+        const title = document.getElementById('newIssueTitle').value.trim();
+        if (!title) return;
+        const id = `LIN-${110 + ISSUES.length}`;
+        ISSUES.push({ id, title, status: 'todo', priority: 'medium', assignee: 'alex' });
+        renderList(document.querySelector('.filter-input').value);
+        if (currentView === 'board') renderBoard();
+        closeNewIssue();
+        showToast(`Created ${id}`);
+      });
+      document.querySelector('[data-testid="new-issue"]').addEventListener('click', openNewIssue);
+
+      // ─── Top-bar Cmd-K button ────────────────────────────────────
+      document.querySelector('[data-testid="cmd-k"]').addEventListener('click', openPalette);
+
+      // ─── Global keyboard shortcuts ───────────────────────────────
+      document.addEventListener('keydown', (ev) => {
+        if ((ev.metaKey || ev.ctrlKey) && !ev.shiftKey && ev.key === 'k') {
+          ev.preventDefault();
+          openPalette();
+          return;
+        }
+        if ((ev.metaKey || ev.ctrlKey) && ev.shiftKey && ev.key.toLowerCase() === 'i') {
+          ev.preventDefault();
+          openNewIssue();
+          return;
+        }
+        if (ev.key === 'Escape') {
+          if (paletteBack.classList.contains('open')) closePalette();
+          if (newIssueBack.classList.contains('open')) closeNewIssue();
+          if (sidePanel.classList.contains('open')) closeSide();
+        }
+      });
+
+      // ─── Filter (B2 debounce) ────────────────────────────────────
+      const filterInput = document.querySelector('.filter-input');
+      let filterTimer = null;
+      filterInput.addEventListener('input', () => {
+        clearTimeout(filterTimer);
+        filterTimer = setTimeout(() => renderList(filterInput.value), 400);
+      });
+
+      // ─── Sidebar navigation (B1 SPA) ─────────────────────────────
+      document.querySelectorAll('.nav-link').forEach((link) => {
+        link.addEventListener('click', () => {
+          document.querySelectorAll('.nav-link').forEach((l) => l.classList.remove('active'));
+          link.classList.add('active');
+          history.pushState({ route: link.dataset.route }, '', `/team/${link.dataset.route}`);
+          showToast(`Switched → ${link.textContent.trim()}`);
+        });
+      });
+
+      // ─── Util ────────────────────────────────────────────────────
+      const toastEl = document.getElementById('toast');
+      let toastTimer = null;
+      function showToast(msg) {
+        toastEl.hidden = false;
+        toastEl.textContent = msg;
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => { toastEl.hidden = true; }, 1600);
+      }
+      function escape(s) {
+        return (s || '').replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+      }
+
+      // ─── First render ────────────────────────────────────────────
+      renderList('');
+      history.replaceState({ route: 'active' }, '', '/team/active');
+    </script>
+  </body>
+</html>

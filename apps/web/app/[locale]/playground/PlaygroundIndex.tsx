@@ -177,7 +177,7 @@ export default function PlaygroundIndex() {
       </Hero>
 
       <Body>
-        {(['A', 'B', 'C', 'D'] as ScenarioCategory[]).map((cat) => {
+        {(['F', 'A', 'B', 'C', 'D'] as ScenarioCategory[]).map((cat) => {
           const list = byCat.get(cat);
           if (!list?.length) return null;
           return (

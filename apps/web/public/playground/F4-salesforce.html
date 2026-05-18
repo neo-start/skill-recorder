@@ -1,0 +1,930 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>F4 · Salesforce-style CRM</title>
+    <style>
+      :root {
+        --bg: #f3f3f3;
+        --surface: #ffffff;
+        --text: #181818;
+        --muted: #706e6b;
+        --border: #d8dde6;
+        --topbar: #16325c;
+        --accent: #1589ee;
+        --accent-hover: #0070d2;
+        --highlight: #f2f9ff;
+        --green: #027e46;
+        --orange: #d4574a;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; }
+      body {
+        font: 13px/1.45 'Salesforce Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        color: var(--text);
+        background: var(--bg);
+        display: flex; flex-direction: column;
+        min-height: 100vh;
+      }
+      button { font: inherit; cursor: pointer; }
+
+      .stage { display: none; flex: 1; flex-direction: column; }
+      .stage.active { display: flex; }
+
+      /* ── Login ───────────────────────────────────────────────────── */
+      .login-wrap {
+        flex: 1;
+        background: linear-gradient(180deg, var(--topbar) 0%, var(--accent) 100%);
+        display: flex; align-items: center; justify-content: center;
+      }
+      .login-card {
+        background: white; padding: 28px 32px; border-radius: 4px;
+        width: 360px; display: flex; flex-direction: column; gap: 10px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+      }
+      .login-title { font-size: 18px; font-weight: 700; text-align: center; }
+      .login-card label { font-size: 12px; color: var(--muted); }
+      .login-card input {
+        padding: 7px 10px; border: 1px solid var(--border); border-radius: 4px;
+        font: inherit;
+      }
+      .login-card input:focus { border-color: var(--accent); outline: none; }
+      .login-btn {
+        background: var(--accent); color: white; border: 0;
+        padding: 8px; border-radius: 4px; font-weight: 600;
+      }
+
+      /* ── App chrome ──────────────────────────────────────────────── */
+      .topbar {
+        background: var(--topbar); color: white;
+        height: 48px;
+        display: flex; align-items: center; padding: 0 16px; gap: 14px;
+        position: relative;
+      }
+      .topbar .brand { font-weight: 700; font-size: 14px; letter-spacing: 0.04em; }
+      .app-switcher {
+        background: rgba(255,255,255,0.1);
+        padding: 6px 10px; border-radius: 3px; cursor: pointer;
+        font-size: 13px;
+        position: relative;
+      }
+      .app-pop {
+        position: absolute; top: 110%; left: 0;
+        background: white; color: var(--text);
+        border: 1px solid var(--border); border-radius: 3px;
+        min-width: 220px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        display: none; z-index: 50;
+      }
+      .app-pop.open { display: block; }
+      .app-pop .app-opt { padding: 8px 12px; cursor: pointer; }
+      .app-pop .app-opt:hover { background: var(--highlight); }
+      .topbar .nav-link {
+        color: rgba(255,255,255,0.9);
+        padding: 6px 10px; cursor: pointer;
+        border-bottom: 2px solid transparent;
+      }
+      .topbar .nav-link.active { border-bottom-color: white; color: white; }
+      .topbar-spacer { flex: 1; }
+      .topbar .icon-btn {
+        background: transparent; border: 0; color: white;
+        padding: 4px 8px; cursor: pointer;
+        font-size: 16px;
+      }
+
+      /* ── Home dashboard ──────────────────────────────────────────── */
+      .dashboard {
+        flex: 1; padding: 16px;
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+      }
+      .dash-card {
+        background: white; border: 1px solid var(--border); border-radius: 4px;
+        padding: 14px;
+      }
+      .dash-card h3 { margin: 0 0 8px; font-size: 13px; color: var(--muted); }
+      .dash-num { font-size: 28px; font-weight: 700; }
+      .dash-trend { color: var(--green); font-size: 12px; margin-top: 4px; }
+
+      /* ── Account list ────────────────────────────────────────────── */
+      .list-wrap { flex: 1; padding: 14px; }
+      .list-head {
+        display: flex; align-items: center; gap: 12px;
+        margin-bottom: 10px;
+      }
+      .list-title { font-size: 18px; font-weight: 600; }
+      .list-table {
+        width: 100%; background: white; border: 1px solid var(--border);
+        border-radius: 4px; overflow: hidden;
+      }
+      .list-table table {
+        width: 100%; border-collapse: collapse;
+      }
+      .list-table th, .list-table td {
+        text-align: left; padding: 8px 12px; font-size: 12px;
+        border-bottom: 1px solid var(--border);
+      }
+      .list-table th { color: var(--muted); font-weight: 600; }
+      .list-table tr { cursor: pointer; }
+      .list-table tr:hover { background: var(--highlight); }
+      .list-table .account-name { color: var(--accent); font-weight: 500; }
+
+      /* ── Record detail ───────────────────────────────────────────── */
+      .record { flex: 1; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+      .record-head {
+        background: white; border: 1px solid var(--border); border-radius: 4px;
+        padding: 12px 16px;
+        display: flex; align-items: center; gap: 14px;
+      }
+      .record-icon {
+        width: 38px; height: 38px; background: var(--accent); color: white;
+        display: flex; align-items: center; justify-content: center;
+        border-radius: 4px; font-weight: 700;
+      }
+      .record-title {
+        font-size: 18px; font-weight: 600;
+        outline: none;
+      }
+      .record-actions { margin-left: auto; display: flex; gap: 6px; }
+      .btn-ghost {
+        background: white; border: 1px solid var(--border);
+        padding: 4px 10px; border-radius: 3px;
+        font: inherit; color: var(--text);
+      }
+      .btn-ghost:hover { background: var(--highlight); }
+      .btn-primary {
+        background: var(--accent); color: white; border: 0;
+        padding: 4px 10px; border-radius: 3px;
+      }
+
+      .panel {
+        background: white; border: 1px solid var(--border); border-radius: 4px;
+      }
+      .panel-head {
+        padding: 10px 14px; border-bottom: 1px solid var(--border);
+        font-weight: 600; display: flex; align-items: center; gap: 8px;
+        cursor: pointer;
+      }
+      .panel-head .arr { font-size: 11px; color: var(--muted); }
+      .panel-head .arr.open { transform: rotate(90deg); }
+      .panel-body { padding: 10px 14px; display: none; }
+      .panel-body.open { display: block; }
+
+      .field {
+        display: grid; grid-template-columns: 180px 1fr;
+        align-items: center; gap: 8px;
+        padding: 6px 0; border-bottom: 1px solid var(--border);
+      }
+      .field:last-child { border-bottom: 0; }
+      .field-label { font-size: 12px; color: var(--muted); }
+      .field-value {
+        font-size: 13px;
+        display: flex; align-items: center; gap: 8px;
+        position: relative;
+      }
+      .field-value input, .field-value select {
+        flex: 1; padding: 4px 8px; border: 1px solid var(--border); border-radius: 3px;
+        font: inherit; background: white;
+      }
+      .field-value input[readonly], .field-value .field-display {
+        background: transparent; border-color: transparent; cursor: text;
+      }
+      .pencil {
+        opacity: 0; background: transparent; border: 0;
+        color: var(--muted); cursor: pointer; padding: 0;
+      }
+      .field:hover .pencil { opacity: 1; }
+      .field-display {
+        flex: 1; padding: 4px 8px;
+      }
+      .field-cb {
+        background: white; border: 1px solid var(--border);
+        padding: 4px 8px; border-radius: 3px; cursor: pointer;
+        font: inherit; text-align: left; flex: 1;
+      }
+
+      .related-row {
+        display: grid; grid-template-columns: 1fr 120px 100px;
+        gap: 10px; padding: 6px 0;
+        border-bottom: 1px solid var(--border);
+        align-items: center;
+        font-size: 12px;
+      }
+      .related-row:last-child { border-bottom: 0; }
+      .related-row .row-actions { display: flex; gap: 4px; opacity: 0; }
+      .related-row:hover .row-actions { opacity: 1; }
+
+      /* Attach zone */
+      .attach-zone {
+        border: 2px dashed var(--border); border-radius: 4px;
+        padding: 22px; text-align: center; color: var(--muted);
+        font-size: 12px; cursor: pointer;
+        margin: 8px 0;
+      }
+      .attach-zone.dragover { background: var(--highlight); border-color: var(--accent); }
+
+      /* Approval modal */
+      .modal-back {
+        position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+        display: none; align-items: center; justify-content: center; z-index: 100;
+      }
+      .modal-back.open { display: flex; }
+      .modal {
+        background: white; border-radius: 4px;
+        width: 460px; padding: 16px;
+        display: flex; flex-direction: column; gap: 10px;
+      }
+      .modal-title { font-size: 16px; font-weight: 600; }
+      .modal-actions { display: flex; gap: 6px; justify-content: flex-end; }
+      .step-progress {
+        display: flex; gap: 4px; align-items: center;
+        font-size: 11px; color: var(--muted);
+      }
+      .step-pill {
+        background: var(--border); padding: 2px 8px; border-radius: 10px;
+      }
+      .step-pill.active { background: var(--accent); color: white; }
+      .step-pill.done { background: var(--green); color: white; }
+
+      /* Combobox popover (shared) */
+      .cb-pop {
+        position: absolute; z-index: 80;
+        background: white; border: 1px solid var(--border);
+        border-radius: 3px; min-width: 220px; max-height: 260px; overflow: auto;
+        padding: 4px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+      .cb-pop[hidden] { display: none; }
+      .cb-opt {
+        padding: 6px 8px; border-radius: 2px; cursor: pointer;
+        font-size: 12px;
+        display: flex; align-items: center; gap: 6px;
+      }
+      .cb-opt[aria-selected="true"] { background: var(--highlight); }
+      .cb-empty { padding: 8px; color: var(--muted); font-size: 12px; text-align: center; }
+
+      /* Chat widget */
+      .chat-frame {
+        position: fixed; bottom: 16px; right: 16px;
+        width: 280px; height: 360px;
+        border: 1px solid var(--border); border-radius: 6px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+        z-index: 30;
+      }
+
+      .toast {
+        position: fixed; top: 60px; right: 16px;
+        background: var(--green); color: white;
+        padding: 8px 12px; border-radius: 4px; font-size: 12px;
+        z-index: 200;
+      }
+      .toast[hidden] { display: none; }
+    </style>
+  </head>
+  <body>
+    <!-- Stage 1: login -->
+    <div class="stage active" id="stage-login">
+      <div class="login-wrap">
+        <form class="login-card" id="loginForm">
+          <div class="login-title">Salesforce</div>
+          <label>Username <input value="admin@acme.example" data-testid="login-username" required /></label>
+          <label>Password <input type="password" data-testid="login-password" required /></label>
+          <button class="login-btn" type="submit" data-testid="login-submit">Log In to Salesforce</button>
+          <a href="#" style="font-size: 11px; color: var(--accent); text-align: center;">Forgot Your Password?</a>
+        </form>
+      </div>
+    </div>
+
+    <!-- Stage 2: app shell -->
+    <div class="stage" id="stage-app">
+      <div class="topbar">
+        <span class="brand">⚡ Lightning</span>
+        <div class="app-switcher" id="appSwitcher" data-testid="app-switcher">
+          ▦ Sales ▾
+          <div class="app-pop" id="appPop">
+            <div class="app-opt" role="option">Sales</div>
+            <div class="app-opt" role="option">Service</div>
+            <div class="app-opt" role="option">Marketing</div>
+          </div>
+        </div>
+        <span class="nav-link" data-route="home" data-testid="nav-home">Home</span>
+        <span class="nav-link active" data-route="accounts" data-testid="nav-accounts">Accounts</span>
+        <span class="nav-link" data-route="opportunities" data-testid="nav-opportunities">Opportunities</span>
+        <span class="nav-link" data-route="reports" data-testid="nav-reports">Reports</span>
+        <div class="topbar-spacer"></div>
+        <button class="icon-btn" data-testid="topbar-search" title="Search">🔍</button>
+        <button class="icon-btn" data-testid="topbar-bell" title="Notifications">🔔</button>
+        <button class="icon-btn" data-testid="topbar-user" title="Account">👤</button>
+      </div>
+
+      <!-- Account list view -->
+      <div class="list-wrap" id="listView">
+        <div class="list-head">
+          <span class="list-title">Accounts</span>
+          <span style="color: var(--muted);">Recently Viewed ▾</span>
+          <span style="margin-left: auto;">
+            <button class="btn-primary" data-testid="new-account">New</button>
+          </span>
+        </div>
+        <div class="list-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Account Name</th>
+                <th>Phone</th>
+                <th>Industry</th>
+                <th>Owner</th>
+              </tr>
+            </thead>
+            <tbody id="accountsBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Account detail view -->
+      <div class="record" id="recordView" style="display: none;">
+        <div class="record-head">
+          <div class="record-icon">A</div>
+          <div>
+            <div style="font-size: 11px; color: var(--muted);">Account</div>
+            <div class="record-title" id="recordTitle" contenteditable="true" data-testid="record-title">Acme Corp</div>
+          </div>
+          <div class="record-actions">
+            <button class="btn-ghost" id="copyAcctNumber" data-testid="copy-acct">Copy account number</button>
+            <button class="btn-ghost" id="approveBtn" data-testid="approval">Submit for approval</button>
+            <button class="btn-ghost" id="quoteBtn" data-testid="generate-quote">📄 Generate quote</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head" data-section="details">
+            <span class="arr open">▸</span> Details
+          </div>
+          <div class="panel-body open" id="panel-details">
+            <div class="field">
+              <div class="field-label">Account number</div>
+              <div class="field-value">
+                <span class="field-display" id="acctNumberDisplay">001A0000ZxYwVuTs</span>
+              </div>
+            </div>
+            <div class="field" data-field="name">
+              <div class="field-label">Account name</div>
+              <div class="field-value">
+                <span class="field-display" data-testid="display-name">Acme Corp</span>
+                <button class="pencil" data-edit="name" title="Edit">✎</button>
+              </div>
+            </div>
+            <div class="field" data-field="phone">
+              <div class="field-label">Phone</div>
+              <div class="field-value">
+                <span class="field-display" data-testid="display-phone">(415) 555-0100</span>
+                <button class="pencil" data-edit="phone" title="Edit">✎</button>
+              </div>
+            </div>
+            <div class="field" data-field="ssn">
+              <div class="field-label">Tax ID (SSN/EIN)</div>
+              <div class="field-value">
+                <span class="field-display" data-testid="display-ssn">•••-••-1234</span>
+                <button class="pencil" data-edit="ssn" title="Edit">✎</button>
+              </div>
+            </div>
+            <div class="field" data-field="card">
+              <div class="field-label">Billing card</div>
+              <div class="field-value">
+                <span class="field-display" data-testid="display-card">**** **** **** 4242</span>
+                <button class="pencil" data-edit="card" title="Edit">✎</button>
+              </div>
+            </div>
+            <div class="field" data-field="owner">
+              <div class="field-label">Owner</div>
+              <div class="field-value">
+                <button class="field-cb" data-testid="owner-trigger" id="ownerTrigger">Search owner…</button>
+              </div>
+            </div>
+            <div class="field" data-field="country">
+              <div class="field-label">Country</div>
+              <div class="field-value">
+                <button class="field-cb" data-testid="country-trigger" id="countryTrigger">— Select —</button>
+              </div>
+            </div>
+            <div class="field" data-field="state">
+              <div class="field-label">State / Province</div>
+              <div class="field-value">
+                <button class="field-cb" data-testid="state-trigger" id="stateTrigger">— Select country first —</button>
+              </div>
+            </div>
+            <div class="field" data-field="industry">
+              <div class="field-label">Industry</div>
+              <div class="field-value">
+                <button class="field-cb" data-testid="industry-trigger" id="industryTrigger">Technology</button>
+              </div>
+            </div>
+            <div class="field" data-field="notes">
+              <div class="field-label">Notes</div>
+              <div class="field-value">
+                <div
+                  contenteditable="true"
+                  data-testid="notes-editor"
+                  style="flex:1;border:1px solid var(--border);border-radius:3px;padding:6px;min-height:60px;outline:none;"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head" data-section="contacts">
+            <span class="arr">▸</span> Related Contacts (3)
+          </div>
+          <div class="panel-body" id="panel-contacts"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head" data-section="files">
+            <span class="arr">▸</span> Files & Attachments
+          </div>
+          <div class="panel-body" id="panel-files"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Approval workflow modal -->
+    <div class="modal-back" id="modalBack">
+      <div class="modal" role="dialog" aria-label="Approval workflow">
+        <div class="modal-title" id="modalTitle">Submit for approval</div>
+        <div class="step-progress" id="stepProgress"></div>
+        <div id="modalBody"></div>
+        <div class="modal-actions">
+          <button class="btn-ghost" id="modalBack-btn">Back</button>
+          <button class="btn-ghost" id="modalCancel">Cancel</button>
+          <button class="btn-primary" id="modalNext">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Combobox popover (shared) -->
+    <div class="cb-pop" id="cbPop" role="listbox" hidden></div>
+
+    <!-- Live chat in iframe -->
+    <iframe class="chat-frame" src="./F4-salesforce-chat.html" data-testid="chat-frame" title="Live chat"></iframe>
+
+    <div class="toast" id="toast" hidden></div>
+
+    <script>
+      // ─── Stage switcher ──────────────────────────────────────────
+      function showStage(id) {
+        document.querySelectorAll('.stage').forEach((s) => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+      }
+
+      // ─── Data ────────────────────────────────────────────────────
+      const ACCOUNTS = [
+        { id: '001A0000ZxYwVuTs', name: 'Acme Corp',       phone: '(415) 555-0100', industry: 'Technology',  owner: 'Alex Chen' },
+        { id: '001A0000abcdef01', name: 'Acme Corp',       phone: '(415) 555-0101', industry: 'Technology',  owner: 'Barbara Liu' },
+        { id: '001A0000abcdef02', name: 'Acme Corp',       phone: '(415) 555-0102', industry: 'Technology',  owner: 'Carlos Reyes' },
+        { id: '001A0000abcdef03', name: 'Beta Industries', phone: '(415) 555-0200', industry: 'Manufacturing', owner: 'Dana Park' },
+        { id: '001A0000abcdef04', name: 'Gamma Logistics', phone: '(415) 555-0300', industry: 'Transportation',owner: 'Eli Mendez' },
+        { id: '001A0000abcdef05', name: 'Delta Health',    phone: '(415) 555-0400', industry: 'Healthcare',   owner: 'Alex Chen' },
+      ];
+      const PEOPLE = ['Alex Chen', 'Barbara Liu', 'Carlos Reyes', 'Dana Park', 'Eli Mendez', 'Fiona Wu', 'George Tan'];
+      const COUNTRIES = [
+        { id: 'US', name: 'United States', states: ['California', 'New York', 'Texas', 'Washington'] },
+        { id: 'CA', name: 'Canada',        states: ['Ontario', 'Quebec', 'British Columbia'] },
+        { id: 'UK', name: 'United Kingdom',states: ['England', 'Scotland', 'Wales'] },
+        { id: 'DE', name: 'Germany',       states: ['Bavaria', 'Berlin', 'Hesse'] },
+        { id: 'JP', name: 'Japan',         states: ['Tokyo', 'Osaka', 'Kyoto'] },
+      ];
+      const INDUSTRIES = ['Technology', 'Healthcare', 'Finance', 'Manufacturing', 'Transportation', 'Education', 'Retail'];
+
+      const CONTACTS = [
+        { name: 'Jane Doe',  title: 'VP Sales',    email: 'jane.doe@acme.example' },
+        { name: 'Jane Doe',  title: 'VP Sales',    email: 'jane.doe@acme.example' },
+        { name: 'Mark Smith',title: 'CFO',         email: 'mark@acme.example' },
+      ];
+
+      // Per-record state.
+      const RECORD_STATE = {
+        country: null,
+        state: null,
+        industry: 'Technology',
+        owner: null,
+        files: [],
+      };
+
+      // ─── A2: dynamic class hash ──────────────────────────────────
+      const rand = () => Math.random().toString(36).slice(2, 8);
+      function applyDyn(el) { el.classList.add(`sf-${rand()}`); }
+
+      // ─── Login ───────────────────────────────────────────────────
+      document.getElementById('loginForm').addEventListener('submit', (ev) => {
+        ev.preventDefault();
+        setTimeout(() => {
+          showStage('stage-app');
+          renderAccounts();
+        }, 250);
+      });
+
+      // ─── Account list ────────────────────────────────────────────
+      function renderAccounts() {
+        const tbody = document.getElementById('accountsBody');
+        tbody.innerHTML = '';
+        ACCOUNTS.forEach((a) => {
+          const tr = document.createElement('tr');
+          applyDyn(tr);
+          tr.dataset.testid = `account-${a.id}`;
+          tr.innerHTML = `
+            <td><span class="account-name">${escape(a.name)}</span></td>
+            <td>${escape(a.phone)}</td>
+            <td>${escape(a.industry)}</td>
+            <td>${escape(a.owner)}</td>
+          `;
+          tr.addEventListener('click', () => openAccount(a));
+          tbody.appendChild(tr);
+        });
+      }
+
+      function openAccount(account) {
+        // B1 SPA route — URL becomes /r/Account/<id>/view
+        history.pushState({ accountId: account.id }, '', `/r/Account/${account.id}/view`);
+        document.getElementById('listView').style.display = 'none';
+        document.getElementById('recordView').style.display = 'flex';
+        document.getElementById('recordTitle').textContent = account.name;
+        document.querySelector('[data-testid="display-name"]').textContent = account.name;
+        document.querySelector('[data-testid="display-phone"]').textContent = account.phone;
+        document.getElementById('acctNumberDisplay').textContent = account.id;
+        document.getElementById('industryTrigger').textContent = account.industry;
+        showToast(`Opened ${account.name}`);
+      }
+
+      // ─── Panel expand/collapse (B3 lazy mount) ──────────────────
+      document.querySelectorAll('.panel-head').forEach((head) => {
+        head.addEventListener('click', () => {
+          const body = head.nextElementSibling;
+          const arr = head.querySelector('.arr');
+          const isOpen = body.classList.contains('open');
+          if (isOpen) {
+            body.classList.remove('open');
+            arr.classList.remove('open');
+          } else {
+            setTimeout(() => {
+              body.classList.add('open');
+              arr.classList.add('open');
+              // Lazy-render the contacts and files panels.
+              const section = head.dataset.section;
+              if (section === 'contacts') renderContacts();
+              if (section === 'files') renderFiles();
+            }, 200);
+          }
+        });
+      });
+
+      function renderContacts() {
+        const panel = document.getElementById('panel-contacts');
+        panel.innerHTML = '';
+        CONTACTS.forEach((c, idx) => {
+          const row = document.createElement('div');
+          row.className = 'related-row';
+          applyDyn(row);
+          row.dataset.testid = `contact-${idx}`;
+          row.innerHTML = `
+            <div>${escape(c.name)}</div>
+            <div>${escape(c.title)}</div>
+            <div>${escape(c.email)}</div>
+          `;
+          panel.appendChild(row);
+        });
+      }
+
+      function renderFiles() {
+        const panel = document.getElementById('panel-files');
+        panel.innerHTML = '';
+        const zone = document.createElement('div');
+        zone.className = 'attach-zone';
+        zone.dataset.testid = 'attach-zone';
+        zone.innerHTML = `
+          <input type="file" hidden data-testid="attach-input" />
+          Drag a file here or <span style="color: var(--accent); text-decoration: underline;">click to browse</span>
+        `;
+        const fileInput = zone.querySelector('input');
+        zone.addEventListener('click', (ev) => { if (ev.target !== fileInput) fileInput.click(); });
+        zone.addEventListener('dragover', (ev) => { ev.preventDefault(); zone.classList.add('dragover'); });
+        zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+        zone.addEventListener('drop', (ev) => {
+          ev.preventDefault();
+          zone.classList.remove('dragover');
+          for (const f of ev.dataTransfer.files || []) RECORD_STATE.files.push({ name: f.name, size: f.size });
+          renderFiles();
+        });
+        fileInput.addEventListener('change', (ev) => {
+          for (const f of ev.target.files || []) RECORD_STATE.files.push({ name: f.name, size: f.size });
+          renderFiles();
+        });
+        panel.appendChild(zone);
+
+        if (RECORD_STATE.files.length) {
+          const list = document.createElement('div');
+          list.style.marginTop = '8px';
+          RECORD_STATE.files.forEach((f) => {
+            const row = document.createElement('div');
+            row.className = 'related-row';
+            row.innerHTML = `<div>📎 ${escape(f.name)}</div><div>${f.size}b</div><div></div>`;
+            list.appendChild(row);
+          });
+          panel.appendChild(list);
+        }
+      }
+
+      // ─── Inline edit (B3 lazy-mount input) ──────────────────────
+      document.querySelectorAll('.pencil').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const field = btn.closest('.field').dataset.field;
+          const display = btn.parentElement.querySelector('.field-display');
+          const currentValue = display.textContent;
+          setTimeout(() => {
+            const input = document.createElement('input');
+            input.value = currentValue;
+            input.dataset.testid = `edit-${field}`;
+            input.style.flex = '1';
+            // C2 redaction triggers on sensitive types.
+            if (field === 'phone') input.type = 'tel';
+            if (field === 'ssn') input.type = 'tel';
+            if (field === 'card') {
+              input.setAttribute('autocomplete', 'cc-number');
+              input.setAttribute('name', 'cardNumber');
+            }
+            display.replaceWith(input);
+            btn.style.display = 'none';
+            input.focus();
+            input.addEventListener('blur', () => {
+              const span = document.createElement('span');
+              span.className = 'field-display';
+              span.dataset.testid = `display-${field}`;
+              span.textContent = input.value || currentValue;
+              input.replaceWith(span);
+              btn.style.display = '';
+              showToast(`Updated ${field}`);
+            });
+            input.addEventListener('keydown', (ev) => {
+              if (ev.key === 'Enter') input.blur();
+              if (ev.key === 'Escape') {
+                const span = document.createElement('span');
+                span.className = 'field-display';
+                span.textContent = currentValue;
+                input.replaceWith(span);
+                btn.style.display = '';
+              }
+            });
+          }, 150);
+        });
+      });
+
+      // ─── Combobox popover ───────────────────────────────────────
+      const cbPop = document.getElementById('cbPop');
+      let cbActive = 0;
+      let cbItems = [];
+      let cbField = null;
+      function showCb(trigger, items, field) {
+        cbItems = items;
+        cbField = field;
+        cbActive = 0;
+        renderCb('');
+        const r = trigger.getBoundingClientRect();
+        cbPop.style.top = `${window.scrollY + r.bottom + 4}px`;
+        cbPop.style.left = `${window.scrollX + r.left}px`;
+        cbPop.style.width = `${r.width}px`;
+        cbPop.hidden = false;
+        trigger.setAttribute('aria-controls', 'cbPop');
+      }
+      function renderCb(filter) {
+        cbPop.innerHTML = '';
+        const q = filter.toLowerCase();
+        const list = cbItems.filter((i) => (i.label || i).toLowerCase().includes(q));
+        if (!list.length) {
+          const empty = document.createElement('div');
+          empty.className = 'cb-empty';
+          empty.textContent = 'No matches';
+          cbPop.appendChild(empty);
+          return;
+        }
+        list.forEach((it, idx) => {
+          const opt = document.createElement('div');
+          opt.className = 'cb-opt';
+          opt.setAttribute('role', 'option');
+          opt.id = `cb-opt-${idx}`;
+          if (idx === cbActive) opt.setAttribute('aria-selected', 'true');
+          opt.textContent = it.label || it;
+          opt.addEventListener('mousedown', (ev) => {
+            ev.preventDefault();
+            applyCb(it);
+          });
+          cbPop.appendChild(opt);
+        });
+      }
+      function applyCb(item) {
+        const label = item.label || item;
+        if (cbField === 'industry') document.getElementById('industryTrigger').textContent = label;
+        if (cbField === 'country') {
+          RECORD_STATE.country = item;
+          document.getElementById('countryTrigger').textContent = label;
+          document.getElementById('stateTrigger').textContent = '— Select state —';
+          RECORD_STATE.state = null;
+        }
+        if (cbField === 'state') {
+          RECORD_STATE.state = item;
+          document.getElementById('stateTrigger').textContent = label;
+        }
+        if (cbField === 'owner') {
+          RECORD_STATE.owner = item;
+          document.getElementById('ownerTrigger').textContent = label;
+        }
+        cbPop.hidden = true;
+      }
+
+      // Industry combobox
+      document.getElementById('industryTrigger').addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        showCb(ev.currentTarget, INDUSTRIES, 'industry');
+      });
+      // Country combobox
+      document.getElementById('countryTrigger').addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        showCb(ev.currentTarget, COUNTRIES.map((c) => ({ id: c.id, label: c.name, states: c.states })), 'country');
+      });
+      // State combobox (dependent on country)
+      document.getElementById('stateTrigger').addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        if (!RECORD_STATE.country) { showToast('Pick a country first'); return; }
+        showCb(ev.currentTarget, RECORD_STATE.country.states, 'state');
+      });
+
+      // Owner lookup (B2 debounce, typeahead)
+      const ownerTrigger = document.getElementById('ownerTrigger');
+      let ownerDebounce = null;
+      let ownerInput = null;
+      ownerTrigger.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        // Inline replace trigger with an input field.
+        ownerInput = document.createElement('input');
+        ownerInput.dataset.testid = 'owner-search';
+        ownerInput.placeholder = 'Type to search owners…';
+        ownerInput.style.flex = '1';
+        ownerInput.style.padding = '4px 8px';
+        ownerInput.style.border = '1px solid var(--accent)';
+        ownerInput.style.borderRadius = '3px';
+        ownerTrigger.replaceWith(ownerInput);
+        ownerInput.focus();
+        const showOwners = (q) => {
+          const items = PEOPLE.filter((p) => p.toLowerCase().includes(q.toLowerCase()));
+          showCb(ownerInput, items, 'owner');
+        };
+        showOwners('');
+        ownerInput.addEventListener('input', () => {
+          clearTimeout(ownerDebounce);
+          ownerDebounce = setTimeout(() => showOwners(ownerInput.value), 350);
+        });
+        ownerInput.addEventListener('blur', () => {
+          setTimeout(() => {
+            const btn = document.createElement('button');
+            btn.className = 'field-cb';
+            btn.id = 'ownerTrigger';
+            btn.dataset.testid = 'owner-trigger';
+            btn.textContent = RECORD_STATE.owner || 'Search owner…';
+            ownerInput.replaceWith(btn);
+            btn.addEventListener('click', ownerTrigger.onclick || (() => {}));
+            // Re-attach the listener.
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              btn.click(); // recursive — but onclick above handles it
+            });
+          }, 200);
+        });
+      });
+
+      document.addEventListener('click', (ev) => {
+        if (!cbPop.contains(ev.target) && !ev.target.closest('.field-cb') && !ev.target.closest('[data-testid="owner-search"]')) {
+          cbPop.hidden = true;
+        }
+      });
+
+      // ─── Copy account number (D5 clipboard) ──────────────────────
+      document.getElementById('copyAcctNumber').addEventListener('click', () => {
+        const txt = document.getElementById('acctNumberDisplay').textContent;
+        navigator.clipboard?.writeText(txt).then(() => showToast(`Copied ${txt}`));
+        // Also dispatch a synthetic copy event for the recorder.
+        const ce = new ClipboardEvent('copy', { bubbles: true, cancelable: true });
+        document.dispatchEvent(ce);
+      });
+
+      // ─── Approval workflow modal (multi-step) ────────────────────
+      const APPROVAL_STEPS = [
+        { title: 'Verify account info',  body: 'Confirm the account number and primary contact are accurate before submitting.' },
+        { title: 'Select approver',      body: 'Approver: <strong>VP Sales</strong>. (Demo: hard-coded.)' },
+        { title: 'Comments for reviewer',body: '<textarea data-testid="approval-comments" rows="4" style="width:100%;padding:6px;border:1px solid var(--border);border-radius:3px;" placeholder="Anything for the reviewer?"></textarea>' },
+        { title: 'Confirm & submit',     body: 'Submit this account for approval? This will notify VP Sales.' },
+      ];
+      let approvalStep = 0;
+      document.getElementById('approveBtn').addEventListener('click', () => {
+        approvalStep = 0;
+        // B3 lazy-mount modal.
+        setTimeout(() => {
+          document.getElementById('modalBack').classList.add('open');
+          renderApproval();
+        }, 200);
+      });
+      function renderApproval() {
+        const step = APPROVAL_STEPS[approvalStep];
+        document.getElementById('modalTitle').textContent = step.title;
+        document.getElementById('modalBody').innerHTML = step.body;
+        const prog = document.getElementById('stepProgress');
+        prog.innerHTML = '';
+        APPROVAL_STEPS.forEach((s, i) => {
+          const pill = document.createElement('span');
+          pill.className = 'step-pill' + (i === approvalStep ? ' active' : i < approvalStep ? ' done' : '');
+          pill.textContent = String(i + 1);
+          prog.appendChild(pill);
+        });
+        document.getElementById('modalNext').textContent = approvalStep === APPROVAL_STEPS.length - 1 ? 'Submit' : 'Next';
+        document.getElementById('modalBack-btn').style.visibility = approvalStep === 0 ? 'hidden' : 'visible';
+      }
+      document.getElementById('modalNext').addEventListener('click', () => {
+        if (approvalStep === APPROVAL_STEPS.length - 1) {
+          document.getElementById('modalBack').classList.remove('open');
+          showToast('Submitted for approval');
+        } else {
+          approvalStep += 1;
+          renderApproval();
+        }
+      });
+      document.getElementById('modalBack-btn').addEventListener('click', () => {
+        if (approvalStep > 0) approvalStep -= 1;
+        renderApproval();
+      });
+      document.getElementById('modalCancel').addEventListener('click', () => {
+        document.getElementById('modalBack').classList.remove('open');
+      });
+
+      // ─── Generate quote (C4 multi-tab) ──────────────────────────
+      document.getElementById('quoteBtn').addEventListener('click', () => {
+        const win = window.open('about:blank', '_blank');
+        if (!win) return;
+        win.document.title = 'Quote · Acme Corp';
+        const title = document.getElementById('recordTitle').textContent;
+        const acct = document.getElementById('acctNumberDisplay').textContent;
+        win.document.body.innerHTML = `
+          <div style="font-family: sans-serif; max-width: 700px; margin: 40px auto; padding: 24px; border: 1px solid #ccc;">
+            <h1>Quote · ${escape(title)}</h1>
+            <p>Account: ${escape(acct)}</p>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr><td style="padding:6px;border-bottom:1px solid #eee;">Annual licence</td><td style="padding:6px;border-bottom:1px solid #eee;text-align:right;">$12,000</td></tr>
+              <tr><td style="padding:6px;border-bottom:1px solid #eee;">Support (Gold)</td><td style="padding:6px;border-bottom:1px solid #eee;text-align:right;">$3,600</td></tr>
+              <tr><td style="padding:6px;font-weight:600;">Total</td><td style="padding:6px;font-weight:600;text-align:right;">$15,600</td></tr>
+            </table>
+            <p style="color:#666;font-size:12px;margin-top:24px;">This document was generated for demo purposes.</p>
+          </div>
+        `;
+      });
+
+      // ─── App switcher ───────────────────────────────────────────
+      document.getElementById('appSwitcher').addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        document.getElementById('appPop').classList.toggle('open');
+      });
+      document.addEventListener('click', (ev) => {
+        if (!ev.target.closest('#appSwitcher')) document.getElementById('appPop').classList.remove('open');
+      });
+
+      // ─── Nav links ──────────────────────────────────────────────
+      document.querySelectorAll('.topbar .nav-link').forEach((link) => {
+        link.addEventListener('click', () => {
+          document.querySelectorAll('.topbar .nav-link').forEach((l) => l.classList.remove('active'));
+          link.classList.add('active');
+          history.pushState({ route: link.dataset.route }, '', `/lightning/o/${link.dataset.route}`);
+        });
+      });
+
+      // ─── Global shortcuts ───────────────────────────────────────
+      document.addEventListener('keydown', (ev) => {
+        if ((ev.metaKey || ev.ctrlKey) && ev.key === 's' && !ev.shiftKey) {
+          ev.preventDefault();
+          showToast('Record saved (⌘S)');
+        }
+        if ((ev.metaKey || ev.ctrlKey) && ev.key === ',') {
+          ev.preventDefault();
+          showToast('Settings (not implemented)');
+        }
+      });
+
+      // ─── Util ───────────────────────────────────────────────────
+      const toastEl = document.getElementById('toast');
+      let toastTimer = null;
+      function showToast(msg) {
+        toastEl.hidden = false;
+        toastEl.textContent = msg;
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => { toastEl.hidden = true; }, 1800);
+      }
+      function escape(s) {
+        return (s || '').replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+      }
+    </script>
+  </body>
+</html>

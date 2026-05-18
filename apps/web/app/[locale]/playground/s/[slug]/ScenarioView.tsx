@@ -2,7 +2,13 @@
 
 import Link from 'next/link';
 import styled from 'styled-components';
-import type { Scenario } from '../../scenarios';
+import { SCENARIOS, type Scenario } from '../../scenarios';
+
+/** Map a coverage tag like "A2" → the slug of the fixture that demos it. */
+function coverageSlug(tag: string): string | null {
+  const match = SCENARIOS.find((s) => s.slug.startsWith(tag + '-') || s.slug === tag);
+  return match?.slug ?? null;
+}
 
 const Wrap = styled.div`
   max-width: 1100px;
@@ -137,6 +143,30 @@ const CodeBlock = styled.pre`
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 `;
 
+const CoverageGrid = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+`;
+
+const CoverageChip = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 12px;
+  background: rgba(48, 92, 222, 0.08);
+  border: 1px solid rgba(48, 92, 222, 0.18);
+  color: var(--color-primary-500);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  text-decoration: none;
+
+  &:hover {
+    background: rgba(48, 92, 222, 0.14);
+  }
+`;
+
 const BackLink = styled(Link)`
   display: inline-flex;
   align-items: center;
@@ -190,10 +220,34 @@ export default function ScenarioView({ scenario }: Props) {
             <CardBody>{scenario.whyHard}</CardBody>
           </Card>
 
-          <Card>
-            <CardTitle>Expected recorder output</CardTitle>
-            <CodeBlock>{JSON.stringify(scenario.expected, null, 2)}</CodeBlock>
-          </Card>
+          {scenario.coverage?.length ? (
+            <Card>
+              <CardTitle>Difficulty points covered</CardTitle>
+              <CardBody style={{ marginBottom: 'var(--space-3)' }}>
+                Each tag below links to the isolated demo for that single difficulty point — useful
+                if the composite breaks somewhere and you want to bisect.
+              </CardBody>
+              <CoverageGrid>
+                {scenario.coverage.map((tag) => {
+                  const slug = coverageSlug(tag);
+                  return slug ? (
+                    <CoverageChip key={tag} href={`/playground/s/${slug}`}>
+                      {tag}
+                    </CoverageChip>
+                  ) : (
+                    <CoverageChip key={tag} as="span" href="#" onClick={(e: React.MouseEvent) => e.preventDefault()}>
+                      {tag}
+                    </CoverageChip>
+                  );
+                })}
+              </CoverageGrid>
+            </Card>
+          ) : (
+            <Card>
+              <CardTitle>Expected recorder output</CardTitle>
+              <CodeBlock>{JSON.stringify(scenario.expected, null, 2)}</CodeBlock>
+            </Card>
+          )}
         </Side>
       </Layout>
     </Wrap>

@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>F1 · Notion-style block editor</title>
+    <style>
+      :root {
+        --bg: #fbfaf7;
+        --surface: #ffffff;
+        --text: #37352f;
+        --muted: #9b9a97;
+        --border: #ebebea;
+        --accent: #2383e2;
+        --highlight: rgba(35, 131, 226, 0.07);
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; }
+      body {
+        font: 15px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: var(--text);
+        background: var(--bg);
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* ── Sidebar ──────────────────────────────────────────────────── */
+      .sidebar {
+        width: 248px;
+        background: #f7f6f3;
+        border-right: 1px solid var(--border);
+        padding: 12px 8px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .workspace {
+        display: flex; align-items: center; gap: 8px;
+        padding: 6px 8px; border-radius: 4px; cursor: pointer;
+      }
+      .workspace:hover { background: rgba(55, 53, 47, 0.08); }
+      .avatar {
+        width: 22px; height: 22px; border-radius: 5px;
+        background: linear-gradient(135deg, #ffb86c, #ff79c6);
+        display: flex; align-items: center; justify-content: center;
+        color: white; font-weight: 600; font-size: 12px;
+      }
+      .workspace-name { font-weight: 600; font-size: 14px; }
+      .sidebar-section { margin-top: 16px; padding: 0 4px; }
+      .section-title {
+        font-size: 12px; color: var(--muted); padding: 4px 6px;
+        text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600;
+      }
+      .page-link {
+        display: flex; align-items: center; gap: 6px;
+        padding: 4px 8px; border-radius: 4px;
+        cursor: pointer; font-size: 14px; color: var(--text);
+        user-select: none;
+      }
+      .page-link:hover { background: rgba(55, 53, 47, 0.06); }
+      .page-link.active { background: rgba(35, 131, 226, 0.12); color: #1a73e8; }
+      .page-icon { font-size: 14px; }
+
+      /* ── Main ─────────────────────────────────────────────────────── */
+      .main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+      .topbar {
+        height: 44px; border-bottom: 1px solid var(--border);
+        background: var(--surface); display: flex; align-items: center;
+        padding: 0 16px; gap: 16px; font-size: 13px; color: var(--muted);
+      }
+      .breadcrumb { display: flex; align-items: center; gap: 6px; }
+      .topbar-spacer { flex: 1; }
+      .topbar-btn {
+        background: transparent; border: 0; padding: 4px 8px; border-radius: 4px;
+        cursor: pointer; color: var(--text); font-size: 13px;
+      }
+      .topbar-btn:hover { background: rgba(55, 53, 47, 0.06); }
+
+      .cover {
+        height: 140px;
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        position: relative;
+      }
+      .cover.dragover { outline: 2px dashed var(--accent); outline-offset: -8px; }
+      .cover-prompt {
+        position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+        color: rgba(55, 53, 47, 0.6); font-size: 13px; pointer-events: none;
+      }
+
+      .doc {
+        max-width: 760px; margin: 0 auto; padding: 36px 96px 120px;
+        width: 100%;
+      }
+      .page-title {
+        font-family: 'Georgia', 'Times New Roman', serif;
+        font-size: 40px; font-weight: 700; line-height: 1.2;
+        outline: none; padding: 4px 0; margin-bottom: 16px;
+      }
+      .page-title:empty::before {
+        content: attr(data-placeholder); color: rgba(55, 53, 47, 0.4);
+      }
+
+      .block-row {
+        position: relative;
+        display: flex; align-items: flex-start;
+        padding: 2px 0;
+      }
+      .drag-handle {
+        position: absolute; left: -28px; top: 4px;
+        width: 22px; height: 22px;
+        display: flex; align-items: center; justify-content: center;
+        opacity: 0; cursor: grab; color: var(--muted);
+        border-radius: 4px;
+        font-size: 16px;
+        user-select: none;
+      }
+      .block-row:hover .drag-handle { opacity: 1; }
+      .drag-handle:hover { background: rgba(55, 53, 47, 0.08); }
+      .block-row.dragging { opacity: 0.4; }
+      .block-row.drop-target { border-top: 2px solid var(--accent); }
+
+      .block {
+        flex: 1; outline: none; padding: 3px 2px;
+        font-size: 15px; line-height: 1.55;
+        border-radius: 3px;
+      }
+      .block:empty::before {
+        content: attr(data-placeholder); color: rgba(55, 53, 47, 0.35);
+      }
+      .block[data-type="heading"] { font-size: 28px; font-weight: 700; margin-top: 24px; }
+      .block[data-type="subheading"] { font-size: 22px; font-weight: 600; margin-top: 16px; }
+      .block[data-type="callout"] {
+        background: rgba(35, 131, 226, 0.07);
+        border-left: 3px solid var(--accent);
+        padding: 12px 16px; border-radius: 4px;
+      }
+      .block-row[data-block-type="todo"] { align-items: center; gap: 8px; }
+      .todo-check {
+        width: 18px; height: 18px;
+        border: 1.5px solid var(--muted); border-radius: 3px;
+        cursor: pointer;
+        display: inline-flex; align-items: center; justify-content: center;
+        font-size: 12px; color: white;
+        background: white;
+        flex-shrink: 0;
+      }
+      .todo-check.checked { background: var(--accent); border-color: var(--accent); }
+      .todo-check.checked::after { content: '✓'; }
+      .block.done { text-decoration: line-through; color: var(--muted); }
+
+      .toggle-row { display: flex; align-items: flex-start; gap: 6px; }
+      .toggle-caret {
+        width: 18px; height: 18px;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer;
+        color: var(--muted);
+        transition: transform 0.18s;
+        font-size: 11px;
+        flex-shrink: 0;
+        margin-top: 4px;
+      }
+      .toggle-caret.open { transform: rotate(90deg); }
+      .toggle-children {
+        margin-left: 24px;
+        margin-top: 4px;
+        display: none;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .toggle-children.open { display: flex; }
+      .toggle-children .block { color: var(--text); }
+
+      .mention { background: var(--highlight); padding: 1px 3px; border-radius: 3px; color: var(--accent); }
+      .mention[data-i18n-key] { /* locale-stable */ }
+
+      /* ── Slash command picker ─────────────────────────────────────── */
+      .picker {
+        position: absolute; z-index: 100;
+        background: white; border: 1px solid var(--border);
+        border-radius: 6px;
+        box-shadow: 0 12px 32px rgba(15, 15, 15, 0.12);
+        padding: 6px; width: 280px;
+        max-height: 320px; overflow: auto;
+      }
+      .picker[hidden] { display: none; }
+      .picker-header {
+        font-size: 11px; color: var(--muted); padding: 6px 8px;
+        text-transform: uppercase; letter-spacing: 0.04em;
+      }
+      .picker-option {
+        display: flex; align-items: center; gap: 10px;
+        padding: 6px 8px; border-radius: 4px; cursor: pointer;
+      }
+      .picker-option[aria-selected="true"] { background: rgba(35, 131, 226, 0.12); }
+      .picker-option .pi-icon {
+        width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
+        background: #f7f6f3; border-radius: 4px; font-size: 14px;
+      }
+      .picker-option .pi-label { font-weight: 500; font-size: 14px; }
+      .picker-option .pi-hint { font-size: 12px; color: var(--muted); }
+
+      /* ── Footer status ─────────────────────────────────────────────── */
+      .status-line {
+        position: fixed; bottom: 14px; right: 18px;
+        font-size: 12px; color: var(--muted);
+        background: white; padding: 4px 10px; border-radius: 12px;
+        border: 1px solid var(--border);
+      }
+      .status-line[hidden] { display: none; }
+    </style>
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="workspace">
+        <div class="avatar">A</div>
+        <span class="workspace-name">Acme Workspace</span>
+      </div>
+      <div class="sidebar-section">
+        <div class="section-title">Private</div>
+        <div class="page-link" data-page-id="meeting"   ><span class="page-icon">📝</span> Meeting notes</div>
+        <div class="page-link active" data-page-id="project"><span class="page-icon">🚀</span> Project plan</div>
+        <div class="page-link" data-page-id="reading"   ><span class="page-icon">📚</span> Reading list</div>
+        <div class="page-link" data-page-id="travel"    ><span class="page-icon">✈️</span> Travel ideas</div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="breadcrumb"><span id="crumb-page">Project plan</span></div>
+        <div class="topbar-spacer"></div>
+        <button class="topbar-btn" data-testid="share">Share</button>
+        <button class="topbar-btn" data-testid="favorite">★ Favorite</button>
+      </div>
+
+      <div class="cover" id="cover" data-testid="cover">
+        <div class="cover-prompt">Drag an image here to set a cover</div>
+      </div>
+
+      <div class="doc">
+        <h1
+          class="page-title"
+          contenteditable="true"
+          data-testid="page-title"
+          data-i18n-key="page.title"
+          data-placeholder="Untitled"
+        >Project plan</h1>
+
+        <div id="blocks"></div>
+      </div>
+    </main>
+
+    <div class="picker" id="picker" role="listbox" hidden></div>
+    <div class="status-line" id="status" hidden></div>
+
+    <script>
+      // ─── Pseudo-random "hash" for block class (A2) ─────────────────
+      const rand = () => Math.random().toString(36).slice(2, 8);
+
+      // ─── State ────────────────────────────────────────────────────
+      const PAGES = {
+        project: {
+          id: 'b3e1a0c2-2a17-4e0e-9d3c-1c39c4f6f8a1',
+          title: 'Project plan',
+          blocks: [
+            { type: 'heading',     text: 'Q3 launch plan' },
+            { type: 'text',        text: 'A short note before we dive in: priorities shift weekly; tag ' +
+                                          '<span class="mention" data-i18n-key="user.alex" data-testid="mention-alex">@Alex</span> for any scope changes.' },
+            { type: 'todo',        text: 'Draft launch one-pager', done: true },
+            { type: 'todo',        text: 'Draft launch one-pager', done: false },
+            { type: 'todo',        text: 'Draft launch one-pager', done: false },
+            { type: 'callout',     text: 'Heads up: marketing freeze starts Friday — get banners reviewed before then.' },
+            { type: 'toggle',      text: 'Engineering tasks', open: false, children: [
+              { type: 'text', text: 'Wire up the new auth provider' },
+              { type: 'text', text: 'Migrate from REST to GraphQL' },
+              { type: 'text', text: 'Backfill telemetry on the old endpoints' },
+            ] },
+            { type: 'subheading',  text: 'Open questions' },
+            { type: 'text',        text: 'Type "/" on an empty line to insert a block. Type "@" to mention.' },
+          ],
+        },
+        meeting: { id: '11d2c2c4-5b88-4cf3-8b8e-cf2cccc02611', title: 'Meeting notes', blocks: [
+          { type: 'heading', text: 'Standup · Today' },
+          { type: 'text', text: 'Quick notes from the morning sync. Drag this block to reorder.' },
+          { type: 'todo', text: 'Action item — follow up with finance', done: false },
+        ] },
+        reading: { id: '4cf83b2a-bb6c-4e6a-a25f-d2a26d8f6c5d', title: 'Reading list', blocks: [
+          { type: 'heading', text: 'Reading list' },
+          { type: 'text', text: 'Papers I want to revisit this quarter.' },
+        ] },
+        travel: { id: '9a82da18-3a02-4f00-bbd5-2e6c8b1a2e30', title: 'Travel ideas', blocks: [
+          { type: 'heading', text: 'Trips for 2026' },
+          { type: 'text', text: 'Brainstorm. Edit freely.' },
+        ] },
+      };
+
+      let currentPageId = 'project';
+
+      const BLOCK_LIBRARY = [
+        { type: 'text',       label: 'Text',       icon: '¶',  hint: 'Plain paragraph' },
+        { type: 'heading',    label: 'Heading 1',  icon: 'H₁', hint: 'Large heading' },
+        { type: 'subheading', label: 'Heading 2',  icon: 'H₂', hint: 'Smaller heading' },
+        { type: 'todo',       label: 'To-do',      icon: '☐',  hint: 'Checkbox list item' },
+        { type: 'callout',    label: 'Callout',    icon: '💡', hint: 'Highlighted box' },
+        { type: 'toggle',     label: 'Toggle',     icon: '▶',  hint: 'Collapsible block' },
+      ];
+
+      const MENTION_LIBRARY = [
+        { key: 'user.alex',    label: 'Alex Chen',    role: 'PM' },
+        { key: 'user.barbara', label: 'Barbara Liu',  role: 'Eng' },
+        { key: 'user.carlos',  label: 'Carlos Reyes', role: 'Design' },
+        { key: 'user.dana',    label: 'Dana Park',    role: 'Eng' },
+      ];
+
+      // ─── Rendering ────────────────────────────────────────────────
+      const blocksEl = document.getElementById('blocks');
+
+      function render() {
+        blocksEl.innerHTML = '';
+        const page = PAGES[currentPageId];
+        document.querySelector('[data-testid="page-title"]').textContent = page.title;
+        document.getElementById('crumb-page').textContent = page.title;
+        for (const block of page.blocks) blocksEl.appendChild(buildBlockRow(block));
+        // Active page in sidebar
+        for (const link of document.querySelectorAll('.page-link')) {
+          link.classList.toggle('active', link.dataset.pageId === currentPageId);
+        }
+      }
+
+      function buildBlockRow(block) {
+        const row = document.createElement('div');
+        row.className = 'block-row';
+        row.dataset.blockType = block.type;
+        row.dataset.blockHash = `block-${rand()}`;
+        row.classList.add(row.dataset.blockHash);
+        row.draggable = false;
+
+        const handle = document.createElement('div');
+        handle.className = 'drag-handle';
+        handle.textContent = '⋮⋮';
+        handle.draggable = true;
+        handle.title = 'Drag to reorder';
+        row.appendChild(handle);
+
+        if (block.type === 'todo') {
+          const check = document.createElement('div');
+          check.className = 'todo-check' + (block.done ? ' checked' : '');
+          check.setAttribute('role', 'checkbox');
+          check.setAttribute('aria-checked', String(!!block.done));
+          check.setAttribute('aria-label', 'toggle todo');
+          check.addEventListener('click', () => {
+            block.done = !block.done;
+            render();
+          });
+          row.appendChild(check);
+        }
+
+        if (block.type === 'toggle') {
+          const wrap = document.createElement('div');
+          wrap.style.flex = '1';
+
+          const top = document.createElement('div');
+          top.className = 'toggle-row';
+          const caret = document.createElement('div');
+          caret.className = 'toggle-caret' + (block.open ? ' open' : '');
+          caret.textContent = '▶';
+          caret.setAttribute('aria-label', 'expand');
+          caret.addEventListener('click', () => {
+            // B3 lazy-mount — render children after 200ms to demonstrate the
+            // "wait for the new element" expectation.
+            if (!block.open) {
+              setTimeout(() => {
+                block.open = true;
+                render();
+              }, 200);
+            } else {
+              block.open = false;
+              render();
+            }
+          });
+          top.appendChild(caret);
+          const text = makeContentEditable(block, 'List a section…');
+          top.appendChild(text);
+          wrap.appendChild(top);
+
+          const children = document.createElement('div');
+          children.className = 'toggle-children' + (block.open ? ' open' : '');
+          if (block.open) {
+            for (const child of block.children || []) {
+              const childRow = document.createElement('div');
+              childRow.className = 'block-row';
+              childRow.dataset.blockType = child.type;
+              childRow.dataset.blockHash = `block-${rand()}`;
+              const childText = makeContentEditable(child, '');
+              childRow.appendChild(childText);
+              children.appendChild(childRow);
+            }
+          }
+          wrap.appendChild(children);
+          row.appendChild(wrap);
+        } else {
+          const editable = makeContentEditable(block, placeholderFor(block.type));
+          if (block.type === 'todo' && block.done) editable.classList.add('done');
+          row.appendChild(editable);
+        }
+
+        return row;
+      }
+
+      function placeholderFor(type) {
+        if (type === 'heading') return 'Heading 1';
+        if (type === 'subheading') return 'Heading 2';
+        if (type === 'todo') return 'To-do…';
+        if (type === 'callout') return 'Type something';
+        return "Type '/' for commands";
+      }
+
+      function makeContentEditable(block, placeholder) {
+        const el = document.createElement('div');
+        el.className = 'block';
+        el.dataset.type = block.type;
+        el.contentEditable = 'true';
+        el.spellcheck = false;
+        el.dataset.placeholder = placeholder;
+        el.innerHTML = block.text || '';
+        el.addEventListener('input', () => {
+          block.text = el.innerHTML;
+        });
+        el.addEventListener('keydown', onBlockKey);
+        return el;
+      }
+
+      // ─── Slash + mention pickers ─────────────────────────────────
+      const picker = document.getElementById('picker');
+      let pickerMode = null; // 'slash' | 'mention'
+      let pickerActiveIndex = 0;
+      let pickerTargetBlock = null;
+
+      function openPicker(mode, atEl, query = '') {
+        pickerMode = mode;
+        pickerTargetBlock = atEl;
+        pickerActiveIndex = 0;
+        renderPicker(query);
+        const rect = atEl.getBoundingClientRect();
+        picker.style.top = `${window.scrollY + rect.bottom + 4}px`;
+        picker.style.left = `${rect.left}px`;
+        picker.hidden = false;
+      }
+      function closePicker() {
+        picker.hidden = true;
+        pickerMode = null;
+        pickerTargetBlock = null;
+      }
+      function renderPicker(query) {
+        picker.innerHTML = '';
+        const header = document.createElement('div');
+        header.className = 'picker-header';
+        header.textContent = pickerMode === 'slash' ? `Blocks · ${query}` : `Mention · ${query}`;
+        picker.appendChild(header);
+        const q = query.toLowerCase();
+        const items =
+          pickerMode === 'slash'
+            ? BLOCK_LIBRARY.filter((b) => b.label.toLowerCase().includes(q))
+            : MENTION_LIBRARY.filter((m) => m.label.toLowerCase().includes(q));
+        if (!items.length) {
+          const empty = document.createElement('div');
+          empty.className = 'picker-header';
+          empty.textContent = 'No matches';
+          picker.appendChild(empty);
+          return;
+        }
+        items.forEach((item, idx) => {
+          const opt = document.createElement('div');
+          opt.className = 'picker-option';
+          opt.setAttribute('role', 'option');
+          opt.id = `picker-opt-${idx}`;
+          if (idx === pickerActiveIndex) {
+            opt.setAttribute('aria-selected', 'true');
+          }
+          const icon = document.createElement('span');
+          icon.className = 'pi-icon';
+          icon.textContent = pickerMode === 'slash' ? item.icon : item.label.charAt(0);
+          opt.appendChild(icon);
+          const right = document.createElement('div');
+          const label = document.createElement('div');
+          label.className = 'pi-label';
+          label.textContent = pickerMode === 'slash' ? item.label : item.label;
+          right.appendChild(label);
+          const hint = document.createElement('div');
+          hint.className = 'pi-hint';
+          hint.textContent = pickerMode === 'slash' ? item.hint : item.role;
+          right.appendChild(hint);
+          opt.appendChild(right);
+          opt.addEventListener('mousedown', (ev) => {
+            ev.preventDefault();
+            chooseOption(item);
+          });
+          picker.appendChild(opt);
+        });
+      }
+
+      function chooseOption(item) {
+        if (pickerMode === 'slash' && pickerTargetBlock) {
+          // Replace the current block's type.
+          const idx = currentBlockIndex(pickerTargetBlock);
+          if (idx >= 0) {
+            PAGES[currentPageId].blocks[idx] = { type: item.type, text: '' };
+            render();
+            // Focus the new block
+            setTimeout(() => {
+              const rows = blocksEl.querySelectorAll('.block-row');
+              const target = rows[idx]?.querySelector('.block');
+              if (target) target.focus();
+            }, 0);
+          }
+        } else if (pickerMode === 'mention' && pickerTargetBlock) {
+          // Insert a mention chip at the caret.
+          insertMentionAtCaret(pickerTargetBlock, item);
+        }
+        closePicker();
+      }
+
+      function insertMentionAtCaret(blockEl, mention) {
+        const chip = `<span class="mention" data-i18n-key="${mention.key}" data-testid="mention-${mention.key.split('.')[1]}">@${mention.label}</span>&nbsp;`;
+        const sel = window.getSelection();
+        if (!sel.rangeCount) return;
+        const range = sel.getRangeAt(0);
+        // Walk back to delete the leading "@..." trigger
+        const textNode = range.startContainer;
+        if (textNode.nodeType === 3) {
+          const before = textNode.nodeValue.slice(0, range.startOffset);
+          const m = before.match(/@\w*$/);
+          if (m) {
+            const newRange = document.createRange();
+            newRange.setStart(textNode, range.startOffset - m[0].length);
+            newRange.setEnd(textNode, range.startOffset);
+            newRange.deleteContents();
+          }
+        }
+        const frag = range.createContextualFragment(chip);
+        range.insertNode(frag);
+        range.collapse(false);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        // Sync text back into block state by re-reading innerHTML
+        const idx = currentBlockIndex(blockEl);
+        if (idx >= 0) PAGES[currentPageId].blocks[idx].text = blockEl.innerHTML;
+      }
+
+      function currentBlockIndex(blockEl) {
+        const rows = Array.from(blocksEl.querySelectorAll(':scope > .block-row'));
+        const row = blockEl.closest('.block-row');
+        return rows.indexOf(row);
+      }
+
+      // ─── Block input handling ───────────────────────────────────
+      function onBlockKey(ev) {
+        const blockEl = ev.currentTarget;
+        if (ev.key === 'Escape') {
+          closePicker();
+          return;
+        }
+        if (!picker.hidden) {
+          if (ev.key === 'ArrowDown') {
+            ev.preventDefault();
+            pickerActiveIndex = Math.min(pickerActiveIndex + 1, currentPickerItemCount() - 1);
+            const opts = picker.querySelectorAll('.picker-option');
+            opts.forEach((o, i) => o.setAttribute('aria-selected', String(i === pickerActiveIndex)));
+            blockEl.setAttribute('aria-activedescendant', `picker-opt-${pickerActiveIndex}`);
+            return;
+          }
+          if (ev.key === 'ArrowUp') {
+            ev.preventDefault();
+            pickerActiveIndex = Math.max(pickerActiveIndex - 1, 0);
+            const opts = picker.querySelectorAll('.picker-option');
+            opts.forEach((o, i) => o.setAttribute('aria-selected', String(i === pickerActiveIndex)));
+            blockEl.setAttribute('aria-activedescendant', `picker-opt-${pickerActiveIndex}`);
+            return;
+          }
+          if (ev.key === 'Enter') {
+            ev.preventDefault();
+            const opts = picker.querySelectorAll('.picker-option');
+            opts[pickerActiveIndex]?.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+            return;
+          }
+        }
+        // Cmd-/ or Ctrl-/ — open slash menu
+        if ((ev.metaKey || ev.ctrlKey) && ev.key === '/') {
+          ev.preventDefault();
+          openPicker('slash', blockEl, '');
+          blockEl.setAttribute('aria-controls', 'picker');
+          return;
+        }
+        // Cmd-Enter — insert a new text block below
+        if ((ev.metaKey || ev.ctrlKey) && ev.key === 'Enter') {
+          ev.preventDefault();
+          const idx = currentBlockIndex(blockEl);
+          PAGES[currentPageId].blocks.splice(idx + 1, 0, { type: 'text', text: '' });
+          render();
+          setTimeout(() => {
+            const rows = blocksEl.querySelectorAll('.block-row');
+            rows[idx + 1]?.querySelector('.block')?.focus();
+          }, 0);
+          return;
+        }
+
+        // Detect trigger characters AFTER the keystroke is committed.
+        setTimeout(() => {
+          const sel = window.getSelection();
+          if (!sel.rangeCount) return;
+          const range = sel.getRangeAt(0);
+          const tNode = range.startContainer;
+          if (tNode.nodeType !== 3) return;
+          const before = tNode.nodeValue.slice(0, range.startOffset);
+          // Slash command — only at start of block
+          const slashMatch = before.match(/(^|\s)\/(\w*)$/);
+          if (slashMatch && before.trim().startsWith('/')) {
+            openPicker('slash', blockEl, slashMatch[2]);
+            return;
+          }
+          // @-mention — anywhere
+          const mentionMatch = before.match(/@(\w*)$/);
+          if (mentionMatch) {
+            openPicker('mention', blockEl, mentionMatch[1]);
+            return;
+          }
+          if (!picker.hidden) closePicker();
+        }, 0);
+      }
+      function currentPickerItemCount() {
+        return picker.querySelectorAll('.picker-option').length;
+      }
+
+      document.addEventListener('click', (ev) => {
+        if (!picker.contains(ev.target)) closePicker();
+      });
+
+      // ─── Drag and drop reordering (D1) ────────────────────────────
+      let dragSourceIdx = null;
+      blocksEl.addEventListener('dragstart', (ev) => {
+        const handle = ev.target.closest('.drag-handle');
+        if (!handle) return;
+        const row = handle.closest('.block-row');
+        dragSourceIdx = currentBlockIndex(row.querySelector('.block') || row.querySelector('.toggle-row'));
+        row.classList.add('dragging');
+        ev.dataTransfer.effectAllowed = 'move';
+        ev.dataTransfer.setData('text/plain', String(dragSourceIdx));
+      });
+      blocksEl.addEventListener('dragover', (ev) => {
+        ev.preventDefault();
+        ev.dataTransfer.dropEffect = 'move';
+        const row = ev.target.closest('.block-row');
+        if (!row) return;
+        blocksEl.querySelectorAll('.block-row').forEach((r) => r.classList.remove('drop-target'));
+        row.classList.add('drop-target');
+      });
+      blocksEl.addEventListener('drop', (ev) => {
+        ev.preventDefault();
+        const row = ev.target.closest('.block-row');
+        blocksEl.querySelectorAll('.block-row').forEach((r) => {
+          r.classList.remove('drop-target');
+          r.classList.remove('dragging');
+        });
+        if (!row || dragSourceIdx == null) return;
+        const targetIdx = Array.from(blocksEl.children).indexOf(row);
+        if (targetIdx < 0 || targetIdx === dragSourceIdx) return;
+        const blocks = PAGES[currentPageId].blocks;
+        const [moved] = blocks.splice(dragSourceIdx, 1);
+        blocks.splice(targetIdx, 0, moved);
+        dragSourceIdx = null;
+        render();
+        flashStatus(`Reordered → "${stripHtml(moved.text).slice(0, 32)}"`);
+      });
+      blocksEl.addEventListener('dragend', () => {
+        blocksEl.querySelectorAll('.block-row').forEach((r) => r.classList.remove('dragging'));
+        dragSourceIdx = null;
+      });
+
+      // ─── Cover drag-to-upload (D1 + D2) ────────────────────────────
+      const cover = document.getElementById('cover');
+      cover.addEventListener('dragover', (ev) => {
+        ev.preventDefault();
+        cover.classList.add('dragover');
+      });
+      cover.addEventListener('dragleave', () => cover.classList.remove('dragover'));
+      cover.addEventListener('drop', (ev) => {
+        ev.preventDefault();
+        cover.classList.remove('dragover');
+        const file = ev.dataTransfer.files?.[0];
+        if (file) {
+          cover.style.background = `url('${URL.createObjectURL(file)}') center/cover`;
+          cover.querySelector('.cover-prompt')?.remove();
+          flashStatus(`Cover set → ${file.name}`);
+        }
+      });
+
+      // ─── Sidebar navigation (B1 SPA route) ─────────────────────────
+      document.querySelectorAll('.page-link').forEach((link) => {
+        link.addEventListener('click', () => {
+          const id = link.dataset.pageId;
+          if (!id || id === currentPageId) return;
+          currentPageId = id;
+          history.pushState({ pageId: id }, '', `/page/${PAGES[id].id}`);
+          render();
+          flashStatus(`Switched → ${PAGES[id].title}`);
+        });
+      });
+      window.addEventListener('popstate', (ev) => {
+        const id = ev.state?.pageId;
+        if (id && PAGES[id]) {
+          currentPageId = id;
+          render();
+        }
+      });
+      // Initialise URL on first load.
+      history.replaceState({ pageId: currentPageId }, '', `/page/${PAGES[currentPageId].id}`);
+
+      // ─── Page title sync ──────────────────────────────────────────
+      const titleEl = document.querySelector('[data-testid="page-title"]');
+      titleEl.addEventListener('input', () => {
+        PAGES[currentPageId].title = titleEl.textContent || '';
+        document.getElementById('crumb-page').textContent = PAGES[currentPageId].title;
+      });
+
+      // ─── Status flash ─────────────────────────────────────────────
+      const statusEl = document.getElementById('status');
+      let statusTimer = null;
+      function flashStatus(msg) {
+        statusEl.hidden = false;
+        statusEl.textContent = msg;
+        clearTimeout(statusTimer);
+        statusTimer = setTimeout(() => { statusEl.hidden = true; }, 1800);
+      }
+
+      function stripHtml(s) {
+        const d = document.createElement('div');
+        d.innerHTML = s || '';
+        return d.textContent || '';
+      }
+
+      // First render.
+      render();
+    </script>
+  </body>
+</html>

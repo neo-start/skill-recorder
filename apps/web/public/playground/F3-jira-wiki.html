@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>F3 · Confluence-style wiki snippet</title>
+    <style>
+      body {
+        margin: 0; padding: 16px 18px;
+        font: 13px/1.5 -apple-system, BlinkMacSystemFont, sans-serif;
+        color: #172b4d;
+        background: #fff;
+      }
+      h1 { font-size: 16px; margin: 0 0 6px; }
+      .crumb { color: #6b778c; font-size: 11px; margin-bottom: 8px; }
+      h2 { font-size: 13px; margin: 14px 0 4px; }
+      p { margin: 4px 0; }
+      .info {
+        background: #e9f2ff; border-left: 3px solid #0052cc;
+        padding: 8px 10px; border-radius: 3px;
+        margin: 8px 0;
+      }
+      a { color: #0052cc; }
+      [data-testid="wiki-edit-link"] { display: inline-block; padding: 4px 8px; background: #e9ecef; border-radius: 3px; text-decoration: none; }
+    </style>
+  </head>
+  <body>
+    <div class="crumb">Spaces / Browse / Engineering / Runbooks</div>
+    <h1>Browse-Service production runbook</h1>
+    <p>Last edited 4 days ago by Barbara Liu.</p>
+
+    <div class="info">
+      <strong>On-call:</strong> If the <code>browse-service</code> health check fails, page the engineering on-call (rotation: <em>Eng-Rota</em>). Don't restart the cluster — bounce the affected pod only.
+    </div>
+
+    <h2>Common failure modes</h2>
+    <p>1. <strong>Cache backpressure</strong>: Redis OOM warnings → drain queue, scale Redis up.</p>
+    <p>2. <strong>API drift</strong>: 5xx spike after deploy → compare with last known good ref.</p>
+    <p>3. <strong>Stale tokens</strong>: 401s spike → rotate the IDP secret in Vault.</p>
+
+    <p><a href="#" data-testid="wiki-edit-link" aria-label="Edit wiki page">Edit page</a></p>
+  </body>
+</html>

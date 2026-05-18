@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>F4 · Chat widget</title>
+    <style>
+      html, body { margin: 0; padding: 0; height: 100%; }
+      body {
+        font: 13px/1.4 -apple-system, BlinkMacSystemFont, sans-serif;
+        background: white;
+        display: flex; flex-direction: column;
+        color: #16325c;
+      }
+      .head {
+        background: #1589ee; color: white;
+        padding: 10px 12px; font-weight: 600;
+        display: flex; align-items: center; gap: 8px;
+      }
+      .body { flex: 1; padding: 10px 12px; overflow: auto; }
+      .msg {
+        background: #f3f3f3; padding: 6px 8px; border-radius: 8px;
+        max-width: 80%; margin-bottom: 6px; font-size: 12px;
+      }
+      .msg.me { background: #1589ee; color: white; margin-left: auto; }
+      .input-wrap { padding: 8px; border-top: 1px solid #e5e5e5; display: flex; gap: 6px; }
+      .input-wrap input {
+        flex: 1; border: 1px solid #d8dde6; border-radius: 14px;
+        padding: 6px 10px; font: inherit;
+      }
+      .input-wrap button {
+        background: #1589ee; color: white; border: 0; border-radius: 14px;
+        padding: 4px 10px; cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="head">💬 Live chat · Sales support</div>
+    <div class="body" id="msgs">
+      <div class="msg">Hi! I'm Maria. How can I help with Acme Corp today?</div>
+    </div>
+    <div class="input-wrap">
+      <input data-testid="chat-input" placeholder="Type a message…" />
+      <button data-testid="chat-send">Send</button>
+    </div>
+    <script>
+      const input = document.querySelector('[data-testid="chat-input"]');
+      const send = document.querySelector('[data-testid="chat-send"]');
+      const msgs = document.getElementById('msgs');
+      function post() {
+        const v = input.value.trim();
+        if (!v) return;
+        const me = document.createElement('div');
+        me.className = 'msg me';
+        me.textContent = v;
+        msgs.appendChild(me);
+        input.value = '';
+        msgs.scrollTop = msgs.scrollHeight;
+      }
+      send.addEventListener('click', post);
+      input.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') post(); });
+    </script>
+  </body>
+</html>
