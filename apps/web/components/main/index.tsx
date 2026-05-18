@@ -1,12 +1,9 @@
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import HeroSection from './components/HeroSection';
-import HowItWorksSection from './components/HowItWorksSection';
-import StatsSection from './components/StatsSection';
-import FeaturesSection from './components/FeaturesSection';
-import UseCasesSection from './components/UseCasesSection';
-import TestimonialsSection from './components/TestimonialsSection';
-import FAQSection from './components/FAQSection';
+import AnatomySection from './components/AnatomySection';
+import CatalogSection from './components/CatalogSection';
+import WorkedExampleSection from './components/WorkedExampleSection';
 import CTASection from './components/CTASection';
 
 export default function HomePage() {
@@ -15,12 +12,9 @@ export default function HomePage() {
       <Navbar />
       <main>
         <HeroSection />
-        <HowItWorksSection />
-        <StatsSection />
-        <FeaturesSection />
-        <UseCasesSection />
-        <TestimonialsSection />
-        <FAQSection />
+        <AnatomySection />
+        <CatalogSection />
+        <WorkedExampleSection />
         <CTASection />
       </main>
       <Footer />

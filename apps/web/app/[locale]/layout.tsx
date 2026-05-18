@@ -21,9 +21,8 @@ export default async function LocaleLayout({
   params: { locale: string };
 }) {
   unstable_setRequestLocale(params.locale);
-  const [messages, tFaq, tMeta] = await Promise.all([
+  const [messages, tMeta] = await Promise.all([
     getMessages(),
-    getTranslations('main.faq'),
     getTranslations('main.meta'),
   ]);
 
@@ -50,20 +49,6 @@ export default async function LocaleLayout({
     },
   };
 
-  const faqItems = tFaq.raw('items') as { question: string; answer: string }[];
-  const faqJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: faqItems.map(item => ({
-      '@type': 'Question',
-      name: item.question,
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: item.answer,
-      },
-    })),
-  };
-
   return (
     <NextIntlClientProvider messages={messages}>
       <script
@@ -73,10 +58,6 @@ export default async function LocaleLayout({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
       {children}
     </NextIntlClientProvider>

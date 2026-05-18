@@ -290,6 +290,174 @@ function ExpectedJsonCard({ expected }: { expected: unknown }) {
   );
 }
 
+/* ── Replay-log card (composites only) ────────────────────────────── */
+
+const REPLAY_LOG: Record<string, string> = {
+  'F1-notion': `▸ Reading ~/.claude/skills/notion-rename-and-publish/SKILL.md
+  ✓ 9 steps · 3 params · 1 precondition (workspace cookie)
+
+▸ Step 1/9 · rename page title  ({{title}})
+  ✓ matched [contenteditable] via fingerprintIndex
+▸ Step 2/9 · open slash menu, pick "Heading 1"
+  ✓ comboboxContext.optionText="Heading 1" (filtered list)
+▸ Step 3/9 · type heading + Cmd-Enter
+  ✓ chord captured · new block inserted
+▸ Step 4/9 · @-mention "Alex Chen"
+  ✓ debounced typeahead resolved by optionText
+▸ Step 5/9 · toggle "Engineering tasks" (lazy 200ms)
+  ✓ elementVisible polled · child blocks mounted
+▸ Step 6/9 · drag block — reordered
+  ✓ dragstart → drop · dataTransfer.types=["text/html"]
+▸ Step 7/9 · click sub-page (pushState → /page/{{uuid}})
+  ✓ E2 parameter lifted · URL templated
+▸ Step 8/9 · paste from clipboard
+  ✓ navigator.clipboard.readText() restored
+▸ Step 9/9 · save
+  ✓ done in 6.4s · 0 retries`,
+
+  'F2-linear': `▸ Reading ~/.claude/skills/linear-triage-issue/SKILL.md
+  ✓ 12 steps · 4 params · 1 precondition
+
+▸ Step 1/12 · Cmd-K palette → "Switch to Board view"
+  ✓ chord + comboboxContext resolved
+▸ Step 2/12 · drag card "In Progress" → "Done"
+  ✓ dataTransfer captured · drop on column[data-status=done]
+▸ Step 3/12 · filter input (debounce 400ms)
+  ✓ awaited 412ms · 7 rows
+▸ Step 4/12 · open row → side panel (lazy 200ms)
+  ✓ panel mounted · resumed
+▸ Step 5/12 · edit title (contenteditable)
+  ✓ debounced 300ms · final innerText captured
+▸ Steps 6-9 · status / priority / assignee combobox
+  ✓ 4 typeahead picks · all by optionText fallback
+▸ Step 10/12 · paste URL → auto-linkify
+  ✓ ClipboardEvent · text/plain → <a> wrap
+▸ Step 11/12 · Cmd-Enter to post
+▸ Step 12/12 · Cmd-Shift-I new-issue modal
+  ✓ done in 11.8s · 0 retries`,
+
+  'F3-jira': `▸ Reading ~/.claude/skills/jira-update-sprint-card/SKILL.md
+  ✓ 12 steps · 3 params · 2 preconditions (cookie + 2FA)
+
+▸ Precondition 1 · supplier-portal cookie
+  ✓ resolved
+▸ Precondition 2 · 2FA challenge
+  ⏸  paused for human, code received
+  ✓ resumed
+▸ Step 1/12 · drag card "To Do" → "In Progress"
+▸ Step 2/12 · project picker → switch back
+  ✓ B1 SPA transition awaited
+▸ Step 3/12 · open card → side flyout (200ms)
+▸ Step 4/12 · select + bold (D4 contenteditable)
+▸ Step 5/12 · paste URL · auto-linkify
+▸ Step 6/12 · drag file → attach zone
+  ✓ fileMeta only · bytes not transmitted
+▸ Step 7/12 · pencil-icon: phone — input mounted
+  ⚠ sensitive field detected · masked: true (***)
+▸ Step 8/12 · due-date picker (custom combobox)
+▸ Step 9/12 · scroll → wiki iframe loaded
+  ✓ frameId 4 re-resolved by URL
+▸ Step 10/12 · "Print preview" target=_blank
+  ✓ chrome.tabs.onCreated · openerTabId tracked
+▸ done in 14.2s · 0 retries`,
+
+  'F4-salesforce': `▸ Reading ~/.claude/skills/sf-update-account/SKILL.md
+  ✓ 15 steps · 5 params · 2 preconditions
+
+▸ Step 1/15 · click "Acme Corp" row 1 (of 3 identical)
+  ✓ fingerprintIndex: 0 · row matched
+▸ Step 2/15 · /r/Account/{{accountId}}/view
+  ✓ URL segment lifted · param: accountId
+▸ Step 3/15 · pencil → Phone (B3 lazy 200ms)
+  ⚠ masked: true · *** stored
+▸ Step 4/15 · Owner typeahead "ali" (350ms debounce)
+  ✓ optionText="Alex Chen" resolved
+▸ Step 5/15 · Country → United States (D6)
+  ✓ State combobox unlocked
+▸ Step 6/15 · State → California
+▸ Step 7/15 · expand "Related Contacts (3)" (lazy)
+▸ Step 8/15 · drag file → dropzone
+  ✓ fileMeta captured · no bytes
+▸ Step 9/15 · Notes (contenteditable)
+▸ Step 10/15 · "Copy account number" → clipboard
+▸ Step 11/15 · Cmd-S · save toast
+▸ Steps 12-14 · Submit for approval (4-step modal)
+  ✓ B3 lazy cascade · all steps stepped
+▸ Step 15/15 · Generate quote → new tab
+  ✓ chrome.tabs.create · openerTabId tracked
+▸ done in 18.6s · 0 retries`,
+};
+
+const ReplayCard = styled.section`
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-primary-900);
+  color: var(--color-primary-100);
+  padding: 0;
+  overflow: hidden;
+  grid-column: 1 / -1;
+`;
+
+const ReplayHead = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-5);
+  background: rgba(122, 158, 245, 0.08);
+  border-bottom: 1px solid rgba(122, 158, 245, 0.15);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(173, 193, 247, 0.85);
+
+  span:last-child {
+    color: rgba(122, 158, 245, 0.65);
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+`;
+
+const ReplayBody = styled.pre`
+  margin: 0;
+  padding: var(--space-5) var(--space-6);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  color: rgba(214, 224, 251, 0.92);
+  white-space: pre-wrap;
+  overflow-x: auto;
+
+  /* simple syntax tinting via inline character substitutions */
+  & {
+    text-shadow: 0 0 0 transparent;
+  }
+`;
+
+function ReplayLogCard({ slug }: { slug: string }) {
+  const log = REPLAY_LOG[slug];
+  if (!log) return null;
+  // Lightly colour up the lines: prefix ▸ blue, ✓ green, ⚠ orange, ⏸ amber.
+  const lines = log.split('\n').map((line, i) => {
+    if (line.startsWith('▸')) return <span key={i} style={{ color: '#7a9ef5', fontWeight: 600 }}>{line}{'\n'}</span>;
+    if (line.includes('✓')) return <span key={i} style={{ color: '#10b981' }}>{line}{'\n'}</span>;
+    if (line.includes('⚠')) return <span key={i} style={{ color: '#fbbf24' }}>{line}{'\n'}</span>;
+    if (line.includes('⏸')) return <span key={i} style={{ color: '#fbbf24' }}>{line}{'\n'}</span>;
+    return <span key={i}>{line}{'\n'}</span>;
+  });
+  return (
+    <ReplayCard>
+      <ReplayHead>
+        <span>Replay log · claude code · stdout</span>
+        <span>simulated · not live data</span>
+      </ReplayHead>
+      <ReplayBody>{lines}</ReplayBody>
+    </ReplayCard>
+  );
+}
+
 export default function ScenarioView({ scenario }: Props) {
   const fixtureUrl = `/playground/${scenario.slug}.html`;
   const isComposite = !!scenario.coverage?.length;
@@ -322,6 +490,7 @@ export default function ScenarioView({ scenario }: Props) {
             <TryThisCard tryThis={scenario.tryThis} />
             <WhyHardCard whyHard={scenario.whyHard} />
             <CoverageCard coverage={scenario.coverage!} />
+            <ReplayLogCard slug={scenario.slug} />
           </MetaGrid>
         </TheaterLayout>
       ) : (
