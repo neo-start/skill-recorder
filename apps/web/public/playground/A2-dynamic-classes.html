@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>A2 · Dynamic Classes</title>
+    <style>
+      body { font: 14px system-ui, sans-serif; padding: 32px; }
+      button { padding: 10px 16px; cursor: pointer; }
+      .ok { color: #15803d; margin-top: 12px; }
+    </style>
+  </head>
+  <body>
+    <h1>A2 Dynamic Classes</h1>
+    <p>Each load assigns a fresh hash class. Selector resolution must not rely on classes.</p>
+    <button aria-label="primary action" id="btn-primary">Continue</button>
+    <button aria-label="secondary action" id="btn-secondary">Cancel</button>
+    <div id="result" class="ok" hidden></div>
+    <script>
+      // Mimic Tailwind JIT / CSS Modules / Vue scoped / Angular emulated
+      // encapsulation — every reload, different class strings.
+      const rand = () => Math.random().toString(36).slice(2, 8);
+      for (const b of document.querySelectorAll('button')) {
+        b.className = `btn__primary--${rand()} _ngcontent-${rand()} v-${rand()}`;
+      }
+      document.querySelectorAll('button').forEach((b) =>
+        b.addEventListener('click', () => {
+          const r = document.getElementById('result');
+          r.hidden = false;
+          r.textContent = `clicked: ${b.getAttribute('aria-label')}`;
+        }),
+      );
+    </script>
+  </body>
+</html>

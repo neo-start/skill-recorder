@@ -13,7 +13,8 @@
         "noCode": "Do Clique ao SKILL.md: Um Guia Completo",
         "leads": "Como Destilar uma Gravação em uma Skill Reutilizável",
         "pagination": "Reproduzindo Fluxos com a CLI browse"
-      }
+      },
+      "playground": "Playground"
     },
     "footer": {
       "tagline": "Grave uma vez. Reproduza para sempre.",
@@ -232,10 +233,22 @@
       "note": "Grátis durante o beta. Não requer conta."
     },
     "stats": [
-      { "value": "↓ 80%", "label": "Manutenção vs Selenium" },
-      { "value": "0", "label": "Linhas de Código Necessárias" },
-      { "value": "1 clique", "label": "Para Iniciar uma Gravação" },
-      { "value": "↑ 100%", "label": "Local — Nada Enviado" }
+      {
+        "value": "↓ 80%",
+        "label": "Manutenção vs Selenium"
+      },
+      {
+        "value": "0",
+        "label": "Linhas de Código Necessárias"
+      },
+      {
+        "value": "1 clique",
+        "label": "Para Iniciar uma Gravação"
+      },
+      {
+        "value": "↑ 100%",
+        "label": "Local — Nada Enviado"
+      }
     ]
   },
   "notFound": {
@@ -259,9 +272,18 @@
             "O Skill Recorder foi projetado para operar localmente. A extensão processa o seguinte no seu dispositivo:"
           ],
           "bullets": [
-            { "label": "Ações Gravadas:", "text": "Cliques, teclas pressionadas, navegações e snapshots de DOM dos fluxos que você inicia explicitamente. Armazenados localmente no IndexedDB do seu navegador." },
-            { "label": "Skills Destiladas:", "text": "Os arquivos SKILL.md que você gera. Armazenados localmente até que você os exporte ou exclua." },
-            { "label": "Telemetria Anônima:", "text": "Contagens básicas de eventos (por exemplo, \"gravação iniciada\", \"skill exportada\") para nos ajudar a melhorar o produto. Sem conteúdo de página, sem tokens de autenticação, sem PII." }
+            {
+              "label": "Ações Gravadas:",
+              "text": "Cliques, teclas pressionadas, navegações e snapshots de DOM dos fluxos que você inicia explicitamente. Armazenados localmente no IndexedDB do seu navegador."
+            },
+            {
+              "label": "Skills Destiladas:",
+              "text": "Os arquivos SKILL.md que você gera. Armazenados localmente até que você os exporte ou exclua."
+            },
+            {
+              "label": "Telemetria Anônima:",
+              "text": "Contagens básicas de eventos (por exemplo, \"gravação iniciada\", \"skill exportada\") para nos ajudar a melhorar o produto. Sem conteúdo de página, sem tokens de autenticação, sem PII."
+            }
           ],
           "trailing": "O Skill Recorder não coleta senhas, informações de pagamento ou qualquer conteúdo de página de sessões que você não tenha gravado explicitamente."
         },
@@ -271,10 +293,22 @@
             "As informações processadas pelo Skill Recorder são usadas apenas para:"
           ],
           "bullets": [
-            { "label": "", "text": "Reconstruir uma reprodução fiel do fluxo que você gravou." },
-            { "label": "", "text": "Executar o pipeline de destilação que transforma uma gravação bruta em um SKILL.md limpo." },
-            { "label": "", "text": "Permitir a exportação do arquivo SKILL.md para o seu sistema de arquivos quando você clicar em Baixar." },
-            { "label": "", "text": "Melhorar a usabilidade do produto por meio de contagens de eventos anonimizadas." }
+            {
+              "label": "",
+              "text": "Reconstruir uma reprodução fiel do fluxo que você gravou."
+            },
+            {
+              "label": "",
+              "text": "Executar o pipeline de destilação que transforma uma gravação bruta em um SKILL.md limpo."
+            },
+            {
+              "label": "",
+              "text": "Permitir a exportação do arquivo SKILL.md para o seu sistema de arquivos quando você clicar em Baixar."
+            },
+            {
+              "label": "",
+              "text": "Melhorar a usabilidade do produto por meio de contagens de eventos anonimizadas."
+            }
           ],
           "trailing": "Não usamos seus dados para publicidade, perfilamento comportamental ou rastreamento entre sites."
         },
@@ -282,8 +316,14 @@
           "heading": "3. Armazenamento e Retenção de Dados",
           "paragraphs": [],
           "bullets": [
-            { "label": "Armazenamento Local:", "text": "Gravações, skills destiladas e preferências ficam no IndexedDB e no chrome.storage do seu navegador. Permanecem no seu dispositivo até que você as exclua." },
-            { "label": "Sem Sincronização na Nuvem:", "text": "O Skill Recorder não faz upload das suas gravações para nenhum servidor. Não há conta, não há histórico na nuvem, não há workspace compartilhado." }
+            {
+              "label": "Armazenamento Local:",
+              "text": "Gravações, skills destiladas e preferências ficam no IndexedDB e no chrome.storage do seu navegador. Permanecem no seu dispositivo até que você as exclua."
+            },
+            {
+              "label": "Sem Sincronização na Nuvem:",
+              "text": "O Skill Recorder não faz upload das suas gravações para nenhum servidor. Não há conta, não há histórico na nuvem, não há workspace compartilhado."
+            }
           ],
           "trailing": "Você pode limpar todos os dados armazenados localmente a qualquer momento pelas configurações da extensão ou desinstalando a extensão."
         },
@@ -294,8 +334,14 @@
             "Essas chamadas não incluem nenhum conteúdo de página ou ações gravadas."
           ],
           "bullets": [
-            { "label": "Verificação de Atualização:", "text": "Chrome Web Store, para receber atualizações da extensão." },
-            { "label": "Telemetria:", "text": "Um endpoint de analytics anonimizado, usado apenas para contar eventos opt-in. Desativado se você optar por sair." }
+            {
+              "label": "Verificação de Atualização:",
+              "text": "Chrome Web Store, para receber atualizações da extensão."
+            },
+            {
+              "label": "Telemetria:",
+              "text": "Um endpoint de analytics anonimizado, usado apenas para contar eventos opt-in. Desativado se você optar por sair."
+            }
           ]
         },
         {
@@ -304,10 +350,22 @@
             "O Skill Recorder solicita as seguintes permissões para funcionar:"
           ],
           "bullets": [
-            { "label": "activeTab:", "text": "Acessar a aba que você escolhe explicitamente para gravar." },
-            { "label": "scripting:", "text": "Injetar o content script que captura cliques, teclas pressionadas e navegações durante uma gravação." },
-            { "label": "storage:", "text": "Persistir gravações e skills destiladas localmente no seu dispositivo." },
-            { "label": "sidePanel:", "text": "Abrir o painel lateral de gravação que lista os fluxos capturados." }
+            {
+              "label": "activeTab:",
+              "text": "Acessar a aba que você escolhe explicitamente para gravar."
+            },
+            {
+              "label": "scripting:",
+              "text": "Injetar o content script que captura cliques, teclas pressionadas e navegações durante uma gravação."
+            },
+            {
+              "label": "storage:",
+              "text": "Persistir gravações e skills destiladas localmente no seu dispositivo."
+            },
+            {
+              "label": "sidePanel:",
+              "text": "Abrir o painel lateral de gravação que lista os fluxos capturados."
+            }
           ]
         },
         {
@@ -353,10 +411,22 @@
             "Você pode usar o Skill Recorder apenas para fins lícitos. Você concorda em não:"
           ],
           "bullets": [
-            { "label": "", "text": "Gravar ou automatizar fluxos que violem os Termos de Serviço ou as diretrizes de robots.txt de um site." },
-            { "label": "", "text": "Usar o Skill Recorder para coletar dados pessoais de indivíduos sem o consentimento deles." },
-            { "label": "", "text": "Usar o Serviço para se envolver em qualquer atividade ilegal, incluindo acesso não autorizado a contas, spam ou fraude." },
-            { "label": "", "text": "Tentar fazer engenharia reversa, modificar ou redistribuir a extensão sem permissão." }
+            {
+              "label": "",
+              "text": "Gravar ou automatizar fluxos que violem os Termos de Serviço ou as diretrizes de robots.txt de um site."
+            },
+            {
+              "label": "",
+              "text": "Usar o Skill Recorder para coletar dados pessoais de indivíduos sem o consentimento deles."
+            },
+            {
+              "label": "",
+              "text": "Usar o Serviço para se envolver em qualquer atividade ilegal, incluindo acesso não autorizado a contas, spam ou fraude."
+            },
+            {
+              "label": "",
+              "text": "Tentar fazer engenharia reversa, modificar ou redistribuir a extensão sem permissão."
+            }
           ],
           "trailing": "Você é o único responsável por garantir que seu uso do Skill Recorder esteja em conformidade com as leis aplicáveis e com os termos de qualquer site que você gravar."
         },

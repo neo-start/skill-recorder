@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>A3 · Identical Siblings</title>
+    <style>
+      body { font: 14px system-ui, sans-serif; padding: 32px; }
+      ul { list-style: none; padding: 0; }
+      li { display: flex; gap: 12px; padding: 8px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 6px; }
+      li button { background: #f3f4f6; border: 1px solid #bbb; border-radius: 4px; padding: 4px 10px; cursor: pointer; }
+      .ok { color: #15803d; margin-top: 12px; }
+    </style>
+  </head>
+  <body>
+    <h1>A3 Identical Siblings</h1>
+    <p>Six rows with structurally-identical "Pick" buttons (same text, same role, no IDs). Only position distinguishes them.</p>
+    <ul id="rows">
+      <li><span>Row 1</span><button>Pick</button></li>
+      <li><span>Row 2</span><button>Pick</button></li>
+      <li><span>Row 3</span><button>Pick</button></li>
+      <li><span>Row 4</span><button>Pick</button></li>
+      <li><span>Row 5</span><button>Pick</button></li>
+      <li><span>Row 6</span><button>Pick</button></li>
+    </ul>
+    <div id="result" class="ok" hidden></div>
+    <script>
+      document.querySelectorAll('#rows li').forEach((li, idx) => {
+        li.querySelector('button').addEventListener('click', () => {
+          const r = document.getElementById('result');
+          r.hidden = false;
+          r.textContent = `picked row ${idx + 1}`;
+        });
+      });
+    </script>
+  </body>
+</html>

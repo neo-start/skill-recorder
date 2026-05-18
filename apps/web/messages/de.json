@@ -13,7 +13,8 @@
         "noCode": "Vom Klick zur SKILL.md: Eine vollständige Anleitung",
         "leads": "Wie du eine Aufzeichnung in einen wiederverwendbaren Skill destillierst",
         "pagination": "Flows mit der browse CLI wiedergeben"
-      }
+      },
+      "playground": "Playground"
     },
     "footer": {
       "tagline": "Einmal aufzeichnen. Für immer wiedergeben.",
@@ -232,10 +233,22 @@
       "note": "Während der Beta kostenlos. Kein Konto erforderlich."
     },
     "stats": [
-      { "value": "↓ 80%", "label": "Wartung im Vergleich zu Selenium" },
-      { "value": "0", "label": "Erforderliche Code-Zeilen" },
-      { "value": "1 Klick", "label": "Um eine Aufzeichnung zu starten" },
-      { "value": "↑ 100%", "label": "Lokal — nichts wird hochgeladen" }
+      {
+        "value": "↓ 80%",
+        "label": "Wartung im Vergleich zu Selenium"
+      },
+      {
+        "value": "0",
+        "label": "Erforderliche Code-Zeilen"
+      },
+      {
+        "value": "1 Klick",
+        "label": "Um eine Aufzeichnung zu starten"
+      },
+      {
+        "value": "↑ 100%",
+        "label": "Lokal — nichts wird hochgeladen"
+      }
     ]
   },
   "notFound": {
@@ -259,9 +272,18 @@
             "Skill Recorder ist darauf ausgelegt, lokal zu arbeiten. Die Erweiterung verarbeitet Folgendes auf deinem Gerät:"
           ],
           "bullets": [
-            { "label": "Aufgezeichnete Aktionen:", "text": "Klicks, Tastatureingaben, Navigationen und DOM-Snapshots aus Flows, deren Aufzeichnung du ausdrücklich startest. Lokal in der IndexedDB deines Browsers gespeichert." },
-            { "label": "Destillierte Skills:", "text": "Die SKILL.md-Dateien, die du erzeugst. Lokal gespeichert, bis du sie exportierst oder löschst." },
-            { "label": "Anonyme Telemetrie:", "text": "Grundlegende Ereigniszählungen (z. B. \"recording started\", \"skill exported\"), um uns bei der Produktverbesserung zu helfen. Keine Seiteninhalte, keine Auth-Tokens, keine personenbezogenen Daten." }
+            {
+              "label": "Aufgezeichnete Aktionen:",
+              "text": "Klicks, Tastatureingaben, Navigationen und DOM-Snapshots aus Flows, deren Aufzeichnung du ausdrücklich startest. Lokal in der IndexedDB deines Browsers gespeichert."
+            },
+            {
+              "label": "Destillierte Skills:",
+              "text": "Die SKILL.md-Dateien, die du erzeugst. Lokal gespeichert, bis du sie exportierst oder löschst."
+            },
+            {
+              "label": "Anonyme Telemetrie:",
+              "text": "Grundlegende Ereigniszählungen (z. B. \"recording started\", \"skill exported\"), um uns bei der Produktverbesserung zu helfen. Keine Seiteninhalte, keine Auth-Tokens, keine personenbezogenen Daten."
+            }
           ],
           "trailing": "Skill Recorder erfasst weder Passwörter, Zahlungsinformationen noch Seiteninhalte aus Sitzungen, die du nicht ausdrücklich aufgezeichnet hast."
         },
@@ -271,10 +293,22 @@
             "Von Skill Recorder verarbeitete Informationen werden ausschließlich genutzt, um:"
           ],
           "bullets": [
-            { "label": "", "text": "Eine getreue Wiedergabe des Flows zu rekonstruieren, den du aufgezeichnet hast." },
-            { "label": "", "text": "Die Destillationspipeline auszuführen, die aus einer rohen Aufzeichnung eine saubere SKILL.md macht." },
-            { "label": "", "text": "Den Export der SKILL.md-Datei in dein Dateisystem zu ermöglichen, wenn du auf Download klickst." },
-            { "label": "", "text": "Die Produktbedienbarkeit durch anonymisierte Ereigniszählungen zu verbessern." }
+            {
+              "label": "",
+              "text": "Eine getreue Wiedergabe des Flows zu rekonstruieren, den du aufgezeichnet hast."
+            },
+            {
+              "label": "",
+              "text": "Die Destillationspipeline auszuführen, die aus einer rohen Aufzeichnung eine saubere SKILL.md macht."
+            },
+            {
+              "label": "",
+              "text": "Den Export der SKILL.md-Datei in dein Dateisystem zu ermöglichen, wenn du auf Download klickst."
+            },
+            {
+              "label": "",
+              "text": "Die Produktbedienbarkeit durch anonymisierte Ereigniszählungen zu verbessern."
+            }
           ],
           "trailing": "Wir nutzen deine Daten nicht für Werbung, verhaltensbasiertes Profiling oder Tracking über Websites hinweg."
         },
@@ -282,8 +316,14 @@
           "heading": "3. Datenspeicherung und Aufbewahrung",
           "paragraphs": [],
           "bullets": [
-            { "label": "Lokale Speicherung:", "text": "Aufzeichnungen, destillierte Skills und Einstellungen liegen in der IndexedDB und chrome.storage deines Browsers. Sie bleiben auf deinem Gerät, bis du sie löschst." },
-            { "label": "Kein Cloud-Sync:", "text": "Skill Recorder lädt deine Aufzeichnungen auf keinen Server hoch. Es gibt kein Konto, keine Cloud-Historie, keinen gemeinsamen Workspace." }
+            {
+              "label": "Lokale Speicherung:",
+              "text": "Aufzeichnungen, destillierte Skills und Einstellungen liegen in der IndexedDB und chrome.storage deines Browsers. Sie bleiben auf deinem Gerät, bis du sie löschst."
+            },
+            {
+              "label": "Kein Cloud-Sync:",
+              "text": "Skill Recorder lädt deine Aufzeichnungen auf keinen Server hoch. Es gibt kein Konto, keine Cloud-Historie, keinen gemeinsamen Workspace."
+            }
           ],
           "trailing": "Du kannst alle lokal gespeicherten Daten jederzeit über die Einstellungen der Erweiterung oder durch Deinstallation der Erweiterung löschen."
         },
@@ -294,8 +334,14 @@
             "Diese Aufrufe enthalten keinerlei Seiteninhalte oder aufgezeichnete Aktionen."
           ],
           "bullets": [
-            { "label": "Update-Prüfung:", "text": "Chrome Web Store, um Erweiterungs-Updates zu erhalten." },
-            { "label": "Telemetrie:", "text": "Ein anonymisierter Analytics-Endpunkt, der ausschließlich zur Zählung von Opt-in-Ereignissen verwendet wird. Deaktiviert, wenn du dich abmeldest." }
+            {
+              "label": "Update-Prüfung:",
+              "text": "Chrome Web Store, um Erweiterungs-Updates zu erhalten."
+            },
+            {
+              "label": "Telemetrie:",
+              "text": "Ein anonymisierter Analytics-Endpunkt, der ausschließlich zur Zählung von Opt-in-Ereignissen verwendet wird. Deaktiviert, wenn du dich abmeldest."
+            }
           ]
         },
         {
@@ -304,10 +350,22 @@
             "Skill Recorder benötigt folgende Berechtigungen, um zu funktionieren:"
           ],
           "bullets": [
-            { "label": "activeTab:", "text": "Zugriff auf den Tab, dessen Aufzeichnung du ausdrücklich auswählst." },
-            { "label": "scripting:", "text": "Einfügen des Content-Skripts, das während einer Aufzeichnung Klicks, Tastatureingaben und Navigationen erfasst." },
-            { "label": "storage:", "text": "Lokales Persistieren von Aufzeichnungen und destillierten Skills auf deinem Gerät." },
-            { "label": "sidePanel:", "text": "Öffnen des Aufzeichnungs-Sidepanels, das deine erfassten Flows auflistet." }
+            {
+              "label": "activeTab:",
+              "text": "Zugriff auf den Tab, dessen Aufzeichnung du ausdrücklich auswählst."
+            },
+            {
+              "label": "scripting:",
+              "text": "Einfügen des Content-Skripts, das während einer Aufzeichnung Klicks, Tastatureingaben und Navigationen erfasst."
+            },
+            {
+              "label": "storage:",
+              "text": "Lokales Persistieren von Aufzeichnungen und destillierten Skills auf deinem Gerät."
+            },
+            {
+              "label": "sidePanel:",
+              "text": "Öffnen des Aufzeichnungs-Sidepanels, das deine erfassten Flows auflistet."
+            }
           ]
         },
         {
@@ -353,10 +411,22 @@
             "Du darfst Skill Recorder ausschließlich für rechtmäßige Zwecke nutzen. Du verpflichtest dich, Folgendes zu unterlassen:"
           ],
           "bullets": [
-            { "label": "", "text": "Flows aufzuzeichnen oder zu automatisieren, die gegen die Nutzungsbedingungen einer Website oder deren robots.txt-Anweisungen verstoßen." },
-            { "label": "", "text": "Skill Recorder zu nutzen, um personenbezogene Daten über Personen ohne deren Einwilligung zu sammeln." },
-            { "label": "", "text": "Den Dienst für illegale Aktivitäten zu nutzen, einschließlich unautorisiertem Kontozugriff, Spam oder Betrug." },
-            { "label": "", "text": "Zu versuchen, die Erweiterung ohne Genehmigung zu reverse-engineeren, zu verändern oder weiterzuverbreiten." }
+            {
+              "label": "",
+              "text": "Flows aufzuzeichnen oder zu automatisieren, die gegen die Nutzungsbedingungen einer Website oder deren robots.txt-Anweisungen verstoßen."
+            },
+            {
+              "label": "",
+              "text": "Skill Recorder zu nutzen, um personenbezogene Daten über Personen ohne deren Einwilligung zu sammeln."
+            },
+            {
+              "label": "",
+              "text": "Den Dienst für illegale Aktivitäten zu nutzen, einschließlich unautorisiertem Kontozugriff, Spam oder Betrug."
+            },
+            {
+              "label": "",
+              "text": "Zu versuchen, die Erweiterung ohne Genehmigung zu reverse-engineeren, zu verändern oder weiterzuverbreiten."
+            }
           ],
           "trailing": "Du allein bist dafür verantwortlich, sicherzustellen, dass deine Nutzung von Skill Recorder mit geltendem Recht und den Bedingungen jeder von dir aufgezeichneten Website übereinstimmt."
         },

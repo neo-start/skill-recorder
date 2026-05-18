@@ -13,7 +13,8 @@
         "noCode": "Du clic au SKILL.md : guide complet",
         "leads": "Comment distiller un enregistrement en compétence réutilisable",
         "pagination": "Rejouer des parcours avec le CLI browse"
-      }
+      },
+      "playground": "Démos"
     },
     "footer": {
       "tagline": "Enregistrez une fois. Rejouez à l'infini.",
@@ -232,10 +233,22 @@
       "note": "Gratuit pendant la bêta. Aucun compte requis."
     },
     "stats": [
-      { "value": "↓ 80%", "label": "Maintenance vs Selenium" },
-      { "value": "0", "label": "Lignes de code nécessaires" },
-      { "value": "1 clic", "label": "Pour démarrer un enregistrement" },
-      { "value": "↑ 100%", "label": "Local — rien n'est envoyé" }
+      {
+        "value": "↓ 80%",
+        "label": "Maintenance vs Selenium"
+      },
+      {
+        "value": "0",
+        "label": "Lignes de code nécessaires"
+      },
+      {
+        "value": "1 clic",
+        "label": "Pour démarrer un enregistrement"
+      },
+      {
+        "value": "↑ 100%",
+        "label": "Local — rien n'est envoyé"
+      }
     ]
   },
   "notFound": {
@@ -259,9 +272,18 @@
             "Skill Recorder est conçu pour fonctionner localement. L'extension traite ce qui suit sur votre appareil :"
           ],
           "bullets": [
-            { "label": "Actions enregistrées :", "text": "Clics, frappes au clavier, navigations et instantanés du DOM provenant des parcours dont vous démarrez explicitement l'enregistrement. Stockés localement dans l'IndexedDB de votre navigateur." },
-            { "label": "Compétences distillées :", "text": "Les fichiers SKILL.md que vous générez. Stockés localement jusqu'à ce que vous les exportiez ou les supprimiez." },
-            { "label": "Télémétrie anonyme :", "text": "Comptages d'événements basiques (par ex. « enregistrement démarré », « compétence exportée ») pour nous aider à améliorer le produit. Aucun contenu de page, aucun jeton d'authentification, aucune donnée personnelle." }
+            {
+              "label": "Actions enregistrées :",
+              "text": "Clics, frappes au clavier, navigations et instantanés du DOM provenant des parcours dont vous démarrez explicitement l'enregistrement. Stockés localement dans l'IndexedDB de votre navigateur."
+            },
+            {
+              "label": "Compétences distillées :",
+              "text": "Les fichiers SKILL.md que vous générez. Stockés localement jusqu'à ce que vous les exportiez ou les supprimiez."
+            },
+            {
+              "label": "Télémétrie anonyme :",
+              "text": "Comptages d'événements basiques (par ex. « enregistrement démarré », « compétence exportée ») pour nous aider à améliorer le produit. Aucun contenu de page, aucun jeton d'authentification, aucune donnée personnelle."
+            }
           ],
           "trailing": "Skill Recorder ne collecte ni mots de passe, ni informations de paiement, ni contenu de page provenant de sessions que vous n'avez pas explicitement enregistrées."
         },
@@ -271,10 +293,22 @@
             "Les informations traitées par Skill Recorder servent uniquement à :"
           ],
           "bullets": [
-            { "label": "", "text": "Reconstruire un rejeu fidèle du parcours que vous avez enregistré." },
-            { "label": "", "text": "Exécuter le pipeline de distillation qui transforme un enregistrement brut en SKILL.md propre." },
-            { "label": "", "text": "Permettre l'export du fichier SKILL.md vers votre système de fichiers lorsque vous cliquez sur Télécharger." },
-            { "label": "", "text": "Améliorer l'utilisabilité du produit via des comptages d'événements anonymisés." }
+            {
+              "label": "",
+              "text": "Reconstruire un rejeu fidèle du parcours que vous avez enregistré."
+            },
+            {
+              "label": "",
+              "text": "Exécuter le pipeline de distillation qui transforme un enregistrement brut en SKILL.md propre."
+            },
+            {
+              "label": "",
+              "text": "Permettre l'export du fichier SKILL.md vers votre système de fichiers lorsque vous cliquez sur Télécharger."
+            },
+            {
+              "label": "",
+              "text": "Améliorer l'utilisabilité du produit via des comptages d'événements anonymisés."
+            }
           ],
           "trailing": "Nous n'utilisons pas vos données à des fins publicitaires, de profilage comportemental ou de suivi inter-sites."
         },
@@ -282,8 +316,14 @@
           "heading": "3. Stockage et conservation des données",
           "paragraphs": [],
           "bullets": [
-            { "label": "Stockage local :", "text": "Les enregistrements, compétences distillées et préférences résident dans l'IndexedDB et chrome.storage de votre navigateur. Ils restent sur votre appareil jusqu'à ce que vous les supprimiez." },
-            { "label": "Aucune synchronisation cloud :", "text": "Skill Recorder n'envoie vos enregistrements à aucun serveur. Il n'y a ni compte, ni historique cloud, ni espace de travail partagé." }
+            {
+              "label": "Stockage local :",
+              "text": "Les enregistrements, compétences distillées et préférences résident dans l'IndexedDB et chrome.storage de votre navigateur. Ils restent sur votre appareil jusqu'à ce que vous les supprimiez."
+            },
+            {
+              "label": "Aucune synchronisation cloud :",
+              "text": "Skill Recorder n'envoie vos enregistrements à aucun serveur. Il n'y a ni compte, ni historique cloud, ni espace de travail partagé."
+            }
           ],
           "trailing": "Vous pouvez effacer toutes les données stockées localement à tout moment via les paramètres de l'extension ou en désinstallant l'extension."
         },
@@ -294,8 +334,14 @@
             "Ces appels ne contiennent aucun contenu de page ni aucune action enregistrée."
           ],
           "bullets": [
-            { "label": "Vérification des mises à jour :", "text": "Chrome Web Store, pour recevoir les mises à jour de l'extension." },
-            { "label": "Télémétrie :", "text": "Un point de terminaison d'analytique anonymisé, utilisé uniquement pour compter des événements consentis. Désactivé si vous vous y opposez." }
+            {
+              "label": "Vérification des mises à jour :",
+              "text": "Chrome Web Store, pour recevoir les mises à jour de l'extension."
+            },
+            {
+              "label": "Télémétrie :",
+              "text": "Un point de terminaison d'analytique anonymisé, utilisé uniquement pour compter des événements consentis. Désactivé si vous vous y opposez."
+            }
           ]
         },
         {
@@ -304,10 +350,22 @@
             "Skill Recorder demande les permissions suivantes pour fonctionner :"
           ],
           "bullets": [
-            { "label": "activeTab:", "text": "Accéder à l'onglet que vous choisissez explicitement d'enregistrer." },
-            { "label": "scripting:", "text": "Injecter le script de contenu qui capture les clics, frappes et navigations pendant un enregistrement." },
-            { "label": "storage:", "text": "Conserver localement les enregistrements et les compétences distillées sur votre appareil." },
-            { "label": "sidePanel:", "text": "Ouvrir le panneau latéral d'enregistrement qui liste vos parcours capturés." }
+            {
+              "label": "activeTab:",
+              "text": "Accéder à l'onglet que vous choisissez explicitement d'enregistrer."
+            },
+            {
+              "label": "scripting:",
+              "text": "Injecter le script de contenu qui capture les clics, frappes et navigations pendant un enregistrement."
+            },
+            {
+              "label": "storage:",
+              "text": "Conserver localement les enregistrements et les compétences distillées sur votre appareil."
+            },
+            {
+              "label": "sidePanel:",
+              "text": "Ouvrir le panneau latéral d'enregistrement qui liste vos parcours capturés."
+            }
           ]
         },
         {
@@ -353,10 +411,22 @@
             "Vous pouvez utiliser Skill Recorder à des fins licites uniquement. Vous vous engagez à ne pas :"
           ],
           "bullets": [
-            { "label": "", "text": "Enregistrer ou automatiser des parcours en violation des conditions d'utilisation d'un site ou de ses directives robots.txt." },
-            { "label": "", "text": "Utiliser Skill Recorder pour collecter des données personnelles sur des personnes sans leur consentement." },
-            { "label": "", "text": "Utiliser le Service pour mener une activité illégale, y compris l'accès non autorisé à des comptes, le spam ou la fraude." },
-            { "label": "", "text": "Tenter de procéder à de l'ingénierie inverse, de modifier ou de redistribuer l'extension sans autorisation." }
+            {
+              "label": "",
+              "text": "Enregistrer ou automatiser des parcours en violation des conditions d'utilisation d'un site ou de ses directives robots.txt."
+            },
+            {
+              "label": "",
+              "text": "Utiliser Skill Recorder pour collecter des données personnelles sur des personnes sans leur consentement."
+            },
+            {
+              "label": "",
+              "text": "Utiliser le Service pour mener une activité illégale, y compris l'accès non autorisé à des comptes, le spam ou la fraude."
+            },
+            {
+              "label": "",
+              "text": "Tenter de procéder à de l'ingénierie inverse, de modifier ou de redistribuer l'extension sans autorisation."
+            }
           ],
           "trailing": "Vous êtes seul responsable de vous assurer que votre utilisation de Skill Recorder respecte les lois applicables et les conditions de tout site que vous enregistrez."
         },

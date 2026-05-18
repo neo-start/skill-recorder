@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "node scripts/middleware-toggle.mjs enabled && next dev -p 3300",
-    "build": "node scripts/middleware-toggle.mjs disabled && next build && node scripts/postbuild.mjs",
+    "dev": "node scripts/sync-playground.mjs && node scripts/middleware-toggle.mjs enabled && next dev -p 3300",
+    "build": "node scripts/sync-playground.mjs && node scripts/middleware-toggle.mjs disabled && next build && node scripts/postbuild.mjs",
     "start": "next start -p 3300",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",

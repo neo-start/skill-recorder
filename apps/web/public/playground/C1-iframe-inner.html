@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>C1 · inner</title>
+    <style>
+      body { font: 14px system-ui, sans-serif; padding: 16px; }
+      button { padding: 8px 14px; }
+    </style>
+  </head>
+  <body>
+    <h2>Inner frame</h2>
+    <button data-testid="inner-btn" aria-label="Inner action">Run inner action</button>
+    <script>
+      document.querySelector('[data-testid="inner-btn"]').addEventListener('click', () => {
+        window.parent.postMessage({ kind: 'inner-clicked', text: 'inner-btn' }, '*');
+      });
+    </script>
+  </body>
+</html>

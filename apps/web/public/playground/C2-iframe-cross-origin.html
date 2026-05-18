@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>C2 · Sensitive Field Redaction</title>
+    <style>
+      body { font: 14px system-ui, sans-serif; padding: 32px; }
+      label { display: block; margin: 8px 0; }
+      input { padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; width: 280px; font: inherit; }
+    </style>
+  </head>
+  <body>
+    <h1>C2 Sensitive field redaction</h1>
+    <p>Recorder must NOT capture cleartext values for password, phone, or credit-card fields.</p>
+    <form id="checkout">
+      <label>Email <input type="email" data-testid="email" name="email" /></label>
+      <label>Password <input type="password" data-testid="pw" name="password" /></label>
+      <label>Phone <input type="tel" data-testid="phone" name="phone" /></label>
+      <label>Card number <input data-testid="cc" name="cardNumber" autocomplete="cc-number" inputmode="numeric" /></label>
+      <label>CVC <input data-testid="cvc" name="cvc" autocomplete="cc-csc" inputmode="numeric" /></label>
+    </form>
+  </body>
+</html>

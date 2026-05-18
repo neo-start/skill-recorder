@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>D6 · ARIA Combobox</title>
+    <style>
+      body { font: 14px system-ui, sans-serif; padding: 32px; }
+      .combobox-wrap { position: relative; width: 280px; }
+      input[role="combobox"] {
+        width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1;
+        border-radius: 6px; font: inherit;
+      }
+      [role="listbox"] {
+        position: absolute; top: 100%; left: 0; right: 0;
+        background: white; border: 1px solid #cbd5e1; border-radius: 6px;
+        margin-top: 4px; max-height: 200px; overflow: auto; padding: 4px 0;
+      }
+      [role="option"] { padding: 6px 10px; cursor: pointer; }
+      [role="option"][aria-selected="true"], [role="option"].active { background: rgba(59, 130, 246, 0.12); }
+      [hidden] { display: none !important; }
+      .ok { color: #15803d; margin-top: 12px; }
+    </style>
+  </head>
+  <body>
+    <h1>D6 ARIA Combobox</h1>
+    <p>Pick a country from the autocomplete. Recorder should enrich the option click with combobox context.</p>
+    <div class="combobox-wrap">
+      <input
+        id="country-cb"
+        role="combobox"
+        aria-controls="country-listbox"
+        aria-expanded="false"
+        aria-autocomplete="list"
+        placeholder="search country"
+      />
+      <ul id="country-listbox" role="listbox" hidden></ul>
+    </div>
+    <div id="result" class="ok" hidden></div>
+    <script>
+      const COUNTRIES = ['Argentina','Brazil','Canada','Denmark','Estonia','France','Germany','Hungary','Iceland','Japan'];
+      const cb = document.getElementById('country-cb');
+      const lb = document.getElementById('country-listbox');
+      const result = document.getElementById('result');
+      let activeIdx = -1;
+      let visible = [];
+
+      function render(filter) {
+        lb.innerHTML = '';
+        const q = (filter || '').toLowerCase();
+        visible = COUNTRIES.filter((c) => c.toLowerCase().includes(q));
+        visible.forEach((c, idx) => {
+          const li = document.createElement('li');
+          li.setAttribute('role', 'option');
+          li.id = `country-opt-${idx}`;
+          li.textContent = c;
+          li.addEventListener('mousedown', (ev) => ev.preventDefault());
+          li.addEventListener('click', () => select(idx));
+          lb.appendChild(li);
+        });
+        lb.hidden = visible.length === 0;
+        cb.setAttribute('aria-expanded', String(visible.length > 0));
+        activeIdx = -1;
+        cb.removeAttribute('aria-activedescendant');
+      }
+
+      function setActive(idx) {
+        if (idx < 0 || idx >= visible.length) return;
+        Array.from(lb.children).forEach((li, i) => {
+          li.classList.toggle('active', i === idx);
+          li.setAttribute('aria-selected', i === idx ? 'true' : 'false');
+        });
+        activeIdx = idx;
+        cb.setAttribute('aria-activedescendant', `country-opt-${idx}`);
+      }
+
+      function select(idx) {
+        const value = visible[idx];
+        cb.value = value;
+        lb.hidden = true;
+        cb.setAttribute('aria-expanded', 'false');
+        result.hidden = false;
+        result.textContent = `selected: ${value}`;
+      }
+
+      cb.addEventListener('input', () => render(cb.value));
+      cb.addEventListener('focus', () => render(cb.value));
+      cb.addEventListener('keydown', (ev) => {
+        if (ev.key === 'ArrowDown') {
+          ev.preventDefault();
+          setActive(Math.min(activeIdx + 1, visible.length - 1) || (activeIdx < 0 ? 0 : activeIdx));
+        } else if (ev.key === 'ArrowUp') {
+          ev.preventDefault();
+          setActive(Math.max(activeIdx - 1, 0));
+        } else if (ev.key === 'Enter') {
+          if (activeIdx >= 0) {
+            ev.preventDefault();
+            select(activeIdx);
+          }
+        }
+      });
+
+      render('');
+      lb.hidden = true;
+    </script>
+  </body>
+</html>

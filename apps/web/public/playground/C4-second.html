@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>C4 · second tab</title>
+    <style>
+      body { font: 14px system-ui, sans-serif; padding: 32px; }
+      button { padding: 8px 14px; }
+      .ok { color: #15803d; margin-top: 12px; }
+    </style>
+  </head>
+  <body>
+    <h1>Second tab</h1>
+    <button data-testid="confirm-on-second" aria-label="Confirm on second tab">Confirm on second tab</button>
+    <div id="result" class="ok" hidden></div>
+    <script>
+      document.querySelector('[data-testid="confirm-on-second"]').addEventListener('click', () => {
+        const r = document.getElementById('result');
+        r.hidden = false;
+        r.textContent = 'second-tab confirm clicked';
+      });
+    </script>
+  </body>
+</html>

@@ -13,7 +13,8 @@
         "noCode": "Van klik naar SKILL.md: een complete walkthrough",
         "leads": "Hoe je een opname distilleert tot een herbruikbare skill",
         "pagination": "Flows afspelen met de browse CLI"
-      }
+      },
+      "playground": "Playground"
     },
     "footer": {
       "tagline": "Eén keer opnemen. Eeuwig afspelen.",
@@ -232,10 +233,22 @@
       "note": "Gratis tijdens de beta. Geen account nodig."
     },
     "stats": [
-      { "value": "↓ 80%", "label": "Onderhoud t.o.v. Selenium" },
-      { "value": "0", "label": "Regels code nodig" },
-      { "value": "1 klik", "label": "Om een opname te starten" },
-      { "value": "↑ 100%", "label": "Lokaal — niets geüpload" }
+      {
+        "value": "↓ 80%",
+        "label": "Onderhoud t.o.v. Selenium"
+      },
+      {
+        "value": "0",
+        "label": "Regels code nodig"
+      },
+      {
+        "value": "1 klik",
+        "label": "Om een opname te starten"
+      },
+      {
+        "value": "↑ 100%",
+        "label": "Lokaal — niets geüpload"
+      }
     ]
   },
   "notFound": {
@@ -259,9 +272,18 @@
             "Skill Recorder is ontworpen om lokaal te werken. De extensie verwerkt het volgende op je apparaat:"
           ],
           "bullets": [
-            { "label": "Opgenomen acties:", "text": "Kliks, toetsaanslagen, navigaties en DOM-snapshots van flows die je expliciet bent gaan opnemen. Lokaal opgeslagen in de IndexedDB van je browser." },
-            { "label": "Gedistilleerde skills:", "text": "De SKILL.md-bestanden die je genereert. Lokaal opgeslagen totdat je ze exporteert of verwijdert." },
-            { "label": "Anonieme telemetrie:", "text": "Basistellingen van events (bijv. \"opname gestart\", \"skill geëxporteerd\") om ons te helpen het product te verbeteren. Geen paginacontent, geen auth-tokens, geen PII." }
+            {
+              "label": "Opgenomen acties:",
+              "text": "Kliks, toetsaanslagen, navigaties en DOM-snapshots van flows die je expliciet bent gaan opnemen. Lokaal opgeslagen in de IndexedDB van je browser."
+            },
+            {
+              "label": "Gedistilleerde skills:",
+              "text": "De SKILL.md-bestanden die je genereert. Lokaal opgeslagen totdat je ze exporteert of verwijdert."
+            },
+            {
+              "label": "Anonieme telemetrie:",
+              "text": "Basistellingen van events (bijv. \"opname gestart\", \"skill geëxporteerd\") om ons te helpen het product te verbeteren. Geen paginacontent, geen auth-tokens, geen PII."
+            }
           ],
           "trailing": "Skill Recorder verzamelt geen wachtwoorden, betalingsinformatie of paginacontent van sessies die je niet expliciet hebt opgenomen."
         },
@@ -271,10 +293,22 @@
             "Informatie die door Skill Recorder wordt verwerkt, wordt uitsluitend gebruikt om:"
           ],
           "bullets": [
-            { "label": "", "text": "Een getrouwe replay van de door jou opgenomen flow te reconstrueren." },
-            { "label": "", "text": "De distillatiepipeline uit te voeren die een ruwe opname omzet in een schone SKILL.md." },
-            { "label": "", "text": "Het exporteren van het SKILL.md-bestand naar je filesystem mogelijk te maken wanneer je op Downloaden klikt." },
-            { "label": "", "text": "De bruikbaarheid van het product te verbeteren via geanonimiseerde event-tellingen." }
+            {
+              "label": "",
+              "text": "Een getrouwe replay van de door jou opgenomen flow te reconstrueren."
+            },
+            {
+              "label": "",
+              "text": "De distillatiepipeline uit te voeren die een ruwe opname omzet in een schone SKILL.md."
+            },
+            {
+              "label": "",
+              "text": "Het exporteren van het SKILL.md-bestand naar je filesystem mogelijk te maken wanneer je op Downloaden klikt."
+            },
+            {
+              "label": "",
+              "text": "De bruikbaarheid van het product te verbeteren via geanonimiseerde event-tellingen."
+            }
           ],
           "trailing": "We gebruiken je data niet voor advertenties, gedragsprofilering of cross-site tracking."
         },
@@ -282,8 +316,14 @@
           "heading": "3. Gegevensopslag en bewaartermijn",
           "paragraphs": [],
           "bullets": [
-            { "label": "Lokale opslag:", "text": "Opnames, gedistilleerde skills en voorkeuren leven in de IndexedDB en chrome.storage van je browser. Ze blijven op je apparaat totdat je ze verwijdert." },
-            { "label": "Geen cloudsync:", "text": "Skill Recorder uploadt je opnames niet naar enige server. Er is geen account, geen cloudgeschiedenis, geen gedeelde workspace." }
+            {
+              "label": "Lokale opslag:",
+              "text": "Opnames, gedistilleerde skills en voorkeuren leven in de IndexedDB en chrome.storage van je browser. Ze blijven op je apparaat totdat je ze verwijdert."
+            },
+            {
+              "label": "Geen cloudsync:",
+              "text": "Skill Recorder uploadt je opnames niet naar enige server. Er is geen account, geen cloudgeschiedenis, geen gedeelde workspace."
+            }
           ],
           "trailing": "Je kunt alle lokaal opgeslagen data op elk moment wissen via de instellingen van de extensie of door de extensie te de-installeren."
         },
@@ -294,8 +334,14 @@
             "Deze aanroepen bevatten geen paginacontent of opgenomen acties."
           ],
           "bullets": [
-            { "label": "Update-check:", "text": "Chrome Web Store, om extensie-updates te ontvangen." },
-            { "label": "Telemetrie:", "text": "Een geanonimiseerd analytics-endpoint, uitsluitend gebruikt om opt-in events te tellen. Uitgeschakeld als je je afmeldt." }
+            {
+              "label": "Update-check:",
+              "text": "Chrome Web Store, om extensie-updates te ontvangen."
+            },
+            {
+              "label": "Telemetrie:",
+              "text": "Een geanonimiseerd analytics-endpoint, uitsluitend gebruikt om opt-in events te tellen. Uitgeschakeld als je je afmeldt."
+            }
           ]
         },
         {
@@ -304,10 +350,22 @@
             "Skill Recorder vraagt de volgende machtigingen aan om te functioneren:"
           ],
           "bullets": [
-            { "label": "activeTab:", "text": "Toegang tot de tab die je expliciet kiest om op te nemen." },
-            { "label": "scripting:", "text": "Injecteert het content script dat kliks, toetsaanslagen en navigaties vastlegt tijdens een opname." },
-            { "label": "storage:", "text": "Bewaart opnames en gedistilleerde skills lokaal op je apparaat." },
-            { "label": "sidePanel:", "text": "Opent het opname-zijpaneel dat je vastgelegde flows toont." }
+            {
+              "label": "activeTab:",
+              "text": "Toegang tot de tab die je expliciet kiest om op te nemen."
+            },
+            {
+              "label": "scripting:",
+              "text": "Injecteert het content script dat kliks, toetsaanslagen en navigaties vastlegt tijdens een opname."
+            },
+            {
+              "label": "storage:",
+              "text": "Bewaart opnames en gedistilleerde skills lokaal op je apparaat."
+            },
+            {
+              "label": "sidePanel:",
+              "text": "Opent het opname-zijpaneel dat je vastgelegde flows toont."
+            }
           ]
         },
         {
@@ -353,10 +411,22 @@
             "Je mag Skill Recorder alleen voor wettige doeleinden gebruiken. Je gaat ermee akkoord om niet:"
           ],
           "bullets": [
-            { "label": "", "text": "Flows op te nemen of te automatiseren in strijd met de servicevoorwaarden of robots.txt-richtlijnen van een website." },
-            { "label": "", "text": "Skill Recorder te gebruiken om persoonsgegevens van individuen te verzamelen zonder hun toestemming." },
-            { "label": "", "text": "De Service te gebruiken voor illegale activiteiten, waaronder ongeautoriseerde accounttoegang, spam of fraude." },
-            { "label": "", "text": "Te proberen de extensie te reverse-engineeren, te wijzigen of zonder toestemming opnieuw te verspreiden." }
+            {
+              "label": "",
+              "text": "Flows op te nemen of te automatiseren in strijd met de servicevoorwaarden of robots.txt-richtlijnen van een website."
+            },
+            {
+              "label": "",
+              "text": "Skill Recorder te gebruiken om persoonsgegevens van individuen te verzamelen zonder hun toestemming."
+            },
+            {
+              "label": "",
+              "text": "De Service te gebruiken voor illegale activiteiten, waaronder ongeautoriseerde accounttoegang, spam of fraude."
+            },
+            {
+              "label": "",
+              "text": "Te proberen de extensie te reverse-engineeren, te wijzigen of zonder toestemming opnieuw te verspreiden."
+            }
           ],
           "trailing": "Je bent als enige verantwoordelijk om ervoor te zorgen dat je gebruik van Skill Recorder voldoet aan de toepasselijke wetgeving en de voorwaarden van elke website die je opneemt."
         },

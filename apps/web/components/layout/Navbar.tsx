@@ -84,6 +84,30 @@ const Spacer = styled.div`
   flex: 1;
 `;
 
+const NavLinks = styled.nav`
+  display: none;
+  align-items: center;
+  gap: var(--space-5);
+  flex-shrink: 0;
+
+  @media (min-width: 768px) {
+    display: flex;
+  }
+`;
+
+const NavLink = styled(Link)`
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text);
+  text-decoration: none;
+  padding: 6px 4px;
+  transition: color var(--transition-fast);
+
+  &:hover {
+    color: var(--color-primary-500);
+  }
+`;
+
 const Actions = styled.div`
   display: none;
   align-items: center;
@@ -170,6 +194,17 @@ const MobileCta = styled.div`
   & > a { width: 100%; }
 `;
 
+const MobileLink = styled(Link)`
+  display: block;
+  padding: var(--space-3) 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-text);
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: var(--space-3);
+`;
+
 const NavCta = styled(Button)`
   height: 40px;
   padding-inline: 18px;
@@ -198,6 +233,10 @@ export default function Navbar() {
 
         <Spacer />
 
+        <NavLinks>
+          <NavLink href="/playground">{t('playground')}</NavLink>
+        </NavLinks>
+
         <Actions>
           <LanguageSelector variant="default" />
           <NavCta variant="primary" size="md" href={withUTM(CTA_URL, 'navbar_cta')}>
@@ -217,6 +256,9 @@ export default function Navbar() {
 
       {menuOpen && (
         <MobileMenu>
+          <MobileLink href="/playground" onClick={() => setMenuOpen(false)}>
+            {t('playground')}
+          </MobileLink>
           <MobileCta>
             <NavCta variant="primary" size="md" href={withUTM(CTA_URL, 'navbar_cta_mobile')}>
               <ChromeIcon />
