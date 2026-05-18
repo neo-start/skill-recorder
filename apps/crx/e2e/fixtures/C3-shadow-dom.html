@@ -1,8 +1,41 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><title>C3-shadow-dom (stub)</title></head>
-<body style="font:14px system-ui,sans-serif;padding:32px">
-<h1>C3-shadow-dom</h1>
-<p>Placeholder. Implemented in its respective roadmap phase.</p>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>C3 · Shadow DOM</title>
+    <style>
+      body { font: 14px system-ui, sans-serif; padding: 32px; }
+      .ok { color: #15803d; margin-top: 12px; }
+    </style>
+  </head>
+  <body>
+    <h1>C3 Shadow DOM</h1>
+    <p>A custom element with an open shadow root. The clickable button lives inside the shadow tree — light-DOM selectors cannot reach it.</p>
+    <my-card id="card1"></my-card>
+    <div id="result" class="ok" hidden></div>
+    <script>
+      class MyCard extends HTMLElement {
+        constructor() {
+          super();
+          const root = this.attachShadow({ mode: 'open' });
+          root.innerHTML = `
+            <style>
+              :host { display: block; padding: 16px; border: 1px solid #cbd5e1; border-radius: 8px; margin-top: 12px; width: 280px; }
+              button { padding: 6px 12px; }
+            </style>
+            <div>
+              <h3>Inside shadow root</h3>
+              <button id="inside-btn">Click me (shadow)</button>
+            </div>
+          `;
+          root.getElementById('inside-btn').addEventListener('click', () => {
+            const r = document.getElementById('result');
+            r.hidden = false;
+            r.textContent = 'shadow button clicked';
+          });
+        }
+      }
+      customElements.define('my-card', MyCard);
+    </script>
+  </body>
 </html>

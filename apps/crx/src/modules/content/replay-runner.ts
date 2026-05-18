@@ -41,6 +41,9 @@ export async function executeStep(
         return await runCopy(step);
       case 'paste':
         return await runPaste(step, attempt);
+      case 'switchTab':
+        // Handled exclusively in background; content shouldn't see this.
+        return { ok: true };
     }
   } catch (err) {
     return { ok: false, reason: (err as Error).message };
@@ -51,6 +54,17 @@ async function runClick(
   step: ActionStep,
   attempt: number,
 ): Promise<{ ok: boolean; reason?: string }> {
+  // C4: anchor with target="_blank" — synthetic clicks (and even el.click())
+  // are blocked by popup-blockers without real user activation. Surface a
+  // structured failure so the background can open the tab via chrome.tabs.create.
+  // We probe with the highest-priority selector before committing to this path.
+  if (attempt === 0 && step.selectors?.length) {
+    const probe = await resolveElement(step.selectors, step.fingerprint, { timeoutMs: 500 });
+    if (probe instanceof HTMLAnchorElement && probe.target === '_blank' && probe.href) {
+      return { ok: false, reason: `requiresNewTab:${probe.href}` };
+    }
+  }
+
   // Attempt 1: prefer fallback selectors (skip the highest-score one we already tried).
   const selectorPool =
     attempt === 1 && step.selectors && step.selectors.length > 1

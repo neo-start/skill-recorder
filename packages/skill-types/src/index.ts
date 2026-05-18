@@ -34,9 +34,10 @@ export type ActionStepType =
   | 'submit'
   | 'drag'
   | 'copy'
-  | 'paste';
+  | 'paste'
+  | 'switchTab';
 
-export type SelectorKind = 'testid' | 'id' | 'aria' | 'text' | 'css' | 'xpath';
+export type SelectorKind = 'testid' | 'id' | 'aria' | 'text' | 'css' | 'xpath' | 'shadow';
 
 export interface SelectorEntry {
   kind: SelectorKind;
@@ -73,6 +74,12 @@ export interface ActionStep {
   timestamp: number;
   /** URL at the moment the action fired. */
   url: string;
+  /**
+   * Frame the action originated in (Chrome webNavigation frameId). 0 / absent
+   * means the main document. Subframes carry their numeric frameId so replay
+   * can route EXECUTE_STEP back to the same frame.
+   */
+  frameId?: number;
 
   // navigate
   navigateUrl?: string;
@@ -109,6 +116,11 @@ export interface ActionStep {
   // scroll
   scrollX?: number;
   scrollY?: number;
+
+  // switchTab (C4) — logical tab index in the order tabs were tracked by the
+  // recording session, NOT a chrome tab id. Replay maps logical → live tabId.
+  targetTabIndex?: number;
+  targetTabUrl?: string;
 
   // drag (D1)
   /** Source element of the drag. `selectors`/`fingerprint` describe the same thing. */
@@ -207,7 +219,7 @@ export interface ReplayState {
 
 // ─── Skill (distilled, reusable) ───
 
-export type SkillActionType = 'navigate' | 'click' | 'fill' | 'press_key' | 'scroll' | 'submit' | 'drag' | 'copy' | 'paste';
+export type SkillActionType = 'navigate' | 'click' | 'fill' | 'press_key' | 'scroll' | 'submit' | 'drag' | 'copy' | 'paste' | 'switchTab';
 
 export interface SkillParameter {
   name: string;

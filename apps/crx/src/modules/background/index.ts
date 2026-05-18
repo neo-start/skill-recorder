@@ -20,7 +20,16 @@ const KEEPALIVE_ALARM = 'recorder-keepalive';
 
 interface ActiveRecording {
   meta: RecordingMeta;
+  /** The primary tab — first one the user started recording on. */
   tabId: number;
+  /**
+   * Every tab that's logically part of this recording session, in the order
+   * they appeared. Index 0 is always `tabId`. Subsequent entries are tabs
+   * opened by the recording (e.g. `target="_blank"` link) that we attached to.
+   */
+  tabIds: number[];
+  /** Whichever tabId is currently focused — drives `switchTab` emit. */
+  activeTabId: number;
   port: chrome.runtime.Port | null;
   buffer: eventWithTime[];
   bufferBytes: number;
@@ -33,6 +42,7 @@ interface ActiveRecording {
 let activeRec: ActiveRecording | null = null;
 let lastError: string | null = null;
 const replay = new ReplayManager();
+replay.setFramePortLookup((tabId, frameId) => tabPorts.get(tabId)?.get(frameId));
 
 // Replay session bookkeeping for the debug log dump.
 let replayDumpInfo: { recordingId: string; startedAt: number } | null = null;
@@ -69,8 +79,39 @@ replay.setOnChange(() => {
   broadcastState();
 });
 
-/** All currently-connected content-script ports, keyed by tabId. */
-const tabPorts = new Map<number, chrome.runtime.Port>();
+/**
+ * All currently-connected content-script ports, keyed by (tabId, frameId).
+ * frameId 0 is the main frame; subframes get their own positive frameId from
+ * chrome.webNavigation. We track per-frame ports so iframe actions are routed
+ * back to the correct frame at replay time.
+ */
+const tabPorts = new Map<number, Map<number, chrome.runtime.Port>>();
+
+function setFramePort(tabId: number, frameId: number, port: chrome.runtime.Port): void {
+  let frames = tabPorts.get(tabId);
+  if (!frames) {
+    frames = new Map();
+    tabPorts.set(tabId, frames);
+  }
+  frames.set(frameId, port);
+}
+function deleteFramePort(tabId: number, frameId: number, port?: chrome.runtime.Port): boolean {
+  const frames = tabPorts.get(tabId);
+  if (!frames) return false;
+  const existing = frames.get(frameId);
+  if (existing && port && existing !== port) return false;
+  const ok = frames.delete(frameId);
+  if (frames.size === 0) tabPorts.delete(tabId);
+  return ok;
+}
+function getMainFramePort(tabId: number): chrome.runtime.Port | undefined {
+  return tabPorts.get(tabId)?.get(0);
+}
+function getAllFramePorts(tabId: number): Array<{ frameId: number; port: chrome.runtime.Port }> {
+  const frames = tabPorts.get(tabId);
+  if (!frames) return [];
+  return Array.from(frames.entries()).map(([frameId, port]) => ({ frameId, port }));
+}
 
 // ─── lifecycle ───
 
@@ -114,6 +155,7 @@ chrome.runtime.onMessage.addListener((msg: SidepanelToBackground, _sender, sendR
 chrome.runtime.onConnect.addListener((port) => {
   if (port.name !== PORT_NAME) return;
   const tabId = port.sender?.tab?.id;
+  const frameId = port.sender?.frameId ?? 0;
   if (tabId === undefined) {
     try {
       port.disconnect();
@@ -122,7 +164,7 @@ chrome.runtime.onConnect.addListener((port) => {
     }
     return;
   }
-  tabPorts.set(tabId, port);
+  setFramePort(tabId, frameId, port);
 
   port.onMessage.addListener((m: ContentToBackground) => {
     if (m.type === 'HELLO') {
@@ -133,22 +175,32 @@ chrome.runtime.onConnect.addListener((port) => {
       } catch {
         return;
       }
-      if (role === 'recording' && activeRec && activeRec.tabId === tabId) {
-        activeRec.port = port;
-        activeRec.lastUrl = m.url;
-        activeRec.meta.viewport = m.viewport;
+      if (role === 'recording' && activeRec && activeRec.tabIds.includes(tabId)) {
+        // activeRec.port is the primary tab's main frame port; secondary
+        // tabs (C4) keep their port only in tabPorts and route via tabIds.
+        if (frameId === 0 && tabId === activeRec.tabId) {
+          activeRec.port = port;
+          activeRec.lastUrl = m.url;
+          activeRec.meta.viewport = m.viewport;
+        }
         try {
           port.postMessage({ type: 'START_CAPTURE' } satisfies BackgroundToContent);
         } catch {
           /* ignore */
         }
       } else if (role === 'replaying') {
-        replay.onContentConnect(tabId, port);
+        // Hand the main-frame port to the replay manager so it has a baseline
+        // to send EXECUTE_STEP to. Frame-scoped routing happens at dispatch.
+        if (frameId === 0) replay.onContentConnect(tabId, port);
       }
       return;
     }
 
     if (m.type === 'RRWEB_EVENT') {
+      // Only the main frame produces rrweb events worth keeping.
+      if (frameId !== 0) return;
+      // Only the primary tab contributes rrweb (timeline visualization is
+      // a single-tab concept). Multi-tab actions still flow via ACTION below.
       if (!activeRec || activeRec.tabId !== tabId) return;
       activeRec.buffer.push(m.event);
       activeRec.bufferBytes += approxByteSize(m.event);
@@ -158,11 +210,14 @@ chrome.runtime.onConnect.addListener((port) => {
     }
 
     if (m.type === 'ACTION') {
-      if (!activeRec || activeRec.tabId !== tabId) return;
+      // Accept ACTIONs from any tracked tab — multi-tab recording (C4).
+      if (!activeRec || !activeRec.tabIds.includes(tabId)) return;
       const step: ActionStep = {
         ...m.step,
         recordingId: activeRec.meta.id,
         seq: activeRec.actionSeq++,
+        // C1: tag with originating frameId so replay can route to the right frame.
+        ...(frameId !== 0 ? { frameId } : {}),
       };
       activeRec.meta.actionCount += 1;
       void appendAction(step);
@@ -178,11 +233,15 @@ chrome.runtime.onConnect.addListener((port) => {
   });
 
   port.onDisconnect.addListener(() => {
-    if (tabPorts.get(tabId) === port) tabPorts.delete(tabId);
-    if (activeRec && activeRec.port === port) activeRec.port = null;
-    replay.onContentDisconnect(tabId);
+    deleteFramePort(tabId, frameId, port);
+    if (frameId === 0) {
+      if (activeRec && activeRec.port === port) activeRec.port = null;
+      replay.onContentDisconnect(tabId);
+    }
   });
 });
+
+export { getMainFramePort, getAllFramePorts };
 
 // ─── tab + navigation events ───
 
@@ -190,15 +249,74 @@ chrome.tabs.onRemoved.addListener((tabId) => {
   if (activeRec && activeRec.tabId === tabId) {
     void stopRecording('tab-closed');
   }
+  // Drop secondary tabs from the recording's tab list without ending the session.
+  if (activeRec && activeRec.tabIds.includes(tabId) && activeRec.tabId !== tabId) {
+    activeRec.tabIds = activeRec.tabIds.filter((id) => id !== tabId);
+  }
   tabPorts.delete(tabId);
   replay.onTabRemoved(tabId);
 });
 
+// C4: tabs opened by the active recording's tabs become part of the session.
+chrome.tabs.onCreated.addListener((tab) => {
+  // Replay always wants to know about new tabs (in case they're our flow).
+  replay.onTabCreated(tab);
+  if (!activeRec || tab.id === undefined) return;
+  const opener = tab.openerTabId;
+  if (opener !== undefined && activeRec.tabIds.includes(opener)) {
+    if (!activeRec.tabIds.includes(tab.id)) {
+      activeRec.tabIds.push(tab.id);
+      const newIndex = activeRec.tabIds.length - 1;
+      // Emit a switchTab step at the moment the new tab is created — it will
+      // become the active tab once it loads.
+      const step: ActionStep = {
+        recordingId: activeRec.meta.id,
+        seq: activeRec.actionSeq++,
+        type: 'switchTab',
+        timestamp: Date.now(),
+        url: tab.url || tab.pendingUrl || '',
+        targetTabIndex: newIndex,
+        targetTabUrl: tab.url || tab.pendingUrl || '',
+      };
+      activeRec.meta.actionCount += 1;
+      activeRec.activeTabId = tab.id;
+      void appendAction(step);
+      void putRecording({ ...activeRec.meta });
+      broadcastState();
+    }
+  }
+});
+
+// C4: when the user switches focus to a previously-tracked tab.
+chrome.tabs.onActivated.addListener(({ tabId }) => {
+  if (!activeRec) return;
+  if (!activeRec.tabIds.includes(tabId)) return;
+  if (activeRec.activeTabId === tabId) return;
+  const newIndex = activeRec.tabIds.indexOf(tabId);
+  activeRec.activeTabId = tabId;
+  const step: ActionStep = {
+    recordingId: activeRec.meta.id,
+    seq: activeRec.actionSeq++,
+    type: 'switchTab',
+    timestamp: Date.now(),
+    url: '',
+    targetTabIndex: newIndex,
+  };
+  activeRec.meta.actionCount += 1;
+  void appendAction(step);
+  void putRecording({ ...activeRec.meta });
+  broadcastState();
+});
+
 function handleNavEvent(tabId: number, frameId: number, url: string): void {
   if (frameId !== 0) return;
-  // Recording side: log navigate actions.
-  if (activeRec && activeRec.tabId === tabId && url !== activeRec.lastUrl) {
-    recordNavigateAction(url);
+  // Recording side: emit navigate actions for any tracked tab. lastUrl tracks
+  // only the primary tab to avoid spurious navigate emissions when secondary
+  // tabs settle their URL during page load.
+  if (activeRec && activeRec.tabIds.includes(tabId)) {
+    if (tabId === activeRec.tabId && url !== activeRec.lastUrl) {
+      recordNavigateAction(url);
+    }
   }
   // Replay side: notify URL-wait machinery.
   if (replay.isReplayingTab(tabId)) {
@@ -254,6 +372,8 @@ async function startRecording(): Promise<void> {
   activeRec = {
     meta,
     tabId: tab.id,
+    tabIds: [tab.id],
+    activeTabId: tab.id,
     port: null,
     buffer: [],
     bufferBytes: 0,
@@ -267,7 +387,7 @@ async function startRecording(): Promise<void> {
   recordNavigateAction(tab.url || '');
 
   let attached = false;
-  const existing = tabPorts.get(tab.id);
+  const existing = getMainFramePort(tab.id);
   if (existing) {
     activeRec.port = existing;
     try {
@@ -278,7 +398,19 @@ async function startRecording(): Promise<void> {
     } catch (err) {
       console.warn('[bg] existing port broken, will re-inject', err);
       activeRec.port = null;
-      tabPorts.delete(tab.id);
+      deleteFramePort(tab.id, 0);
+    }
+  }
+  // C1: broadcast START_CAPTURE to every subframe that was already connected
+  // before the recording began (manifest all_frames:true means the content
+  // scripts in iframes have already opened their ports).
+  for (const { frameId, port: fp } of getAllFramePorts(tab.id)) {
+    if (frameId === 0) continue;
+    try {
+      fp.postMessage({ type: 'ROLE', role: 'recording' } satisfies BackgroundToContent);
+      fp.postMessage({ type: 'START_CAPTURE' } satisfies BackgroundToContent);
+    } catch {
+      /* frame may have disconnected */
     }
   }
 
@@ -358,7 +490,7 @@ async function flush(): Promise<void> {
 // ─── helpers ───
 
 function roleForTab(tabId: number): ContentRole {
-  if (activeRec && activeRec.tabId === tabId) return 'recording';
+  if (activeRec && activeRec.tabIds.includes(tabId)) return 'recording';
   if (replay.isReplayingTab(tabId)) return 'replaying';
   return 'idle';
 }

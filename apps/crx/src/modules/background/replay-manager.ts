@@ -13,6 +13,13 @@ export interface ActiveReplay {
   recordingId: string;
   steps: ActionStep[];
   tabId: number;
+  /**
+   * Every tab in this replay session in logical order (C4). tabIds[0] is the
+   * tab opened by `start()`; subsequent entries are tabs opened during replay
+   * by an opener already in the list (mirrors how recording tracks tabIds).
+   */
+  tabIds: number[];
+  activeTabIndex: number;
   stepIndex: number;
   currentAttempt: number;
   status: ReplayState['status'];
@@ -28,9 +35,18 @@ export class ReplayManager {
   private active: ActiveReplay | null = null;
   private onChange: () => void = () => {};
   private timer: ReturnType<typeof setTimeout> | null = null;
+  private framePortLookup: (tabId: number, frameId: number) => chrome.runtime.Port | undefined =
+    () => undefined;
 
   setOnChange(cb: () => void): void {
     this.onChange = cb;
+  }
+
+  /** Inject the (tabId, frameId) → Port resolver so we can route iframe steps. */
+  setFramePortLookup(
+    fn: (tabId: number, frameId: number) => chrome.runtime.Port | undefined,
+  ): void {
+    this.framePortLookup = fn;
   }
 
   state(): ReplayState {
@@ -64,7 +80,18 @@ export class ReplayManager {
   }
 
   isReplayingTab(tabId: number): boolean {
-    return !!this.active && this.active.tabId === tabId;
+    return !!this.active && this.active.tabIds.includes(tabId);
+  }
+
+  /** A new tab was created — if opened by a tab in our session, track it. */
+  onTabCreated(tab: chrome.tabs.Tab): void {
+    if (!this.active || tab.id === undefined) return;
+    const opener = tab.openerTabId;
+    if (opener !== undefined && this.active.tabIds.includes(opener)) {
+      if (!this.active.tabIds.includes(tab.id)) {
+        this.active.tabIds.push(tab.id);
+      }
+    }
   }
 
   async start(recordingId: string): Promise<void> {
@@ -92,6 +119,8 @@ export class ReplayManager {
       recordingId,
       steps,
       tabId: tab.id,
+      tabIds: [tab.id],
+      activeTabIndex: 0,
       stepIndex: stepsHaveLeadingMatchingNav(steps, startUrl) ? 1 : 0,
       currentAttempt: 0,
       status: 'navigating',
@@ -216,6 +245,13 @@ export class ReplayManager {
     console.log('[replay] step result', { stepIndex, attempt, ok, phase, reason });
 
     if (!ok) {
+      // C4: target="_blank" anchor — open the new tab via chrome.tabs.create
+      // (the synthetic click can't open popups), then advance to the next step.
+      if (phase === 'execute' && reason && reason.startsWith('requiresNewTab:')) {
+        const href = reason.slice('requiresNewTab:'.length);
+        void this.openNewTabForReplay(href, this.active.tabId);
+        return;
+      }
       this.handleFailure(`${phase} failed: ${reason ?? 'unknown'}`);
       return;
     }
@@ -361,6 +397,13 @@ export class ReplayManager {
       return;
     }
 
+    // C4: switchTab steps are background-side — focus the target tab and
+    // continue to the next step. We don't need content involvement.
+    if (step.type === 'switchTab') {
+      void this.executeSwitchTab(step.targetTabIndex ?? 0);
+      return;
+    }
+
     if (!this.active.port) {
       console.log('[replay] no port; waiting for content');
       this.active.status = 'waitingForContent';
@@ -376,14 +419,83 @@ export class ReplayManager {
       expectation: exp,
       verifyTimeoutMs: VERIFY_TIMEOUT_MS,
     };
+    // C1: route iframe-originated steps to the matching frame port. The
+    // recorded frameId from the source tab is meaningless in the replay tab
+    // (Chrome assigns fresh ids), so resolve frames by URL at dispatch time.
+    let port: chrome.runtime.Port = this.active.port;
+    if (step.frameId !== undefined && step.frameId !== 0) {
+      const tabId = this.active.tabId;
+      void (async () => {
+        let framePort: chrome.runtime.Port | undefined;
+        try {
+          const frames = await chrome.webNavigation.getAllFrames({ tabId });
+          const match = (frames ?? []).find((f) => f.url === step.url);
+          if (match) framePort = this.framePortLookup(tabId, match.frameId);
+        } catch {
+          /* ignore */
+        }
+        const targetPort = framePort ?? this.active?.port;
+        if (!targetPort) return;
+        try {
+          targetPort.postMessage(msg);
+        } catch (err) {
+          console.warn('[replay] iframe postMessage failed', err);
+        }
+      })();
+      return;
+    }
     try {
-      this.active.port.postMessage(msg);
+      port.postMessage(msg);
     } catch (err) {
       console.warn('[replay] postMessage failed', err);
       this.active.port = null;
       this.active.status = 'waitingForContent';
       this.onChange();
     }
+  }
+
+  private async openNewTabForReplay(url: string, openerTabId: number): Promise<void> {
+    if (!this.active) return;
+    try {
+      const tab = await chrome.tabs.create({ url, openerTabId, active: false });
+      if (tab.id !== undefined) {
+        if (!this.active.tabIds.includes(tab.id)) this.active.tabIds.push(tab.id);
+      }
+    } catch (err) {
+      console.warn('[replay] failed to open new tab', err);
+      this.handleFailure(`couldn't open new tab: ${(err as Error).message}`);
+      return;
+    }
+    this.advanceStep();
+  }
+
+  private async executeSwitchTab(targetIndex: number): Promise<void> {
+    if (!this.active) return;
+    const deadline = Date.now() + 5000;
+    while (Date.now() < deadline) {
+      if (targetIndex < this.active.tabIds.length) break;
+      // Wait briefly for chrome.tabs.onCreated to register the new tab.
+      await new Promise((r) => setTimeout(r, 100));
+      if (!this.active) return;
+    }
+    if (!this.active) return;
+    if (targetIndex >= this.active.tabIds.length) {
+      this.handleFailure(`switchTab: tab index ${targetIndex} not opened by replay session`);
+      return;
+    }
+    const newTabId = this.active.tabIds[targetIndex];
+    this.active.activeTabIndex = targetIndex;
+    this.active.tabId = newTabId;
+    // Re-resolve port to the new tab's main frame; framePortLookup gives us
+    // the live port if it's already connected.
+    const mainPort = this.framePortLookup(newTabId, 0);
+    this.active.port = mainPort ?? null;
+    try {
+      await chrome.tabs.update(newTabId, { active: true });
+    } catch {
+      /* tab may have closed */
+    }
+    this.advanceStep();
   }
 
   private executeNavigate(targetUrl: string): void {

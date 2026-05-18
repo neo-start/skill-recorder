@@ -182,6 +182,8 @@ export function mapAction(t: ActionStep['type']): SkillActionType {
       return 'copy';
     case 'paste':
       return 'paste';
+    case 'switchTab':
+      return 'switchTab';
   }
 }
 
@@ -217,6 +219,8 @@ export function defaultIntent(a: ActionStep, action: SkillActionType): string {
       const label = aria || (text && text !== a.fingerprint?.tag ? text : '') || a.fingerprint?.tag || 'target';
       return `Paste into "${label}"`;
     }
+    case 'switchTab':
+      return `Switch to tab #${(a.targetTabIndex ?? 0) + 1}`;
   }
 }
 
@@ -253,6 +257,8 @@ export function describeRaw(a: ActionStep): string {
 export function shouldDefaultSkip(a: ActionStep, idx: number, all: ActionStep[]): boolean {
   // Always skip scroll — rarely intentional
   if (a.type === 'scroll') return true;
+  // switchTab is a replay-routing concept; render a hint at most.
+  if (a.type === 'switchTab') return false;
 
   // Skip clearing keys (Backspace/Delete) — fill will overwrite anyway
   const isKey = a.type === 'keyDown' || a.type === 'keyUp';

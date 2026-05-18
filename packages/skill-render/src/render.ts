@@ -282,6 +282,13 @@ function renderStepBody(step: SkillStep): string[] {
       return out;
     }
 
+    case 'switchTab': {
+      return [
+        `> A new tab opens here. Switch to it before continuing — the next step expects to find the freshly-opened tab as the active surface.`,
+        '',
+      ];
+    }
+
     case 'drag': {
       const out: string[] = [];
       const fromTop = topSelector(step.dragFrom?.selectors);
@@ -339,6 +346,8 @@ function defaultIntent(step: SkillStep): string {
       const label = step.fingerprint?.attrs?.['aria-label'] || step.fingerprint?.text || step.fingerprint?.tag || 'target';
       return `Paste into ${label}`;
     }
+    case 'switchTab':
+      return 'Switch to newly-opened tab';
   }
 }
 

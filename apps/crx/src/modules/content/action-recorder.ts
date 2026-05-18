@@ -305,6 +305,29 @@ function isModifierKey(k: string): boolean {
   return k === 'Meta' || k === 'Control' || k === 'Shift' || k === 'Alt';
 }
 
+/**
+ * Treat an input as sensitive (mask its value during recording) when its
+ * type / autocomplete / name hints at password, phone number, or credit-card
+ * data. Used by the recorder so cross-origin/embedded payment flows don't
+ * leak card numbers into recordings.
+ */
+function isSensitiveInput(el: HTMLInputElement): boolean {
+  if (el.type === 'password' || el.type === 'tel') return true;
+  const ac = (el.getAttribute('autocomplete') || '').toLowerCase();
+  if (
+    ac.includes('cc-') ||
+    ac.includes('cvc') ||
+    ac.includes('csc') ||
+    ac.includes('security-code')
+  ) {
+    return true;
+  }
+  const name = (el.getAttribute('name') || '').toLowerCase();
+  const id = (el.getAttribute('id') || '').toLowerCase();
+  if (/(card|cvc|cvv|csc|securitycode)/.test(name + ' ' + id)) return true;
+  return false;
+}
+
 function onDragStart(ev: DragEvent): void {
   const target = (ev.target instanceof Element ? ev.target : null) || elementFromDragEvent(ev);
   if (!target) return;
@@ -447,16 +470,16 @@ function flushCe(el: HTMLElement): void {
   ceBuffers.delete(el);
   ceTracked.delete(el);
   if (el instanceof HTMLInputElement) {
-    const isPassword = el.type === 'password';
+    const sensitive = isSensitiveInput(el);
     emit({
       type: 'change',
       timestamp: Date.now(),
       url: location.href,
       selectors: generateSelectors(el),
       fingerprint: fingerprint(el),
-      value: isPassword ? '***' : el.value,
+      value: sensitive ? '***' : el.value,
       inputType: el.type,
-      masked: isPassword || undefined,
+      masked: sensitive || undefined,
     });
     return;
   }

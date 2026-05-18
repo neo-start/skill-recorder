@@ -1,8 +1,27 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><title>C1-iframe-same-origin (stub)</title></head>
-<body style="font:14px system-ui,sans-serif;padding:32px">
-<h1>C1-iframe-same-origin</h1>
-<p>Placeholder. Implemented in its respective roadmap phase.</p>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>C1 · Same-Origin Iframe</title>
+    <style>
+      body { font: 14px system-ui, sans-serif; padding: 32px; }
+      iframe { width: 360px; height: 220px; border: 1px solid #cbd5e1; border-radius: 6px; }
+      .ok { color: #15803d; margin-top: 12px; }
+    </style>
+  </head>
+  <body>
+    <h1>C1 Same-origin iframe</h1>
+    <p>Recorder must inject into the iframe and tag the action with a frameId.</p>
+    <iframe src="/C1-iframe-inner.html" data-testid="inner"></iframe>
+    <div id="result" class="ok" hidden></div>
+    <script>
+      window.addEventListener('message', (ev) => {
+        if (ev.data && ev.data.kind === 'inner-clicked') {
+          const r = document.getElementById('result');
+          r.hidden = false;
+          r.textContent = `inner clicked: ${ev.data.text}`;
+        }
+      });
+    </script>
+  </body>
 </html>

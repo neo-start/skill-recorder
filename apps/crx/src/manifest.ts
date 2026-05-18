@@ -27,7 +27,9 @@ export default defineManifest({
       matches: ['<all_urls>'],
       js: ['src/modules/content/index.ts'],
       run_at: 'document_start',
-      all_frames: false,
+      // Inject into every frame so iframe interactions are captured and replayed.
+      // Frame identity is tracked per-(tabId, frameId) in the background.
+      all_frames: true,
     },
   ],
   permissions: ['sidePanel', 'storage', 'scripting', 'tabs', 'alarms', 'activeTab', 'webNavigation', 'downloads'],

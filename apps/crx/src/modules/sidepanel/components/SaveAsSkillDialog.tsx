@@ -268,6 +268,8 @@ function kindColor(k: SkillActionType): string {
       return '#0ea5e9';
     case 'paste':
       return '#22d3ee';
+    case 'switchTab':
+      return '#fbbf24';
     default:
       return '#9ca3af';
   }

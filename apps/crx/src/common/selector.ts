@@ -22,12 +22,23 @@ const SCORE: Record<SelectorKind, number> = {
   text: 60,
   css: 45,
   xpath: 25,
+  // Highest score — when present we ALWAYS want to use it because the light-DOM
+  // resolvers above can't reach inside a shadow root at all.
+  shadow: 99,
 };
 
 // ─── Generation ───
 
 export function generateSelectors(el: Element): SelectorEntry[] {
   const out: SelectorEntry[] = [];
+
+  // C3: if the element is inside one or more shadow roots, emit a piercing
+  // path as the highest-priority selector — light-DOM selectors can't reach
+  // through a shadow boundary.
+  const shadowPath = buildShadowPath(el);
+  if (shadowPath) {
+    out.push({ kind: 'shadow', value: JSON.stringify(shadowPath), score: SCORE.shadow });
+  }
 
   for (const attr of TESTID_ATTRS) {
     const v = el.getAttribute(attr);
@@ -228,10 +239,116 @@ function tryFind(sel: SelectorEntry): Element | null {
         return findByAria(sel.value);
       case 'text':
         return findByText(sel.value);
+      case 'shadow':
+        return resolveShadowPath(sel.value);
     }
   } catch {
     return null;
   }
+}
+
+// ─── Shadow-DOM piercing (C3) ───
+//
+// Encoded path: `[{ host: cssSelector, inner: cssSelector }, …, { host: cssSelector | null, inner: cssSelector }]`
+// The first segment's host is a selector in the light DOM; each subsequent
+// segment's host is a selector within the previous segment's shadowRoot.
+// The final segment's `inner` is the selector within the deepest shadow root
+// that resolves to our target element.
+interface ShadowSegment {
+  host: string;
+  inner: string;
+}
+
+function buildShadowPath(el: Element): ShadowSegment[] | null {
+  const segments: ShadowSegment[] = [];
+  let cur: Element | null = el;
+  // Walk up; whenever we cross a shadow root via `host`, push a segment whose
+  // inner is the path from the shadowRoot to the previous element, and whose
+  // host is the path to the host (built on the next loop iteration).
+  let leg: Element = el;
+  while (cur) {
+    const root = cur.getRootNode();
+    if (root instanceof ShadowRoot) {
+      const innerPath = cssPathWithin(leg, root);
+      // For the host portion we now restart leg = root.host and continue.
+      leg = root.host;
+      segments.unshift({ host: '', inner: innerPath });
+      cur = root.host;
+      continue;
+    }
+    cur = cur.parentElement;
+  }
+  if (segments.length === 0) return null;
+  // For each segment, fill in the host path. The first segment's host lives in
+  // light DOM; subsequent segment hosts live in their parent segment's shadow.
+  let currentLeg: Element = leg;
+  for (let i = 0; i < segments.length; i++) {
+    if (i === 0) {
+      segments[i].host = cssPathWithin(currentLeg, document);
+    } else {
+      // Host of segment i is whatever shadow-host element we recorded; for the
+      // simple single-level shadow case there's no nested-shadow host name to
+      // compute here. We left segments[i].host empty and treat empty host as
+      // "use the deepest light-DOM host" — the resolver handles that.
+    }
+  }
+  return segments;
+}
+
+/**
+ * cssPath built relative to `root` (which is either Document or ShadowRoot).
+ * Mirrors the production cssPath() but stops at the root rather than the html
+ * element.
+ */
+function cssPathWithin(el: Element, root: Document | ShadowRoot): string {
+  if ('getElementById' in root && el.id && (root as Document | ShadowRoot).getElementById(el.id) === el) {
+    return `#${cssEscape(el.id)}`;
+  }
+  // Walk up to root building a chain like `host > div > button:nth-of-type(2)`.
+  const parts: string[] = [];
+  let cur: Element | null = el;
+  while (cur && cur !== (root as unknown as Element)) {
+    let segment = cur.tagName.toLowerCase();
+    const parentEl: Element | null = cur.parentElement;
+    if (parentEl) {
+      const tag = cur.tagName;
+      const siblings = (Array.from(parentEl.children) as Element[]).filter((s) => s.tagName === tag);
+      if (siblings.length > 1) {
+        const idx = siblings.indexOf(cur);
+        segment += `:nth-of-type(${idx + 1})`;
+      }
+    }
+    parts.unshift(segment);
+    cur = parentEl;
+  }
+  return parts.join(' > ');
+}
+
+function resolveShadowPath(value: string): Element | null {
+  let segments: ShadowSegment[];
+  try {
+    segments = JSON.parse(value) as ShadowSegment[];
+  } catch {
+    return null;
+  }
+  if (!segments.length) return null;
+  // First segment: find host in light DOM.
+  const firstHost = document.querySelector(segments[0].host);
+  if (!firstHost) return null;
+  let shadow: ShadowRoot | null = firstHost.shadowRoot;
+  if (!shadow) return null;
+  // For each segment, find `inner` in the current shadow root. If there are
+  // more segments after, the resolved inner element is the next host whose
+  // shadowRoot we walk into.
+  for (let i = 0; i < segments.length; i++) {
+    if (!shadow) return null;
+    const inner: Element | null = shadow.querySelector(segments[i].inner);
+    if (!inner) return null;
+    if (i === segments.length - 1) return inner;
+    // The inner is the next-segment host. Descend into its shadow.
+    shadow = inner.shadowRoot;
+  }
+  return null;
 }
 
 function findByAria(value: string): Element | null {
