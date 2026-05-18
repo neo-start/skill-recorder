@@ -47,10 +47,137 @@ export async function verifyExpectation(
       return { ok: false, reason: `scroll mismatch: got (${ax},${ay}) vs (${tx},${ty})` };
     }
 
+    case 'networkIdle': {
+      const idle = exp.networkIdleMs ?? 500;
+      const ok = await waitForNetworkIdle(idle, timeoutMs);
+      return ok
+        ? { ok: true }
+        : { ok: false, reason: `network never idle for ${idle}ms within ${timeoutMs}ms` };
+    }
+
+    case 'attributeChange': {
+      const a = exp.attribute;
+      if (!a) return { ok: true };
+      const el = await resolveElement(a.selectors, a.fingerprint, { timeoutMs });
+      if (!el) return { ok: false, reason: 'attributeChange: target not found' };
+      const ok = await waitForAttribute(el, a.attr, a.expectedValue, timeoutMs);
+      return ok
+        ? { ok: true }
+        : {
+            ok: false,
+            reason: `attribute ${a.attr} never became "${a.expectedValue ?? '<any change>'}" within ${timeoutMs}ms`,
+          };
+    }
+
+    case 'domStable': {
+      const idle = exp.domStableMs ?? 400;
+      const ok = await waitForDomStable(idle, timeoutMs);
+      return ok ? { ok: true } : { ok: false, reason: `DOM never stable for ${idle}ms` };
+    }
+
     case 'noop':
-      await sleep(200);
+      // The old behaviour was a fixed 200ms sleep. Now: settle on DOM-stable
+      // up to a short budget. Cheaper when the page is already idle, and
+      // catches lazy modals / inserted-on-click panels without flakiness.
+      await waitForDomStable(300, Math.min(timeoutMs, 2000));
       return { ok: true };
   }
+}
+
+function waitForNetworkIdle(idleMs: number, timeoutMs: number): Promise<boolean> {
+  return new Promise((resolve) => {
+    let lastResourceAt = Date.now();
+    const startedAt = Date.now();
+    let observer: PerformanceObserver | null = null;
+    try {
+      observer = new PerformanceObserver(() => {
+        lastResourceAt = Date.now();
+      });
+      observer.observe({ entryTypes: ['resource'] });
+    } catch {
+      // PerformanceObserver unavailable — fall back to a flat timeout.
+      setTimeout(() => resolve(true), Math.min(idleMs, timeoutMs));
+      return;
+    }
+    const tick = () => {
+      const now = Date.now();
+      if (now - lastResourceAt >= idleMs) {
+        observer?.disconnect();
+        resolve(true);
+        return;
+      }
+      if (now - startedAt >= timeoutMs) {
+        observer?.disconnect();
+        resolve(false);
+        return;
+      }
+      setTimeout(tick, Math.min(idleMs - (now - lastResourceAt), 100));
+    };
+    setTimeout(tick, Math.min(idleMs, 100));
+  });
+}
+
+function waitForAttribute(
+  el: Element,
+  attr: string,
+  expectedValue: string | undefined,
+  timeoutMs: number,
+): Promise<boolean> {
+  return new Promise((resolve) => {
+    const test = () => {
+      const v = el.getAttribute(attr);
+      if (expectedValue === undefined) return v !== null;
+      return v === expectedValue;
+    };
+    if (test()) {
+      resolve(true);
+      return;
+    }
+    const startedAt = Date.now();
+    const mo = new MutationObserver(() => {
+      if (test()) {
+        mo.disconnect();
+        clearTimeout(t);
+        resolve(true);
+      }
+    });
+    mo.observe(el, { attributes: true, attributeFilter: [attr] });
+    const t = setTimeout(() => {
+      mo.disconnect();
+      resolve(false);
+    }, timeoutMs);
+  });
+}
+
+function waitForDomStable(idleMs: number, timeoutMs: number): Promise<boolean> {
+  return new Promise((resolve) => {
+    let lastMutationAt = Date.now();
+    const startedAt = Date.now();
+    const mo = new MutationObserver(() => {
+      lastMutationAt = Date.now();
+    });
+    mo.observe(document.body, {
+      attributes: true,
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+    const tick = () => {
+      const now = Date.now();
+      if (now - lastMutationAt >= idleMs) {
+        mo.disconnect();
+        resolve(true);
+        return;
+      }
+      if (now - startedAt >= timeoutMs) {
+        mo.disconnect();
+        resolve(false);
+        return;
+      }
+      setTimeout(tick, Math.min(idleMs - (now - lastMutationAt), 60));
+    };
+    setTimeout(tick, Math.min(idleMs, 60));
+  });
 }
 
 function sleep(ms: number): Promise<void> {

@@ -1,8 +1,64 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><title>B1-spa-route (stub)</title></head>
-<body style="font:14px system-ui,sans-serif;padding:32px">
-<h1>B1-spa-route</h1>
-<p>Placeholder. Implemented in its respective roadmap phase.</p>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>B1 · SPA Route</title>
+    <style>
+      body { font: 14px system-ui, sans-serif; padding: 32px; }
+      nav { display: flex; gap: 12px; margin-bottom: 16px; }
+      button { padding: 6px 12px; border: 1px solid #cbd5e1; border-radius: 6px; background: white; cursor: pointer; }
+      .view { padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; min-height: 80px; }
+      .ok { color: #15803d; margin-top: 12px; }
+      [hidden] { display: none !important; }
+    </style>
+  </head>
+  <body>
+    <h1>B1 SPA Route</h1>
+    <p>Buttons push state then mount a different view. URL stays at <code>?</code> but selector targets change. Replay must wait for the new element instead of probing immediately.</p>
+    <nav>
+      <button data-testid="nav-orders" data-route="orders">Orders</button>
+      <button data-testid="nav-profile" data-route="profile">Profile</button>
+    </nav>
+    <main id="view" class="view">Pick a tab.</main>
+    <div id="result" class="ok" hidden></div>
+    <script>
+      const view = document.getElementById('view');
+      const result = document.getElementById('result');
+
+      function mount(route) {
+        view.innerHTML = '<em>loading…</em>';
+        // Settle delay simulates a real async route transition.
+        setTimeout(() => {
+          if (route === 'orders') {
+            view.innerHTML = `
+              <h2>Orders</h2>
+              <button data-testid="confirm-order" aria-label="Confirm order">Confirm order</button>
+            `;
+          } else {
+            view.innerHTML = `
+              <h2>Profile</h2>
+              <button data-testid="save-profile" aria-label="Save profile">Save profile</button>
+            `;
+          }
+        }, 350);
+      }
+
+      document.addEventListener('click', (ev) => {
+        const target = ev.target.closest('[data-route]');
+        if (target) {
+          history.pushState({ route: target.dataset.route }, '', `#${target.dataset.route}`);
+          mount(target.dataset.route);
+          return;
+        }
+        if (ev.target.dataset && ev.target.dataset.testid === 'confirm-order') {
+          result.hidden = false;
+          result.textContent = 'order confirmed';
+        }
+        if (ev.target.dataset && ev.target.dataset.testid === 'save-profile') {
+          result.hidden = false;
+          result.textContent = 'profile saved';
+        }
+      });
+    </script>
+  </body>
 </html>

@@ -156,7 +156,19 @@ export type ReplayStatus =
   | 'failed'
   | 'cancelled';
 
-export type ExpectationKind = 'urlChange' | 'elementVisible' | 'valueMatch' | 'scrollMatch' | 'noop';
+export type ExpectationKind =
+  | 'urlChange'
+  | 'elementVisible'
+  | 'valueMatch'
+  | 'scrollMatch'
+  | 'noop'
+  // ── Phase 3 (B class) async/timing kinds ───────────────────────────────
+  /** Wait until no `resource` PerformanceEntry has been observed for N ms. */
+  | 'networkIdle'
+  /** Wait until a specific element's attribute reaches an expected value. */
+  | 'attributeChange'
+  /** Wait until the DOM has been stable (no mutations on body) for N ms. */
+  | 'domStable';
 
 export interface Expectation {
   kind: ExpectationKind;
@@ -167,6 +179,17 @@ export interface Expectation {
   fingerprint?: ElementFingerprint;
   /** human-readable description for UI */
   description?: string;
+  /** for `networkIdle` — defaults to 500ms in verifier when omitted. */
+  networkIdleMs?: number;
+  /** for `domStable` — defaults to 400ms when omitted. */
+  domStableMs?: number;
+  /** for `attributeChange` */
+  attribute?: {
+    selectors: SelectorEntry[];
+    fingerprint?: ElementFingerprint;
+    attr: string;
+    expectedValue?: string;
+  };
 }
 
 export interface ReplayState {

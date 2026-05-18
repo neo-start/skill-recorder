@@ -397,8 +397,12 @@ export class ReplayManager {
     void (async () => {
       try {
         const tab = await chrome.tabs.get(tabId);
+        // SPA hash routes: a prior click step often *already* drove the tab to
+        // `targetUrl` via history.pushState. In that case `chrome.tabs.reload`
+        // would discard the in-memory SPA state we need for the next click —
+        // treat the navigate as a no-op instead.
         if (tab.url === targetUrl) {
-          await chrome.tabs.reload(tabId);
+          // No-op: stay on the current page, skip the redundant reload.
         } else {
           await chrome.tabs.update(tabId, { url: targetUrl });
         }
@@ -441,6 +445,9 @@ function deriveExpectation(steps: ActionStep[], index: number): Expectation {
   }
 
   // If next step has selectors, expect its target to become visible.
+  // For "same URL but different content" transitions (SPA route, modal mount,
+  // async result render), elementVisible already polls the resolver so it
+  // naturally subsumes the more abstract `domStable` for our purposes.
   if (next && next.type !== 'navigate' && next.selectors && next.selectors.length) {
     return {
       kind: 'elementVisible',
@@ -458,7 +465,10 @@ function deriveExpectation(steps: ActionStep[], index: number): Expectation {
     return { kind: 'scrollMatch', description: `scroll to (${cur.scrollX},${cur.scrollY})` };
   }
 
-  return { kind: 'noop', description: 'settle' };
+  // Default fallback: wait for the DOM to settle. Replaces the prior fixed
+  // 200ms sleep with an event-driven check so we don't pay the latency on
+  // already-idle pages and we don't miss late-mounted content on busy ones.
+  return { kind: 'domStable', domStableMs: 400, description: 'DOM settles' };
 }
 
 // ─── url helpers ───

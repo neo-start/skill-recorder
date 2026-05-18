@@ -1,8 +1,43 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><title>B3-lazy-modal (stub)</title></head>
-<body style="font:14px system-ui,sans-serif;padding:32px">
-<h1>B3-lazy-modal</h1>
-<p>Placeholder. Implemented in its respective roadmap phase.</p>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>B3 · Lazy Modal</title>
+    <style>
+      body { font: 14px system-ui, sans-serif; padding: 32px; }
+      button { padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; background: white; cursor: pointer; }
+      .modal { position: fixed; inset: 30% 30%; background: white; border: 1px solid #cbd5e1; border-radius: 10px; padding: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+      .ok { color: #15803d; margin-top: 12px; }
+      [hidden] { display: none !important; }
+    </style>
+  </head>
+  <body>
+    <h1>B3 Lazy Modal</h1>
+    <p>The modal mounts 700ms after the trigger button is clicked. Replay must wait for it (elementVisible).</p>
+    <button data-testid="open-modal" aria-label="Open settings">Open settings</button>
+    <div id="result" class="ok" hidden></div>
+    <script>
+      document.querySelector('[data-testid="open-modal"]').addEventListener('click', () => {
+        setTimeout(() => {
+          const m = document.createElement('div');
+          m.className = 'modal';
+          m.setAttribute('role', 'dialog');
+          m.setAttribute('aria-label', 'Settings modal');
+          m.innerHTML = `
+            <h2>Settings</h2>
+            <button data-testid="confirm-settings" aria-label="Confirm settings">Confirm</button>
+          `;
+          document.body.appendChild(m);
+        }, 700);
+      });
+
+      document.addEventListener('click', (ev) => {
+        if (ev.target.dataset.testid === 'confirm-settings') {
+          const r = document.getElementById('result');
+          r.hidden = false;
+          r.textContent = 'settings confirmed';
+        }
+      });
+    </script>
+  </body>
 </html>
