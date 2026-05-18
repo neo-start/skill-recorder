@@ -30,34 +30,6 @@ export interface Scenario {
   coverage?: string[];
 }
 
-export const CATEGORY_LABELS: Record<ScenarioCategory, { title: string; blurb: string }> = {
-  A: {
-    title: 'A · Selector stability',
-    blurb: 'Selectors must keep working after dynamic classes, identical siblings, and locale changes.',
-  },
-  B: {
-    title: 'B · Async + timing',
-    blurb: 'Replay must wait for SPA routes, debounced searches, and lazy-mounted modals.',
-  },
-  C: {
-    title: 'C · Multi-surface',
-    blurb: 'Iframes, shadow DOM, and multi-tab flows are first-class.',
-  },
-  D: {
-    title: 'D · Input specialness',
-    blurb: 'Drag/drop, file upload, modifier chords, contenteditable, clipboard, ARIA combobox.',
-  },
-  E: {
-    title: 'E · Parameterization',
-    blurb: 'Auto-detect which typed values and URL segments should become reusable parameters.',
-  },
-  F: {
-    title: 'F · Real-world composites',
-    blurb:
-      'Substantial product-flavored fixtures that chain 12+ difficulty points into one coherent workflow — the closest the playground gets to "would this survive a day at my job".',
-  },
-};
-
 export const SCENARIOS: Scenario[] = [
   // ── A ────────────────────────────────────────────────────────────────
   {

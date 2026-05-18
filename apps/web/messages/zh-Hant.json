@@ -1,28 +1,30 @@
 {
   "layout": {
     "nav": {
+      "playground": "演練場",
       "blog": "部落格",
-      "cta": "加入 Chrome",
+      "cta": "加到 Chrome",
       "signIn": "登入",
-      "ctaMobile": "加入 Chrome",
+      "ctaMobile": "加到 Chrome",
       "closeMenu": "關閉選單",
       "openMenu": "開啟選單",
-      "viewAllArticles": "查看所有文章",
+      "viewAllArticles": "檢視全部文章",
+      "openPlayground": "前往演練場",
       "blogItems": {
-        "ecommerce": "為 AI 代理錄製瀏覽器流程",
-        "noCode": "從點擊到 SKILL.md:完整實作指南",
-        "leads": "如何將錄製內容淬煉為可重複使用的技能",
-        "pagination": "用 browse CLI 重放瀏覽器流程"
-      },
-      "playground": "練習場"
+        "ecommerce": "為 AI Agent 錄製瀏覽器流程",
+        "noCode": "從一次點擊到 SKILL.md：完整走訪",
+        "leads": "如何把一次錄製蒸餾成可重用 Skill",
+        "pagination": "用 browse CLI 重播流程"
+      }
     },
     "footer": {
-      "tagline": "一次錄製,永久重放。",
+      "tagline": "錄一次，重播一輩子。",
+      "playground": "演練場",
       "blog": "部落格",
-      "blogHome": "所有文章",
-      "blogEcommerce": "為 AI 代理錄製瀏覽器流程",
+      "blogHome": "全部文章",
+      "blogEcommerce": "為 AI Agent 錄製瀏覽器流程",
       "blogNoCode": "從點擊到 SKILL.md",
-      "blogLeads": "將錄製內容淬煉為技能",
+      "blogLeads": "把錄製蒸餾成 Skill",
       "legal": "支援",
       "privacy": "隱私權政策",
       "terms": "服務條款",
@@ -31,360 +33,357 @@
   },
   "blog": {
     "meta": {
-      "title": "部落格 | Skill Recorder — 為 AI 代理打造的瀏覽器自動化",
-      "description": "錄製瀏覽器流程、淬煉為 SKILL.md 檔案,並由 AI 代理重放的實用指南與筆記。",
-      "keywords": "skill recorder 部落格, 瀏覽器自動化, claude code skills, browse cli, SKILL.md"
+      "title": "部落格 | Skill Recorder — 為 AI Agent 錄製瀏覽器自動化",
+      "description": "錄製瀏覽器流程、蒸餾成 SKILL.md、並交給 AI Agent 重播的實務指南。",
+      "keywords": "skill recorder 部落格, 瀏覽器自動化, claude code 技能, browse cli, SKILL.md"
     },
     "hero": {
-      "title": "錄製與重放指南",
-      "description": "關於擷取瀏覽器流程、淬煉為可攜式 SKILL.md 檔案,並由 Claude Code 重放的實用教學。",
-      "articles": "篇文章",
-      "categories": "個分類",
+      "title": "錄製與重播指南",
+      "description": "捕獲瀏覽器流程、蒸餾為可攜的 SKILL.md 檔、並交給 Claude Code 重播的實戰教程。",
+      "articles": "文章",
+      "categories": "分類",
       "free": "免費",
-      "toRead": "待閱讀"
+      "toRead": "待讀"
     },
     "loadMore": "載入更多",
-    "readMore": "閱讀更多",
-    "minRead": "分鐘閱讀",
+    "readMore": "繼續閱讀",
+    "minRead": "分鐘",
     "breadcrumbs": {
       "home": "首頁",
       "blog": "部落格"
     },
-    "recentArticles": "最新文章",
+    "recentArticles": "近期文章",
     "relatedArticles": "相關文章"
   },
   "main": {
     "meta": {
-      "title": "Skill Recorder | 將瀏覽器流程轉換為 SKILL.md 檔案",
-      "description": "用 Chrome 擴充功能錄製任何瀏覽器流程,並將其淬煉為 SKILL.md 檔案,讓 Claude Code 等 AI 代理可自主重新執行。",
-      "keywords": "skill recorder, 瀏覽器自動化, claude code skills, SKILL.md, browse cli, ai 代理自動化, chrome 擴充功能"
+      "title": "Skill Recorder | 把瀏覽器流程變成 SKILL.md",
+      "description": "Chrome 擴充功能，錄製任意瀏覽器流程並蒸餾成 SKILL.md，讓 Claude Code 等 AI Agent 自主重播。",
+      "keywords": "skill recorder, 瀏覽器自動化, claude code 技能, SKILL.md, browse cli, ai agent 自動化, chrome 擴充功能"
     },
     "hero": {
-      "title": "一次錄製流程,讓 AI 永久重放。",
-      "subtitle": "Chrome 擴充功能擷取你的瀏覽器流程,並將其淬煉為 AI 代理可重新執行的 SKILL.md。",
-      "ctaPrimary": "立即安裝",
-      "note": "Beta 期間免費,免註冊帳號。"
+      "eyebrow": "瀏覽器流程錄製器 · Chrome MV3",
+      "titleLine1": "你示範過一次。",
+      "titleLine2Em": "為什麼還在親手做？",
+      "lead": "Skill Recorder 是一個 Chrome 擴充功能，看你走完一次瀏覽器流程<em>就夠了</em> — 然後寫出一份 <hand>SKILL.md</hand>，這是一份純 markdown 規約，Claude Code（或任何接入 <code>browse</code> CLI 的 Agent）都能照著重播，不需要選擇器、不需要膠水程式碼、不需要盯著看。",
+      "ctaPrimary": "加到 Chrome",
+      "ctaSecondary": "試試壓力測試場景 →",
+      "captionLine1": "↑ 一段五分鐘的採購單流程，",
+      "captionLine2": "錄一次，<strong>永久重播。</strong>"
     },
-    "howItWorks": {
-      "title": "從瀏覽器示範到可重放技能,只需 <accent>3 個步驟</accent>",
-      "steps": {
-        "install": {
-          "number": "01",
-          "title": "安裝擴充功能",
-          "desc": "幾秒鐘即可將 Skill Recorder 加入 Chrome。",
-          "imgAlt": "安裝 Skill Recorder Chrome 擴充功能"
-        },
-        "scrape": {
-          "number": "02",
-          "title": "錄製你的流程",
-          "desc": "點擊「開始」,完整操作一次任務,我們會擷取每一個動作。",
-          "imgAlt": "一鍵錄製瀏覽器流程"
-        },
-        "export": {
-          "number": "03",
-          "title": "匯出為 SKILL.md",
-          "desc": "將淬煉後的 markdown 檔案直接儲存到你的 Claude Code skills 資料夾。",
-          "imgAlt": "下載可直接用於 Claude Code 的 SKILL.md 檔案"
-        }
+    "anatomy": {
+      "tag": "結構剖析",
+      "title": "三階段，<em>一點擊之間。</em>",
+      "lead": "我們交付的是一個小巧的 Chrome MV3 擴充功能加上一段 4 KB 的蒸餾管線。錄製器接入 <code>chrome.debugger</code>，做到 DOM 級別的保真；蒸餾完全在 service worker 裡執行；重播透過 <code>browse</code> CLI 讀取 SKILL.md。沒有伺服器，也沒有膠水程式碼。",
+      "wireToDistill": "23 個事件 →",
+      "wireToReplay": "SKILL.md →",
+      "capture": {
+        "name": "捕獲",
+        "meta": "側邊欄",
+        "desc": "Content script 裡有一個 <strong>per-frame 連接埠</strong>，把每個 DOM 事件轉發給 service worker。Shadow DOM 和同源 iframe 都被透明穿透。",
+        "bullets": [
+          "六級選擇器解析（testid → id → aria → text → css → xpath）",
+          "tabPorts: Map<tabId, Map<frameId, Port>>",
+          "IME 感知輸入緩衝 · paste · drag"
+        ]
+      },
+      "distill": {
+        "name": "蒸餾",
+        "meta": "Service worker · 30 秒",
+        "desc": "六次小規模處理把嘈雜的事件流變成確定性規約。自動參數化只在<strong>信心 0.7 以上</strong>觸發；低於這個值，錄製器會先問而不是猜。",
+        "bullets": [
+          "paramConfidence(step) — 啟發式階梯",
+          "auth-boundary 偵測 — opaque token + cookies",
+          "UUID · 數字 ID · email · ISO 日期 · 貨幣"
+        ]
+      },
+      "replay": {
+        "name": "重播",
+        "meta": "browse CLI",
+        "desc": "<code>browse</code> CLI 把 SKILL.md 當作純 markdown 來讀 — 沒有 schema、沒有 runtime、沒有逃生口。<strong>每一步都可稽核</strong>。",
+        "bullets": [
+          "冪等重跑 · 鑑權暫停 + 恢復",
+          "結構化日誌 ↦ JSONL 重播歷史",
+          "支援 Claude Code、Cline、純 shell"
+        ]
       }
     },
-    "features": {
-      "title": "擷取每一次點擊,<accent>淬煉每一項技能</accent>",
-      "ctas": {
-        "f1": "立即錄製",
-        "f2": "乾淨淬煉",
-        "f3": "隨處重放",
-        "f4": "交給 Claude"
+    "catalog": {
+      "tag": "技術規格",
+      "title": "一次錄製能撐住什麼？<em>十三個硬骨頭，全鏈路。</em>",
+      "lead": "瀏覽器裡到處是錄製器陷阱 — 雜湊類名、延遲載入彈窗、Shadow DOM、跨分頁流程、IME 合成、拖曳。下表每一列都對應演練場裡的一個真實場景，點進去就可以親自錄製。",
+      "smallNote": "綠點 = 已發布 · 藍點 = 自動",
+      "columns": {
+        "category": "分類",
+        "technique": "技術",
+        "detail": "我們的處理方式",
+        "fixture": "場景"
       },
-      "f1": {
-        "title": "按下錄製即可開始",
-        "desc": "不需腳本,也不用選擇器。點擊「開始」,像示範給同事看一樣操作即可。我們會即時擷取<highlight>每一次點擊、每一次按鍵、每一次導覽</highlight>。停止錄製後,你就有一份完整的重放內容可供淬煉。",
-        "imgAlt": "一鍵錄製瀏覽器流程"
-      },
-      "f2": {
-        "title": "開箱即用的智慧淬煉",
-        "desc": "對話框會自動去除雜訊,<highlight>將每個輸入值轉換為參數</highlight>,並對動態清單的點擊標示 ⚠️ 警示,讓代理能安全重放。完全不必手動清理,也不用搞 regex。",
-        "imgAlt": "將錄製內容淬煉為乾淨的 SKILL.md"
-      },
-      "f3": {
-        "title": "在任何 AI 代理上重放",
-        "desc": "輸出是一份可攜的 <highlight>SKILL.md</highlight> 檔案 — 純 markdown,AI 代理可直接讀取。將它放入 Claude Code 的 skills 目錄,代理就會透過 <highlight>browse</highlight> CLI 重放流程,完全不需要任何串接程式碼。",
-        "imgAlt": "用 Claude Code 重放 SKILL.md 流程"
-      },
-      "f4": {
-        "title": "設計上以隱私為先",
-        "desc": "所有錄製內容都留在你的瀏覽器中,不會上傳。驗證權杖也絕不會離開你的裝置 — 我們會偵測並標示為 <highlight>先決條件:已登入</highlight>,並讓代理在需要驗證時提示你。",
-        "imgAlt": "Skill Recorder 在本機執行,不會上傳任何資料"
-      }
-    },
-    "useCases": {
-      "title": "為每一項重複性瀏覽器任務而打造",
-      "cases": {
-        "ecommerce": {
-          "title": "自動化重複性表單",
-          "desc": "錄製一次提交,把 SKILL.md 交給 Claude。代理會在你睡覺時填完幾十個變體,完全不必盯著。",
-          "cta": "錄製表單"
+      "rows": [
+        {
+          "category": "選擇器",
+          "technique": "雜湊類名 & ID 輪換",
+          "detail": "Tailwind 風格的類名（例如 btn__primary--ab3f9c）每次發布都換；解析器走 6 級回退（testid → id → aria → text → css → xpath），換過雜湊的按鈕照樣命中。"
         },
-        "reviews": {
-          "title": "每日儀表板巡檢",
-          "desc": "錄製一次穿越分析儀表板的點擊路徑,讓代理每天早上抓出同樣的數字,並貼到 Slack 上。",
-          "cta": "錄製儀表板"
+        {
+          "category": "選擇器",
+          "technique": "完全相同的兄弟列",
+          "detail": "六列裡都是一模一樣的 \"Pick\" 按鈕 — 只有位置不同。我們用 fingerprintIndex 錨定每次點擊，即便列表重排，點擊的還是對的那列。"
         },
-        "seo": {
-          "title": "每週稽核競品網站",
-          "desc": "在一個網站上示範稽核清單。技能會在每週一早上 9 點,於你整份追蹤清單上自動重放。",
-          "cta": "錄製稽核"
+        {
+          "category": "選擇器",
+          "technique": "語言無關的識別",
+          "detail": "\"Continue\" / \"繼續\" / \"Weiter\" 都對應同一個 data-i18n-key=\"action.continue\"。錄製器優先使用語言無關屬性，所以英文錄的 Skill 能在中文頁面重播。"
         },
-        "leads": {
-          "title": "重複建立名單清單",
-          "desc": "走過一次商家目錄的搜尋查詢,之後可以永遠重複使用該錄製,套用到新關鍵字,完全免寫腳本。",
-          "cta": "錄製搜尋"
+        {
+          "category": "非同步",
+          "technique": "SPA 路由切換",
+          "detail": "pushState 和 hashchange 都被追蹤，不需 reload；重播會等待新內容掛載，而不是探一個空容器。"
         },
-        "jobs": {
-          "title": "追蹤求職平台",
-          "desc": "示範一次「篩選 + 捲動 + 匯出」的流程,代理每天就會在你關心的每個平台上自動執行。",
-          "cta": "錄製求職平台"
+        {
+          "category": "非同步",
+          "technique": "延遲載入彈窗",
+          "detail": "觸發那一刻 Confirm 按鈕還不存在。elementVisible 會持續輪詢，直到目標出現才下發下一步 — 沒有用 timeout 硬拼。"
         },
-        "realestate": {
-          "title": "監控房屋物件",
-          "desc": "錄製一次帶有篩選條件的物件搜尋,代理會按排程重新執行,並浮出新的符合物件。",
-          "cta": "錄製物件清單"
+        {
+          "category": "介面",
+          "technique": "同源 iframe",
+          "detail": "all_frames: true 注入每一個 frame；動作帶上來源 frameId，且會在 URL 重新渲染時按 URL 重新解析，過期的 frameId 不會卡住重播。"
         },
-        "hotels": {
-          "title": "比較旅遊價格",
-          "desc": "示範一次你慣用的飯店搜尋,讓代理跨日期與平台輪詢價格,完全不必手動操作。",
-          "cta": "錄製搜尋"
+        {
+          "category": "介面",
+          "technique": "敏感欄位遮罩",
+          "detail": "password / phone / 信用卡 / SSN 輸入會被 type + autocomplete + name 偵測出來，落入儲存前替換成 ***。資料永遠不離開頁面。"
+        },
+        {
+          "category": "介面",
+          "technique": "Shadow DOM 穿透",
+          "detail": "自訂的 shadow 選擇器把路徑編碼成 { host, inner } 區段；解析器在每個邊界走一遍 shadowRoot.querySelector，所以 Web Components 是一等公民。"
+        },
+        {
+          "category": "介面",
+          "technique": "跨分頁流轉",
+          "detail": "當一段流程開新分頁 — 列印預覽、OAuth、報價產生 — 錄製透過 chrome.tabs.onCreated 跟上。重播透過 chrome.tabs.create 重新開新分頁。"
+        },
+        {
+          "category": "輸入",
+          "technique": "原生拖曳",
+          "detail": "dragstart → dragover → drop 三件套搭配共用 DataTransfer，合併成一個 drag 步驟（來源 + 目標 + 觀察到的類型）。不依賴脆弱的像素座標。"
+        },
+        {
+          "category": "輸入",
+          "technique": "修飾鍵組合",
+          "detail": "孤立的 \"k\" 是文字輸入雜訊；加上 metaKey: true 就成了 Cmd-K 快捷鍵。錄製器留下組合鍵、丟掉雜訊，保留修飾狀態供重播。"
+        },
+        {
+          "category": "輸入",
+          "technique": "contenteditable 區塊",
+          "detail": "contenteditable 上 change 事件永遠不觸發。我們勾住 input + compositionend，去抖 300 毫秒，以最終 innerText 合成一個 change 步驟 — 和文字欄位形狀一致。"
+        },
+        {
+          "category": "輸入",
+          "technique": "ARIA combobox & 即時提示",
+          "detail": "每次點擊都附上 comboboxContext（選項文字、根選擇器）；如果重播時直接點擊失敗，回退會鍵入文字、按 ArrowDown 直到 aria-activedescendant 匹配，再按 Enter。"
         }
-      }
+      ],
+      "footNote": "<strong>十六中的十三個。</strong>另外還有四個<em>綜合場景</em> — Notion、Linear、Jira、Salesforce — 把其中十二到十五個技術串成一段完整流程。<link>看演練場 →</link>"
     },
-    "testimonials": {
-      "title": "開發者怎麼說",
-      "items": [
-        {
-          "quote": "我以前每接一個重複性工作流程,就要寫 200 行 Playwright。現在我在瀏覽器裡錄一次,把 SKILL.md 交給 Claude,就直接動起來了。",
-          "name": "Lena R.",
-          "role": "資深工程師"
-        },
-        {
-          "quote": "淬煉這個步驟才是真正的賣點。每一個輸入值都會自動變成參數,所以同一份錄製可以涵蓋一整批輸入。",
-          "name": "Marcus T.",
-          "role": "AI 工作流程主管"
-        },
-        {
-          "quote": "我們營運團隊負責錄製流程,代理負責重放。雙方都不必碰程式碼或選擇器。這個落差消失了,影響非常大。",
-          "name": "Priya N.",
-          "role": "內部工具主管"
-        },
-        {
-          "quote": "驗證偵測這件事,讓這個產品在我們眼中達到可上線的標準。技能會在登入步驟暫停、提示真人接手,然後再繼續。權杖完全不會外洩。",
-          "name": "Sam K.",
-          "role": "資安工程師"
-        },
-        {
-          "quote": "我午餐前就做出了三個技能,每一個都取代了半小時的瀏覽器操作日常。browse CLI 整合正好是我心中那個 API。",
-          "name": "Ahmed S.",
-          "role": "獨立開發者"
-        },
-        {
-          "quote": "我以前要維護 Selenium 腳本,每次按鈕一動就壞掉。有了 SKILL.md,代理讀的是意圖,不是選擇器。維護工作量少了 80%。",
-          "name": "Yuki H.",
-          "role": "QA 自動化工程師"
-        },
-        {
-          "quote": "隱私這一塊讓我們決定採用。沒有任何東西離開瀏覽器,驗證權杖也完全不會送到任何伺服器。法遵單位一次會議就過了。",
-          "name": "Diana F.",
-          "role": "平台工程師"
-        }
-      ]
-    },
-    "faq": {
-      "title": "常見問題",
-      "contact": "找不到答案?歡迎來信",
-      "items": [
-        {
-          "question": "真的免費嗎?",
-          "answer": "是的 — Skill Recorder 在 Beta 期間完全免費。安裝擴充功能後即可立刻錄製,不需註冊帳號,也不需要付款資訊。"
-        },
-        {
-          "question": "錄製的資料存放在哪裡?",
-          "answer": "完全留在你的瀏覽器裡。我們絕不會上傳你的錄製內容、驗證權杖或頁面內容。錄製內容會留在你的裝置上,直到你選擇匯出淬煉後的 SKILL.md 檔案為止。"
-        },
-        {
-          "question": "什麼是 SKILL.md?要怎麼使用?",
-          "answer": "SKILL.md 是一份可攜式 markdown 檔案,以一連串步驟描述一個自動化的瀏覽器流程。Claude Code 等 AI 代理會從 skills 目錄中載入它,並透過 browse CLI 重放,完全不需要額外的串接程式碼。"
-        },
-        {
-          "question": "登入頁面要怎麼處理?",
-          "answer": "Skill Recorder 會自動偵測驗證邊界,並插入「先決條件:已登入」標記。當代理重放這項技能時,會在驗證步驟暫停並提示真人接手,而不會外洩任何工作階段權杖。"
-        },
-        {
-          "question": "如果頁面改了,我的技能會壞掉嗎?",
-          "answer": "淬煉步驟記錄的是語意意圖(例如「點擊『送出』按鈕」),並會在多個選擇器之間做退讓。相較於寫死的 Selenium 腳本,技能對小幅 DOM 變動有更強的容忍度。"
-        },
-        {
-          "question": "一定要用 Claude Code 才能跑輸出嗎?",
-          "answer": "目前 Claude Code 是主要整合對象,但格式是純 markdown。任何支援 browse CLI 慣例的代理都可以讀取 SKILL.md 檔案。"
-        }
-      ]
+    "example": {
+      "tag": "實例走讀",
+      "title": "一次五分鐘的瀏覽器儀式，<em>蒸餾成三十秒。</em>",
+      "byline": ["現場筆記", "錄於 2026-02-19，16:42 UTC", "重播 50 次零人工介入"],
+      "p1": "每個週一早上，一家小型供應商的營運工程師都打開同一個入口網站，點<strong>新建採購單</strong>，從 CSV 貼一個 SKU、鍵入一個數量，再點<strong>送出</strong>。然後再來一遍。一週兩百列，週復一週，已經持續十四個月。這是一個五分鐘儀式，重複到表單結束。",
+      "p2": "這正是常被推銷給錄製器的那種任務 — 也正是大多數錄製器栽跟頭的那種任務。供應商入口網站每次發布都換 Tailwind 雜湊類名。送出按鈕躲在每次儲存就重新渲染的動態表格列裡。鑑權 cookie 中午就過期。基於這個頁面寫的 Selenium 腳本平均能撐兩週，然後悄悄開始失敗。",
+      "sub1": "錄製",
+      "p3": "工程師把擴充功能釘到工具列，打開入口網站，點<strong>開始錄製</strong>，原原本本做一遍。八次點擊、兩個填值、一次送出。側邊欄顯示事件即時流 — 包含雜訊：捲動、focus、blur、不小心劃過說明圖示的滑鼠。4.6 秒裡錄到 23 個事件。",
+      "ev1Title": "raw events · 23",
+      "ev1Meta": "耗時 4.6 秒",
+      "ev1Caption": "原始日誌保留一切；蒸餾負責決定什麼重要。",
+      "sub2": "蒸餾",
+      "p4": "Service worker 裡六次小規模處理把嘈雜日誌變成確定性規約。相鄰點擊合併。鍵盤流合併成一次 <code>type()</code> 呼叫。兩個鍵入值 — <code>\"SKU-1029\"</code> 和 <code>\"50\"</code> — 被十個 regex 先驗打分；都過了 0.7 門檻，分別變成 <code>{'{{sku}}'}</code> 和 <code>{'{{quantity}}'}</code>。送出按鈕點擊因為落在動態列表裡被打上警告標記，所以 SKILL.md 加上列匹配條件而不是寫死 CSS 路徑。",
+      "ev2Title": "before / after",
+      "ev2Meta": "23 個事件 → 4 步",
+      "ev2BeforeLabel": "— BEFORE (raw)",
+      "ev2AfterLabel": "+ AFTER (distilled)",
+      "ev2AutoLabel": "+ AUTO-DETECTED",
+      "ev2Caption": "八次按鍵變成一個帶參數的 fill — 每次重播都是同一個形狀。",
+      "sub3": "交接",
+      "p5": "工程師把產生的 markdown 放到 <code>~/.claude/skills/create-purchase-order/SKILL.md</code>，給 Claude Code 敲了一句話。Agent 按名字找到這個 Skill，解出前置條件（存的 cookie 中午前都還有效），走過 CSV 裡五十列，回頭回報。三分十一秒後，事兒就辦完了。沒人盯著它跑。",
+      "ev3Title": "claude code · stdout",
+      "ev3Meta": "3 分 11 秒 · 零重試",
+      "ev3Caption": "一句話進，五十張採購單出。Agent 一個問題都沒問。",
+      "postscript": {
+        "label": "後記",
+        "titleLine1": "一段五分鐘儀式的成本，",
+        "titleLine2": "攤平到一個工作年裡。",
+        "n1Label": "人工平均耗時",
+        "n2Label": "Agent 平均耗時",
+        "n3Label": "僅此一項每年節省"
+      },
+      "readMore": "想看更難的場景？<link>試試演練場 →</link>"
     },
     "cta": {
-      "title": "60 秒內錄下你的第一個技能",
-      "button": "立即安裝",
-      "note": "Beta 期間免費,免註冊帳號。"
+      "eyebrow": "拿到錄製器",
+      "title": "錄一次流程。<em>下面的一千次讓 Agent 跑。</em>",
+      "sub": "公開 beta 期間免費。不需要帳號、不上傳、不傳送遙測。整個 bundle 4.5 MB；錄製留在你機器上，你要匯出才會動。",
+      "ctaPrimary": "加到 Chrome",
+      "playgroundLink": "或者在 21 個壓力測試場景上試試 →",
+      "footLeft": "SKILL.md — 人和 Agent 之間的純 markdown 契約。"
+    }
+  },
+  "playground": {
+    "meta": {
+      "title": "演練場 — Skill Recorder",
+      "description": "21 個為打垮天真錄製器而設計的壓力測試場景。雜湊類名、Shadow DOM、跨分頁流程、IME 合成、拖曳。",
+      "keywords": "skill recorder 演練場, 瀏覽器自動化測試, 錄製器場景, 壓力測試"
     },
-    "stats": [
-      {
-        "value": "↓ 80%",
-        "label": "相較於 Selenium 的維護成本"
-      },
-      {
-        "value": "0",
-        "label": "需要的程式碼行數"
-      },
-      {
-        "value": "1 次點擊",
-        "label": "即可開始錄製"
-      },
-      {
-        "value": "↑ 100%",
-        "label": "完全本機 — 零上傳"
+    "hero": {
+      "eyebrow": "演練場",
+      "titleLine1": "21 個場景，專為",
+      "titleLine2Em": "打垮天真錄製器而生。",
+      "lead": "下面每一頁都是一個受控的陷阱 — 雜湊類名、延遲載入彈窗、Shadow DOM、跨分頁流程、IME 合成、拖曳。裝上擴充功能，點 <code>Start</code>，跑一遍 <em>Try this</em> 步驟，再對照每頁列出的 <code>ActionStep[]</code> 預期輸出。",
+      "steps": [
+        "安裝",
+        "釘到工具列",
+        "開啟一個場景",
+        "Start",
+        "照著 \"Try this\" 做",
+        "Save as Skill"
+      ]
+    },
+    "matrix": {
+      "heading": "覆蓋矩陣",
+      "totalSuffix": "個場景",
+      "rows": {
+        "F": "真實產品綜合 — Notion / Linear / Jira / Salesforce",
+        "A": "選擇器穩定性 — 雜湊類名、相同兄弟節點、多語言",
+        "B": "非同步 + 時序 — SPA 路由、延遲載入彈窗",
+        "C": "多介面 — iframe、Shadow DOM、遮罩、新分頁",
+        "D": "特殊輸入 — 拖曳、檔案、組合鍵、contenteditable、剪貼簿、combobox"
       }
-    ]
+    },
+    "fixtures": "個場景",
+    "category": {
+      "A": {
+        "title": "選擇器穩定性",
+        "blurb": "選擇器要在動態類名、相同兄弟節點、locale 切換後依然可用。"
+      },
+      "B": {
+        "title": "非同步 + 時序",
+        "blurb": "重播需要等 SPA 路由、防抖搜尋、延遲載入彈窗。"
+      },
+      "C": {
+        "title": "多介面",
+        "blurb": "Iframe、Shadow DOM、多分頁流程都是一等公民。"
+      },
+      "D": {
+        "title": "特殊輸入",
+        "blurb": "拖曳、檔案上傳、組合鍵、contenteditable、剪貼簿、ARIA combobox。"
+      },
+      "E": {
+        "title": "參數化",
+        "blurb": "自動識別哪些鍵入值和 URL 區段應該變成可重用參數。"
+      },
+      "F": {
+        "title": "真實產品綜合",
+        "blurb": "有份量的產品形態場景，把 12 個以上難點串成完整工作流 — 演練場裡最接近\"撐得住一天工作\"的部分。"
+      }
+    },
+    "compositeKicker": {
+      "F1-notion": "區塊編輯器",
+      "F2-linear": "議題追蹤",
+      "F3-jira": "迭代看板",
+      "F4-salesforce": "CRM"
+    },
+    "difficultyPoints": "個難點",
+    "scenario": {
+      "crumbCategory": "類別",
+      "back": "← 全部場景",
+      "frameLabel": "實時場景 · 邊錄邊操作",
+      "openInNewTab": "在新分頁開啟 ↗",
+      "cardTryThis": "試試這些",
+      "cardWhyHard": "為什麼難",
+      "cardCoverage": "覆蓋的難點",
+      "cardCoverageHelp": "下面每個標籤都連到那個單點難點的獨立 demo — 綜合場景出問題時方便定位。",
+      "cardExpected": "預期的錄製輸出",
+      "replayHead": "重播日誌 · claude code · stdout",
+      "replayNote": "模擬資料 · 非實時"
+    }
   },
   "notFound": {
-    "message": "正在轉址…",
-    "backHome": "返回首頁"
+    "message": "重新導向中…",
+    "backHome": "回到首頁"
   },
   "policy": {
     "privacy": {
       "meta": {
         "title": "隱私權政策 | Skill Recorder",
-        "description": "Skill Recorder 如何處理你的錄製內容、瀏覽器資料,以及你在使用擴充功能時產生的任何資訊。",
+        "description": "Skill Recorder 如何處理你的錄製、瀏覽器資料和你在使用擴充功能時產生的一切資訊。",
         "keywords": "skill recorder 隱私, 瀏覽器擴充功能隱私, 錄製隱私, 資料保護"
       },
       "title": "隱私權政策",
-      "effectiveDate": "生效日期:2026 年 1 月 1 日",
-      "intro": "Skill Recorder 是一款 Chrome 擴充功能,會擷取你明確錄製的瀏覽器流程,並將其淬煉為 SKILL.md 檔案。本隱私權政策說明哪些資訊會留在你的裝置上、我們不收集哪些資料,以及你對自己資料所擁有的權利。",
+      "effectiveDate": "生效日期：2026 年 1 月 1 日",
+      "intro": "Skill Recorder 是一個 Chrome 擴充功能，捕獲你主動開始錄製的瀏覽器流程並蒸餾成 SKILL.md。本隱私權政策說明哪些資訊留在你裝置上、我們不收集什麼，以及你對自己資料的權利。",
       "sections": [
         {
           "heading": "1. 我們收集的資訊",
-          "paragraphs": [
-            "Skill Recorder 採用本機運作設計。擴充功能會在你的裝置上處理以下資料:"
-          ],
+          "paragraphs": ["Skill Recorder 設計為本機運行。擴充功能在你裝置上處理以下內容："],
           "bullets": [
-            {
-              "label": "錄製動作:",
-              "text": "你明確開始錄製的流程中的點擊、按鍵、導覽以及 DOM 快照。儲存於你瀏覽器的 IndexedDB。"
-            },
-            {
-              "label": "淬煉後的技能:",
-              "text": "你產生的 SKILL.md 檔案。在你匯出或刪除之前,皆儲存於本機。"
-            },
-            {
-              "label": "匿名遙測:",
-              "text": "用於協助我們改進產品的基本事件次數(例如「開始錄製」、「匯出技能」)。不包含任何頁面內容、驗證權杖或個人識別資訊。"
-            }
+            { "label": "錄製動作：", "text": "你主動開始錄製的流程裡產生的點擊、按鍵、導覽和 DOM 快照。儲存在你瀏覽器的 IndexedDB 裡。" },
+            { "label": "蒸餾 Skill：", "text": "你產生的 SKILL.md 檔。本機儲存，直到你匯出或刪除。" },
+            { "label": "匿名遙測：", "text": "基礎事件計數（例如 \"recording started\"、\"skill exported\"），幫助我們改進產品。不含頁面內容、鑑權 token 或 PII。" }
           ],
-          "trailing": "Skill Recorder 不會收集密碼、付款資訊,或任何來自你未明確錄製之工作階段的頁面內容。"
+          "trailing": "Skill Recorder 不收集密碼、付款資訊，也不收集你未主動錄製的工作階段裡的任何頁面內容。"
         },
         {
-          "heading": "2. 我們如何使用你的資訊",
-          "paragraphs": [
-            "由 Skill Recorder 處理的資訊僅用於:"
-          ],
+          "heading": "2. 我們如何使用這些資訊",
+          "paragraphs": ["Skill Recorder 處理的資訊僅用於："],
           "bullets": [
-            {
-              "label": "",
-              "text": "忠實地重現你所錄製的流程。"
-            },
-            {
-              "label": "",
-              "text": "執行將原始錄製內容轉為乾淨 SKILL.md 的淬煉流程。"
-            },
-            {
-              "label": "",
-              "text": "當你點擊「下載」時,讓你能將 SKILL.md 檔案匯出至本機檔案系統。"
-            },
-            {
-              "label": "",
-              "text": "透過匿名化的事件次數來改善產品使用體驗。"
-            }
+            { "label": "", "text": "忠實重播你錄製的流程。" },
+            { "label": "", "text": "執行把原始錄製變成乾淨 SKILL.md 的蒸餾管線。" },
+            { "label": "", "text": "你點 Download 時把 SKILL.md 匯出到本地檔案系統。" },
+            { "label": "", "text": "透過匿名事件計數改進產品可用性。" }
           ],
-          "trailing": "我們不會將你的資料用於廣告、行為分析,或跨網站追蹤。"
+          "trailing": "我們不把你的資料用於廣告、行為畫像或跨站追蹤。"
         },
         {
-          "heading": "3. 資料儲存與保存",
+          "heading": "3. 資料儲存與保留",
           "paragraphs": [],
           "bullets": [
-            {
-              "label": "本機儲存:",
-              "text": "錄製內容、淬煉後的技能以及偏好設定皆儲存於你瀏覽器的 IndexedDB 與 chrome.storage 之中,並會留在你的裝置上,直到你刪除為止。"
-            },
-            {
-              "label": "不進行雲端同步:",
-              "text": "Skill Recorder 不會將你的錄製內容上傳至任何伺服器。沒有帳號、沒有雲端歷史、也沒有共用的工作區。"
-            }
+            { "label": "本機儲存：", "text": "錄製、蒸餾的 Skill 和偏好設定存在瀏覽器的 IndexedDB 和 chrome.storage 裡。你刪除前都留在你裝置上。" },
+            { "label": "無雲端同步：", "text": "Skill Recorder 不把你的錄製上傳到任何伺服器。沒有帳號、沒有雲端歷史、沒有共用工作區。" }
           ],
-          "trailing": "你可以隨時透過擴充功能的設定,或解除安裝擴充功能,清除所有本機儲存的資料。"
+          "trailing": "你可以隨時透過擴充功能設定或解除安裝擴充功能來清空所有本地資料。"
         },
         {
           "heading": "4. 第三方服務",
-          "paragraphs": [
-            "Skill Recorder 不會將錄製資料傳送給第三方。擴充功能僅會發出以下網路呼叫:",
-            "這些呼叫不會包含任何頁面內容或錄製動作。"
-          ],
+          "paragraphs": ["Skill Recorder 不向第三方傳送錄製資料。擴充功能唯一發起的網路請求是：", "這些呼叫不包含任何頁面內容或錄製動作。"],
           "bullets": [
-            {
-              "label": "更新檢查:",
-              "text": "向 Chrome 線上應用程式商店接收擴充功能更新。"
-            },
-            {
-              "label": "遙測:",
-              "text": "向一個匿名分析端點傳送資料,僅用於計算選擇加入的事件次數。若你選擇退出,則會停用。"
-            }
+            { "label": "更新檢查：", "text": "Chrome Web Store，用於取得擴充功能更新。" },
+            { "label": "遙測：", "text": "匿名分析端點，僅用於統計已選擇加入的事件。關掉就不會發。" }
           ]
         },
         {
           "heading": "5. 擴充功能權限",
-          "paragraphs": [
-            "Skill Recorder 需要下列權限才能運作:"
-          ],
+          "paragraphs": ["Skill Recorder 請求以下權限以執行："],
           "bullets": [
-            {
-              "label": "activeTab:",
-              "text": "存取你明確選擇要錄製的分頁。"
-            },
-            {
-              "label": "scripting:",
-              "text": "注入內容腳本,在錄製過程中擷取點擊、按鍵與導覽。"
-            },
-            {
-              "label": "storage:",
-              "text": "將錄製內容與淬煉後的技能持久化儲存在你的裝置本機。"
-            },
-            {
-              "label": "sidePanel:",
-              "text": "開啟側邊面板,顯示你已擷取的流程清單。"
-            }
+            { "label": "activeTab：", "text": "存取你明確選擇錄製的分頁。" },
+            { "label": "scripting：", "text": "在錄製期間注入內容腳本以捕獲點擊、按鍵和導覽。" },
+            { "label": "storage：", "text": "在你裝置上本機持久化錄製和蒸餾的 Skill。" },
+            { "label": "sidePanel：", "text": "開啟列出你已捕獲流程的錄製側邊欄。" }
           ]
         },
         {
           "heading": "6. 資料安全",
-          "paragraphs": [
-            "由於所有資料都留在你的裝置上,攻擊面僅限於你瀏覽器的本機儲存空間。我們也採取合理措施,以防不受信任的頁面內容注入到錄製流程中。"
-          ]
+          "paragraphs": ["因為所有資料都留在你裝置上，攻擊面僅限於瀏覽器本機儲存。我們採取合理措施防止不受信任的頁面內容注入到錄製管線。"]
         },
         {
           "heading": "7. 政策變更",
-          "paragraphs": [
-            "本隱私權政策可能會不定期更新。更新內容會發佈於本頁,並附上新的生效日期。"
-          ]
+          "paragraphs": ["本隱私權政策可能不定期更新。更新會發布在本頁面並附帶新的生效日期。"]
         },
         {
-          "heading": "8. 聯絡我們",
-          "paragraphs": [
-            "若你對本隱私權政策有任何疑問,歡迎透過下列方式與我們聯絡:"
-          ],
+          "heading": "8. 聯繫",
+          "paragraphs": ["如對本隱私權政策有疑問，請透過以下方式聯繫我們："],
           "contactEmail": "support@skill-recorder.dev"
         }
       ]
@@ -392,85 +391,55 @@
     "terms": {
       "meta": {
         "title": "服務條款 | Skill Recorder",
-        "description": "規範你使用 Skill Recorder 瀏覽器擴充功能與網站的規則與條件。",
+        "description": "規範你使用 Skill Recorder 瀏覽器擴充功能及網站的規則與條件。",
         "keywords": "skill recorder 條款, 服務條款, 瀏覽器擴充功能條款"
       },
       "title": "服務條款",
-      "effectiveDate": "生效日期:2026 年 1 月 1 日",
-      "intro": "本服務條款(以下稱「條款」)規範你使用 Skill Recorder 瀏覽器擴充功能與網站(統稱「本服務」)。當你安裝或使用 Skill Recorder,即視為同意本條款。",
+      "effectiveDate": "生效日期：2026 年 1 月 1 日",
+      "intro": "本《服務條款》（以下簡稱「條款」）規範你對 Skill Recorder 瀏覽器擴充功能及網站（合稱「服務」）的使用。安裝或使用 Skill Recorder 即視為你同意本條款。",
       "sections": [
         {
           "heading": "1. 服務說明",
-          "paragraphs": [
-            "Skill Recorder 是一款瀏覽器擴充功能,可擷取使用者操作的瀏覽器流程,並將其淬煉為可攜的 SKILL.md 檔案,供 AI 代理使用。本服務以「現況」提供,並可能隨時更新或修改。"
-          ]
+          "paragraphs": ["Skill Recorder 是一個瀏覽器擴充功能，捕獲使用者驅動的瀏覽器流程並蒸餾成可攜的 SKILL.md 供 AI Agent 使用。本服務「按現狀」提供，我們可能隨時更新或修改。"]
         },
         {
-          "heading": "2. 允許的使用方式",
-          "paragraphs": [
-            "你只能將 Skill Recorder 用於合法用途,並同意不得:"
-          ],
+          "heading": "2. 允許的使用",
+          "paragraphs": ["你只能將 Skill Recorder 用於合法目的。你同意不："],
           "bullets": [
-            {
-              "label": "",
-              "text": "錄製或自動化任何違反網站服務條款或 robots.txt 指示的流程。"
-            },
-            {
-              "label": "",
-              "text": "在未經同意的情況下,使用 Skill Recorder 蒐集個人資料。"
-            },
-            {
-              "label": "",
-              "text": "利用本服務從事任何違法行為,包含未授權的帳號存取、垃圾訊息或詐欺。"
-            },
-            {
-              "label": "",
-              "text": "未經允許,嘗試對擴充功能進行反組譯、修改或再散布。"
-            }
+            { "label": "", "text": "錄製或自動化違反任何網站服務條款或 robots.txt 指令的流程。" },
+            { "label": "", "text": "在未經個人同意的情況下使用 Skill Recorder 收集其個人資料。" },
+            { "label": "", "text": "將服務用於任何非法活動，包括未授權帳戶存取、垃圾郵件或詐欺。" },
+            { "label": "", "text": "未經許可逆向工程、修改或重新分發擴充功能。" }
           ],
-          "trailing": "你須自行確保使用 Skill Recorder 之行為符合適用法律,以及你所錄製之任何網站的條款。"
+          "trailing": "你需自行確保對 Skill Recorder 的使用符合適用法律及你錄製的任何網站的條款。"
         },
         {
           "heading": "3. 智慧財產權",
-          "paragraphs": [
-            "Skill Recorder 擴充功能、網站及所有相關內容皆為 Skill Recorder 所有,並受適用之智慧財產權法律保護。我們授予你有限、非專屬、不可轉讓的授權,讓你可依據本條款,將本服務用於個人或商業用途。"
-          ]
+          "paragraphs": ["Skill Recorder 擴充功能、網站及所有相關內容歸 Skill Recorder 所有，受適用智慧財產權法保護。我們授予你一個有限的、非獨佔的、不可轉讓的授權，依本條款用於個人或商業目的。"]
         },
         {
-          "heading": "4. 免費方案與付費方案",
-          "paragraphs": [
-            "Skill Recorder 目前在 Beta 期間完全免費。未來可能推出付費方案,並會提前通知。我們保留在合理通知下,調整功能範圍與價格的權利。"
-          ]
+          "heading": "4. 免費層與付費方案",
+          "paragraphs": ["Skill Recorder 公開 beta 期間免費。未來可能推出付費方案，會提前通知。我們保留以合理通知方式調整功能範圍和價格的權利。"]
         },
         {
           "heading": "5. 免責聲明",
-          "paragraphs": [
-            "本服務以「現況」提供,不附帶任何明示或暗示的保證。我們不保證服務不會中斷、不會發生錯誤,也不保證淬煉後的 SKILL.md 在所有網站上都能正確重放。瀏覽器流程的重放仰賴第三方網站的結構,而這些結構可能在不另行通知的情況下變動。"
-          ]
+          "paragraphs": ["本服務「按現狀」提供，不附帶任何明示或暗示的保證。我們不保證服務不中斷、無錯誤，也不保證蒸餾出的 SKILL.md 在所有網站上都能正確重播。瀏覽器流程重播依賴第三方網站的結構，這些結構可能隨時變化。"]
         },
         {
           "heading": "6. 責任限制",
-          "paragraphs": [
-            "在法律允許的最大範圍內,Skill Recorder 對於你使用本服務所引起之任何間接、附隨、特殊或衍生性損害概不負責,包含但不限於資料遺失、對重放流程之依賴,以及因你的錄製行為所引起之法律主張。"
-          ]
+          "paragraphs": ["在法律允許的最大範圍內，Skill Recorder 對你使用服務而產生的任何間接、附帶、特殊或衍生性損害不承擔責任，包括但不限於資料遺失、對重播流程的依賴、或與你的錄製活動相關的法律索賠。"]
         },
         {
           "heading": "7. 終止",
-          "paragraphs": [
-            "我們保留隨時暫停或終止你存取本服務的權利,理由可包含你違反本條款,或我們認定之其他任何原因。"
-          ]
+          "paragraphs": ["我們保留因違反本條款或基於任何其他自行判斷之原因隨時暫停或終止你對服務存取的權利。"]
         },
         {
           "heading": "8. 條款變更",
-          "paragraphs": [
-            "我們可能會不定期更新本條款。變更發佈後,若你繼續使用本服務,即視為接受修訂後的條款。"
-          ]
+          "paragraphs": ["我們可能不定期更新本條款。變更發布後繼續使用服務即視為接受修訂後的條款。"]
         },
         {
-          "heading": "9. 聯絡我們",
-          "paragraphs": [
-            "若你對本條款有任何疑問,歡迎透過下列方式聯絡我們:"
-          ],
+          "heading": "9. 聯繫",
+          "paragraphs": ["如對本條款有疑問，請透過以下方式聯繫我們："],
           "contactEmail": "support@skill-recorder.dev"
         }
       ]

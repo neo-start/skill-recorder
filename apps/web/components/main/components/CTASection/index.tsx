@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import styled from 'styled-components';
 import Button from '@/components/ui/Button';
 import { CTA_URL, withUTM } from '@/lib/utm';
@@ -179,30 +180,26 @@ function ChromeIcon() {
 }
 
 export default function CTASection() {
+  const t = useTranslations('main.cta');
+
   return (
     <Section id="cta">
       <Container>
         <Grid>
           <div>
-            <Eyebrow>Get the recorder</Eyebrow>
+            <Eyebrow>{t('eyebrow')}</Eyebrow>
             <Title>
-              Record one flow.{' '}
-              <em>Let an agent run the next thousand.</em>
+              {t.rich('title', { em: (chunks) => <em>{chunks}</em> })}
             </Title>
-            <Sub>
-              Free during the open beta. No account, no upload, no telemetry. The
-              entire bundle is 4.5&nbsp;MB; recordings live on your machine until you choose to export them.
-            </Sub>
+            <Sub>{t('sub')}</Sub>
           </div>
 
           <Ctas>
             <Primary size="lg" href={withUTM(CTA_URL, 'bottom_cta')}>
-              <ChromeIcon /> Add to Chrome
+              <ChromeIcon /> {t('ctaPrimary')}
             </Primary>
             <SecondaryRow>
-              <PlaygroundLink href="/playground">
-                Or try it against 21 stress-test fixtures →
-              </PlaygroundLink>
+              <PlaygroundLink href="/playground">{t('playgroundLink')}</PlaygroundLink>
               <Spec>
                 <span>MV3</span>
                 <span>Chrome 116+</span>
@@ -213,7 +210,7 @@ export default function CTASection() {
         </Grid>
 
         <Foot>
-          <span>SKILL.md — a plain-markdown contract between humans and agents.</span>
+          <span>{t('footLeft')}</span>
           <span>v0.4.1 · Updated 2026-02-19</span>
         </Foot>
       </Container>

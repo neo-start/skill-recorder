@@ -1,4 +1,5 @@
 import { unstable_setRequestLocale } from 'next-intl/server';
+import { generatePageMetadata } from '@/lib/metadata';
 import { routing } from '@/i18n/routing';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -8,11 +9,9 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-export const metadata = {
-  title: 'Playground · Skill Recorder',
-  description:
-    'Hands-on demo pages that stress-test the recorder against drag-and-drop, iframes, shadow DOM, multi-tab flows, modifier-key chords, contenteditable, and more.',
-};
+export async function generateMetadata() {
+  return generatePageMetadata('playground', '/playground');
+}
 
 export default function PlaygroundPage({ params }: { params: { locale: string } }) {
   unstable_setRequestLocale(params.locale);

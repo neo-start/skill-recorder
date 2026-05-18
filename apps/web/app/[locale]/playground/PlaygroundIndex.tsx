@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import styled, { css } from 'styled-components';
-import { CATEGORY_LABELS, SCENARIOS, type Scenario, type ScenarioCategory } from './scenarios';
+import { SCENARIOS, type Scenario, type ScenarioCategory } from './scenarios';
 
 /* ────────────────────────────────────────────────────────────────────
  * Playground index — editorial pass.
@@ -460,11 +461,11 @@ const Chip = styled.span`
 
 /* ── Brand-ish palettes (monograms — not real logos) ──────────── */
 
-const COMPOSITE_STYLE: Record<string, { mono: string; bg: string; fg: string; kicker: string }> = {
-  'F1-notion': { mono: 'N', bg: '#1f1f1f', fg: '#ffffff', kicker: 'Block editor' },
-  'F2-linear': { mono: 'L', bg: '#5e6ad2', fg: '#ffffff', kicker: 'Issue tracker' },
-  'F3-jira': { mono: 'J', bg: '#0052cc', fg: '#ffffff', kicker: 'Sprint board' },
-  'F4-salesforce': { mono: 'S', bg: '#00a1e0', fg: '#ffffff', kicker: 'CRM' },
+const COMPOSITE_STYLE: Record<string, { mono: string; bg: string; fg: string }> = {
+  'F1-notion': { mono: 'N', bg: '#1f1f1f', fg: '#ffffff' },
+  'F2-linear': { mono: 'L', bg: '#5e6ad2', fg: '#ffffff' },
+  'F3-jira': { mono: 'J', bg: '#0052cc', fg: '#ffffff' },
+  'F4-salesforce': { mono: 'S', bg: '#00a1e0', fg: '#ffffff' },
 };
 
 /* ── Technique signatures for simple fixtures ───────────────────── */
@@ -491,20 +492,30 @@ const SIGNATURES: Record<string, string> = {
 /* ── Components ────────────────────────────────────────────────── */
 
 function CompositeBlock({ scenario }: { scenario: Scenario }) {
+  const t = useTranslations('playground');
   const cov = scenario.coverage ?? [];
-  const style = COMPOSITE_STYLE[scenario.slug] ?? { mono: '?', bg: '#3F4042', fg: '#fff', kicker: 'Composite' };
+  const style = COMPOSITE_STYLE[scenario.slug] ?? { mono: '?', bg: '#3F4042', fg: '#fff' };
+  const kicker = (() => {
+    try {
+      return t(`compositeKicker.${scenario.slug}`);
+    } catch {
+      return scenario.slug;
+    }
+  })();
   return (
     <CompositeCard href={`/playground/s/${scenario.slug}`}>
       <Monogram $bg={style.bg} $fg={style.fg} aria-hidden="true">
         {style.mono}
       </Monogram>
       <CompositeBody>
-        <CompositeKicker>{style.kicker}</CompositeKicker>
+        <CompositeKicker>{kicker}</CompositeKicker>
         <CompositeCardTitle>{scenario.title}</CompositeCardTitle>
         <CompositeCardTag>{scenario.tagline}</CompositeCardTag>
         {cov.length > 0 ? (
           <CoverageRow>
-            <CoverageCount>{cov.length} difficulty points</CoverageCount>
+            <CoverageCount>
+              {cov.length} {t('difficultyPoints')}
+            </CoverageCount>
             <ChipRow>
               {cov.map((tag) => (
                 <Chip key={tag}>{tag}</Chip>
@@ -530,18 +541,14 @@ function SimpleBlock({ scenario }: { scenario: Scenario }) {
   );
 }
 
-/* ── Matrix (hero right column) ─────────────────────────────────── */
+/* ── Matrix rows — order-stable; copy comes from i18n via the `cat` key. */
 
-const MATRIX_ROWS: Array<{
-  cat: ScenarioCategory;
-  short: string;
-  count: number;
-}> = [
-  { cat: 'F', short: 'real-world composites — Notion / Linear / Jira / Salesforce', count: 4 },
-  { cat: 'A', short: 'selector stability — hashed classes, identical siblings, i18n', count: 4 },
-  { cat: 'B', short: 'async + timing — SPA routes, lazy modals', count: 2 },
-  { cat: 'C', short: 'multi-surface — iframes, shadow DOM, redaction, new tab', count: 4 },
-  { cat: 'D', short: 'input specialness — drag, file, chords, contenteditable, clipboard, combobox', count: 6 },
+const MATRIX_ROWS: Array<{ cat: ScenarioCategory; count: number }> = [
+  { cat: 'F', count: 4 },
+  { cat: 'A', count: 4 },
+  { cat: 'B', count: 2 },
+  { cat: 'C', count: 4 },
+  { cat: 'D', count: 6 },
 ];
 
 const matrixDescElement = (short: string) => {
@@ -558,6 +565,7 @@ const matrixDescElement = (short: string) => {
 /* ── Default export ─────────────────────────────────────────────── */
 
 export default function PlaygroundIndex() {
+  const t = useTranslations('playground');
   const byCat = new Map<ScenarioCategory, Scenario[]>();
   for (const s of SCENARIOS) {
     if (!byCat.has(s.category)) byCat.set(s.category, []);
@@ -565,45 +573,47 @@ export default function PlaygroundIndex() {
   }
 
   const totalCount = SCENARIOS.length;
+  const steps = t.raw('hero.steps') as string[];
 
   return (
     <>
       <HeroSection>
         <HeroGrid>
           <div>
-            <Eyebrow>The playground</Eyebrow>
+            <Eyebrow>{t('hero.eyebrow')}</Eyebrow>
             <H1>
-              Twenty-one fixtures designed to{' '}
-              <em>break naïve recorders.</em>
+              {t('hero.titleLine1')}{' '}
+              <em>{t('hero.titleLine2Em')}</em>
             </H1>
             <Lead>
-              Each page below is a controlled trap — hashed classes, lazy modals, shadow DOM, cross-tab flows,
-              IME composition, drag-and-drop. Install the extension, click <code>Start</code>, run the
-              <em> Try this</em> steps, and compare the captured <code>ActionStep[]</code> against the
-              expected output we've spelled out on each page.
+              {t.rich('hero.lead', {
+                code: (chunks) => <code>{chunks}</code>,
+                em: (chunks) => <em>{chunks}</em>,
+              })}
             </Lead>
             <HowSteps>
-              <li>install</li>
-              <li>pin to toolbar</li>
-              <li>open a fixture</li>
-              <li><code>Start</code></li>
-              <li>follow "Try this"</li>
-              <li><code>Save as Skill</code></li>
+              {steps.map((step, i) => (
+                <li key={i}>
+                  {/^[A-Z]/.test(step) || step.includes('"') ? <code>{step}</code> : step}
+                </li>
+              ))}
             </HowSteps>
           </div>
 
-          <MatrixWrap aria-label="Coverage matrix">
+          <MatrixWrap aria-label={t('matrix.heading')}>
             <MatrixHead>
-              <span>Coverage matrix</span>
+              <span>{t('matrix.heading')}</span>
               <span style={{ fontFamily: 'inherit', color: 'var(--color-text-faint)', fontWeight: 500, textTransform: 'none', letterSpacing: 0 }}>
-                {totalCount} fixtures total
+                {totalCount} {t('matrix.totalSuffix')}
               </span>
             </MatrixHead>
             {MATRIX_ROWS.map((row, i) => (
               <MatrixRow key={row.cat} $first={i === 0}>
                 <MatrixCat>{row.cat}.</MatrixCat>
-                <MatrixDesc>{matrixDescElement(row.short)}</MatrixDesc>
-                <MatrixCount>{row.count} fixtures</MatrixCount>
+                <MatrixDesc>{matrixDescElement(t(`matrix.rows.${row.cat}`))}</MatrixDesc>
+                <MatrixCount>
+                  {row.count} {t('fixtures')}
+                </MatrixCount>
               </MatrixRow>
             ))}
           </MatrixWrap>
@@ -620,11 +630,11 @@ export default function PlaygroundIndex() {
               <CategoryHeader>
                 <CategoryHeadLeft>
                   <CategoryKicker>{cat}.</CategoryKicker>
-                  <CategoryTitle>{CATEGORY_LABELS[cat].title.replace(`${cat} · `, '')}</CategoryTitle>
-                  <CategoryBlurb>{CATEGORY_LABELS[cat].blurb}</CategoryBlurb>
+                  <CategoryTitle>{t(`category.${cat}.title`)}</CategoryTitle>
+                  <CategoryBlurb>{t(`category.${cat}.blurb`)}</CategoryBlurb>
                 </CategoryHeadLeft>
                 <CategoryCount>
-                  {list.length} fixture{list.length === 1 ? '' : 's'}
+                  {list.length} {t('fixtures')}
                 </CategoryCount>
               </CategoryHeader>
               <Grid $variant={isComposite ? 'composite' : 'simple'}>

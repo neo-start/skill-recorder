@@ -14,7 +14,8 @@
         "leads": "Hoe je een opname distilleert tot een herbruikbare skill",
         "pagination": "Flows afspelen met de browse CLI"
       },
-      "playground": "Playground"
+      "playground": "Playground",
+      "openPlayground": "Open Playground"
     },
     "footer": {
       "tagline": "Eén keer opnemen. Eeuwig afspelen.",
@@ -26,7 +27,8 @@
       "legal": "Support",
       "privacy": "Privacybeleid",
       "terms": "Servicevoorwaarden",
-      "copyright": "© 2026 Skill Recorder. Alle rechten voorbehouden."
+      "copyright": "© 2026 Skill Recorder. Alle rechten voorbehouden.",
+      "playground": "Playground"
     }
   },
   "blog": {
@@ -56,200 +58,181 @@
   "main": {
     "meta": {
       "title": "Skill Recorder | Maak van browserflows SKILL.md-bestanden",
-      "description": "Neem elke browserflow op met een Chrome-extensie en distilleer deze tot een SKILL.md-bestand dat AI-agents zoals Claude Code autonoom opnieuw kunnen uitvoeren.",
-      "keywords": "skill recorder, browserautomatisering, claude code skills, SKILL.md, browse cli, ai-agent automatisering, chrome-extensie"
+      "description": "Een Chrome-extensie die elke browserflow opneemt en distilleert tot een SKILL.md-bestand dat AI-agents zoals Claude Code autonoom kunnen herhalen.",
+      "keywords": "skill recorder, browserautomatisering, claude code skills, SKILL.md, browse cli, ai-agent-automatisering, chrome-extensie"
     },
     "hero": {
-      "title": "Neem een flow één keer op. Laat AI het voor altijd afspelen.",
-      "subtitle": "Een Chrome-extensie die je browserflow vastlegt en distilleert tot een SKILL.md die AI-agents opnieuw kunnen uitvoeren.",
-      "ctaPrimary": "Nu installeren",
-      "note": "Gratis tijdens de beta. Geen account nodig."
-    },
-    "howItWorks": {
-      "title": "Van browserdemo naar afspeelbare skill in <accent>3 stappen</accent>",
-      "steps": {
-        "install": {
-          "number": "01",
-          "title": "Installeer de extensie",
-          "desc": "Voeg Skill Recorder binnen enkele seconden toe aan Chrome.",
-          "imgAlt": "Installeer de Skill Recorder Chrome-extensie"
-        },
-        "scrape": {
-          "number": "02",
-          "title": "Neem je flow op",
-          "desc": "Klik op Start, doorloop de taak één keer en wij leggen elke actie vast.",
-          "imgAlt": "Neem een browserflow op met één klik"
-        },
-        "export": {
-          "number": "03",
-          "title": "Exporteer als SKILL.md",
-          "desc": "Sla het gedistilleerde markdown-bestand direct op in je Claude Code skills-map.",
-          "imgAlt": "Download een SKILL.md-bestand klaar voor Claude Code"
-        }
-      }
-    },
-    "features": {
-      "title": "Leg elke klik vast, <accent>distilleer elke skill</accent>",
-      "ctas": {
-        "f1": "Nu opnemen",
-        "f2": "Schoon distilleren",
-        "f3": "Overal afspelen",
-        "f4": "Overdragen aan Claude"
-      },
-      "f1": {
-        "title": "Druk gewoon op opnemen",
-        "desc": "Geen scripts, geen selectors. Klik op Start en demonstreer de taak zoals je dat bij een collega zou doen. We leggen <highlight>elke klik, toetsaanslag en navigatie</highlight> in realtime vast. Wanneer je stopt, heb je een perfecte replay klaar om te distilleren.",
-        "imgAlt": "Opname van een browserflow met één klik"
-      },
-      "f2": {
-        "title": "Slimme distillatie, direct uit de doos",
-        "desc": "Het dialoogvenster filtert automatisch ruis, <highlight>maakt van elke ingetypte waarde een parameter</highlight> en markeert kliks op dynamische lijsten met ⚠️-waarschuwingen zodat agents ze veilig kunnen afspelen. Geen handmatig opschonen, geen geworstel met regex.",
-        "imgAlt": "Een opname distilleren tot een schone SKILL.md"
-      },
-      "f3": {
-        "title": "Afspelen op elke AI-agent",
-        "desc": "De output is een draagbaar <highlight>SKILL.md</highlight>-bestand — pure markdown die een AI-agent kan lezen. Zet het in de skills-map van Claude Code en de agent speelt de flow af via de <highlight>browse</highlight> CLI zonder lijmcode.",
-        "imgAlt": "Een SKILL.md-flow afspelen met Claude Code"
-      },
-      "f4": {
-        "title": "Privacy-first by design",
-        "desc": "Alle opnames blijven in je browser. Niets wordt geüpload. Auth-tokens verlaten je machine nooit — wij detecteren ze, markeren ze als <highlight>Voorwaarde: ingelogd</highlight> en laten de agent jou prompten wanneer het tijd is om in te loggen.",
-        "imgAlt": "Skill Recorder draait lokaal zonder upload"
-      }
-    },
-    "useCases": {
-      "title": "Gebouwd voor elke repetitieve browsertaak",
-      "cases": {
-        "ecommerce": {
-          "title": "Automatiseer repetitieve formulieren",
-          "desc": "Neem één keer een inzending op en geef de SKILL.md aan Claude. De agent vult 's nachts tientallen varianten in zonder dat je hoeft te babysitten.",
-          "cta": "Formulieren opnemen"
-        },
-        "reviews": {
-          "title": "Voer dagelijkse dashboardchecks uit",
-          "desc": "Leg het klikpad door je analytics dashboard één keer vast. Laat een agent elke ochtend dezelfde cijfers ophalen en in Slack plaatsen.",
-          "cta": "Dashboards opnemen"
-        },
-        "seo": {
-          "title": "Audit wekelijks concurrentensites",
-          "desc": "Demonstreer de auditchecklist op één site. De skill speelt deze af op je hele tracking-lijst, elke maandag om 9 uur.",
-          "cta": "Audits opnemen"
-        },
-        "leads": {
-          "title": "Bouw herhaaldelijk leadlijsten",
-          "desc": "Doorloop één zoekopdracht in een bedrijvengids. Hergebruik de opname voor nieuwe zoektermen voor altijd, zonder scripts.",
-          "cta": "Zoekopdrachten opnemen"
-        },
-        "jobs": {
-          "title": "Houd vacaturesites bij",
-          "desc": "Toon één keer de filter + scroll + export-flow. Je agent voert het dagelijks uit op elk vacatureboard waar je om geeft.",
-          "cta": "Vacaturesites opnemen"
-        },
-        "realestate": {
-          "title": "Monitor woningadvertenties",
-          "desc": "Neem één zoekopdracht met je filters op. De agent voert het volgens een schema opnieuw uit en brengt nieuwe matches in beeld.",
-          "cta": "Advertenties opnemen"
-        },
-        "hotels": {
-          "title": "Vergelijk reisprijzen",
-          "desc": "Demonstreer één keer je gebruikelijke hotelzoekopdracht. Laat agents prijzen pollen over datums en platforms heen zonder handmatige moeite.",
-          "cta": "Zoekopdrachten opnemen"
-        }
-      }
-    },
-    "testimonials": {
-      "title": "Wat builders zeggen",
-      "items": [
-        {
-          "quote": "Ik schreef vroeger 200 regels Playwright telkens als ik een nieuwe repetitieve workflow onboardde. Nu neem ik het één keer op in de browser, geef de SKILL.md aan Claude, en het werkt gewoon.",
-          "name": "Lena R.",
-          "role": "Staff Engineer"
-        },
-        {
-          "quote": "De distillatiestap is wat het verkoopt. Elke ingetypte waarde wordt automatisch een parameter, dus dezelfde opname dekt een hele batch inputs.",
-          "name": "Marcus T.",
-          "role": "AI Workflow Lead"
-        },
-        {
-          "quote": "Ons ops-team neemt flows op. De agents spelen ze af. Niemand aan beide kanten hoeft code of selectors aan te raken. Die kloof dichten is enorm.",
-          "name": "Priya N.",
-          "role": "Head of Internal Tools"
-        },
-        {
-          "quote": "Auth-detectie maakte dit voor ons production-ready. De skill pauzeert bij de loginstap, prompt de mens en hervat. Geen gelekte tokens.",
-          "name": "Sam K.",
-          "role": "Security Engineer"
-        },
-        {
-          "quote": "Ik bouwde drie skills vóór de lunch. Elk verving een browserritueel van een half uur. De browse CLI-integratie is precies de API die ik wilde.",
-          "name": "Ahmed S.",
-          "role": "Indie Hacker"
-        },
-        {
-          "quote": "Ik onderhield vroeger Selenium-scripts die brak telkens als er een knop verschoof. Met SKILL.md leest de agent de intentie, niet de selector. Onderhoud daalde 80%.",
-          "name": "Yuki H.",
-          "role": "QA Automation Engineer"
-        },
-        {
-          "quote": "Het privacy-verhaal heeft het beklonken. Niets verlaat de browser, auth-tokens raken geen enkele server. Compliance tekende af in één meeting.",
-          "name": "Diana F.",
-          "role": "Platform Engineer"
-        }
-      ]
-    },
-    "faq": {
-      "title": "Veelgestelde vragen",
-      "contact": "Antwoord niet gevonden? Bereik ons via",
-      "items": [
-        {
-          "question": "Is het echt gratis?",
-          "answer": "Ja — Skill Recorder is gratis tijdens de beta. Installeer de extensie en begin meteen met opnemen. Geen account, geen betaalgegevens vereist."
-        },
-        {
-          "question": "Waar staat de opnamedata?",
-          "answer": "Volledig in je browser. We uploaden je opnames, je auth-tokens of je paginacontent nooit. Opnames blijven op je apparaat totdat je ervoor kiest om het gedistilleerde SKILL.md-bestand te exporteren."
-        },
-        {
-          "question": "Wat is SKILL.md en hoe wordt het gebruikt?",
-          "answer": "SKILL.md is een draagbaar markdown-bestand dat een geautomatiseerde browserflow beschrijft als een reeks stappen. AI-agents zoals Claude Code laden het uit een skills-map en spelen het af via de browse CLI — geen extra lijmcode."
-        },
-        {
-          "question": "Hoe gaat het om met loginpagina's?",
-          "answer": "Skill Recorder detecteert auth-grenzen automatisch en voegt een Voorwaarde: ingelogd-markering in. Wanneer een agent de skill afspeelt, pauzeert deze bij de auth-stap en prompt de mens, in plaats van sessietokens te lekken."
-        },
-        {
-          "question": "Wat als de pagina verandert? Breekt mijn skill dan?",
-          "answer": "De distillatiestap legt semantische intentie vast (\"klik op de knop Verzenden\") en valt terug op meerdere selectors. Skills verdragen kleine DOM-wijzigingen veel beter dan hard-gecodeerde Selenium-scripts."
-        },
-        {
-          "question": "Heb ik Claude Code nodig om de output te gebruiken?",
-          "answer": "Claude Code is vandaag de primaire integratie, maar het formaat is pure markdown. Elke agent die de browse CLI-conventies ondersteunt, kan een SKILL.md-bestand verwerken."
-        }
-      ]
+      "ctaPrimary": "Toevoegen aan Chrome",
+      "eyebrow": "Browserflow-opnemer · Chrome MV3",
+      "titleLine1": "Je hebt het één keer voorgedaan.",
+      "titleLine2Em": "Waarom doe je het nog steeds zelf?",
+      "lead": "Skill Recorder is een Chrome-extensie die kijkt hoe je een browsertaak <em>één keer</em> doorloopt — en schrijft dan een <hand>SKILL.md</hand>: een platte-markdown-specificatie die Claude Code (of elke agent op de <code>browse</code>-CLI) afspeelt zonder selectors, glue code of toezicht.",
+      "ctaSecondary": "Probeer een stresstest-fixture →",
+      "captionLine1": "↑ een inkooporderflow van vijf minuten,",
+      "captionLine2": "één keer opgenomen en <strong>eeuwig herhaald.</strong>"
     },
     "cta": {
-      "title": "Neem je eerste skill op in 60 seconden",
-      "button": "Nu installeren",
-      "note": "Gratis tijdens de beta. Geen account nodig."
+      "eyebrow": "Pak de opnemer",
+      "sub": "Gratis tijdens de open beta. Geen account, geen upload, geen telemetrie. De hele bundel is 4,5 MB; opnames leven op jouw machine tot jij ze exporteert.",
+      "ctaPrimary": "Toevoegen aan Chrome",
+      "playgroundLink": "Of probeer het tegen 21 stresstest-fixtures →",
+      "footLeft": "SKILL.md — een platte-markdown-contract tussen mensen en agents."
     },
-    "stats": [
-      {
-        "value": "↓ 80%",
-        "label": "Onderhoud t.o.v. Selenium"
+    "anatomy": {
+      "tag": "Anatomie",
+      "title": "Drie stappen, <em>één klik uit elkaar.</em>",
+      "lead": "Wat we leveren is een kleine Chrome-MV3-extensie en een distillatie-pipeline van 4 KB. De opnemer haakt in <code>chrome.debugger</code> voor DOM-niveau trouw; de distillatie draait volledig in de service worker; het afspelen leest de resulterende SKILL.md via de <code>browse</code>-CLI. Geen server. Geen glue code.",
+      "wireToDistill": "23 events →",
+      "wireToReplay": "SKILL.md →",
+      "capture": {
+        "name": "Vastleggen",
+        "meta": "Zijpaneel",
+        "desc": "Een <strong>poort per frame</strong> in het content script stuurt elk DOM-event door naar de service worker. Shadow DOM en same-origin iframes worden transparant doorgeprikt.",
+        "bullets": [
+          "Zeskwartiers selectoroplossing (testid → id → aria → text → css → xpath)",
+          "tabPorts: Map<tabId, Map<frameId, Port>>",
+          "IME-bewuste invoerbuffering · paste · drag"
+        ]
       },
-      {
-        "value": "0",
-        "label": "Regels code nodig"
+      "distill": {
+        "name": "Distilleren",
+        "meta": "Service worker · 30 s",
+        "desc": "Zes kleine doorgangen veranderen een rumoerig event-log in een deterministische specificatie. Autoparametrisering vuurt alleen boven <strong>0,7 vertrouwen</strong>; daaronder vraagt de opnemer in plaats van te gokken.",
+        "bullets": [
+          "paramConfidence(step) — heuristische ladder",
+          "auth-boundary-detectie — ondoorzichtige token + cookies",
+          "UUID · numeriek ID · email · ISO-datum · valuta"
+        ]
       },
-      {
-        "value": "1 klik",
-        "label": "Om een opname te starten"
-      },
-      {
-        "value": "↑ 100%",
-        "label": "Lokaal — niets geüpload"
+      "replay": {
+        "name": "Afspelen",
+        "meta": "browse CLI",
+        "desc": "De <code>browse</code>-CLI leest SKILL.md als platte markdown — geen schema, geen runtime, geen ontsnappingsluikjes. <strong>Elke stap is controleerbaar</strong>.",
+        "bullets": [
+          "idempotente herstarts · auth-pauze + hervatting",
+          "gestructureerde logs ↦ JSONL-replay-historie",
+          "werkt met Claude Code, Cline, gewone shell"
+        ]
       }
-    ]
+    },
+    "catalog": {
+      "tag": "Specificatie",
+      "title": "Wat overleeft een opname? <em>Dertien harde gevallen, end-to-end.</em>",
+      "lead": "De browser zit vol valkuilen voor opnemers — gehashte klassen, lui geladen modals, Shadow DOM, multi-tab-flows, IME-compositie, drag-and-drop. Elke rij hieronder is een echte fixture in de playground; klik op een willekeurige om er zelf tegen op te nemen.",
+      "smallNote": "groene stip = verzonden · blauw = automatisch",
+      "columns": {
+        "category": "Categorie",
+        "technique": "Techniek",
+        "detail": "Wat wij eraan doen",
+        "fixture": "Fixture"
+      },
+      "rows": [
+        {
+          "category": "Selectors",
+          "technique": "Rotatie van klasse- en ID-hashes",
+          "detail": "Tailwind-achtige klassen zoals btn__primary--ab3f9c roteren bij elke deploy; de resolver loopt 6 niveaus door (testid → id → aria → text → css → xpath), zodat een opnieuw-gehashte knop toch raakt."
+        },
+        {
+          "category": "Selectors",
+          "technique": "Identieke broers/zussen-rijen",
+          "detail": "Zes rijen met letterlijk identieke \"Pick\"-knoppen — alleen positie onderscheidt. We verankeren elke klik met fingerprintIndex, zodat de juiste rij wordt geklikt, ook na herordenen."
+        },
+        {
+          "category": "Selectors",
+          "technique": "Locale-stabiele identifiers",
+          "detail": "\"Continue\" / \"继续\" / \"Weiter\" verwijzen allemaal naar dezelfde data-i18n-key=\"action.continue\". De opnemer geeft de voorkeur aan locale-onafhankelijke attributen, dus een in het Engels opgenomen skill speelt af in het Chinees."
+        },
+        {
+          "category": "Async",
+          "technique": "SPA-route-overgangen",
+          "detail": "pushState- en hashchange-overgangen worden gevolgd zonder reload; afspelen wacht op het mounten van nieuwe content in plaats van een lege container te pollen."
+        },
+        {
+          "category": "Async",
+          "technique": "Laat gemonteerde modals",
+          "detail": "De Confirm-knop bestaat nog niet wanneer de trigger wordt geklikt. elementVisible peilt totdat het doel verschijnt voordat de volgende stap wordt verstuurd — geen wankele timeouts."
+        },
+        {
+          "category": "Oppervlakken",
+          "technique": "Same-origin iframes",
+          "detail": "all_frames: true injecteert per frame; acties worden gemarkeerd met de oorspronkelijke frameId, en bij re-renders opnieuw op URL opgelost, zodat een verouderde frameId nooit het afspelen blokkeert."
+        },
+        {
+          "category": "Oppervlakken",
+          "technique": "Maskeren van gevoelige velden",
+          "detail": "password / phone / creditcard / SSN-invoer wordt gedetecteerd via type + autocomplete + name en vervangen door *** voordat ze de opslag raken. Bytes verlaten nooit de pagina."
+        },
+        {
+          "category": "Oppervlakken",
+          "technique": "Shadow DOM doorprikken",
+          "detail": "Een aangepaste shadow-selector-soort codeert het pad als { host, inner }-segmenten; de resolver loopt shadowRoot.querySelector op elke grens, zodat Web Components eerste klas zijn."
+        },
+        {
+          "category": "Oppervlakken",
+          "technique": "Overdracht tussen tabs",
+          "detail": "Wanneer een flow een nieuwe tab opent — afdrukvoorbeeld, OAuth, offerte-generatie — volgt de opname via chrome.tabs.onCreated. Afspelen creëert de tab opnieuw via chrome.tabs.create."
+        },
+        {
+          "category": "Invoer",
+          "technique": "Native drag & drop",
+          "detail": "Een dragstart → dragover → drop-keten met gedeelde DataTransfer wordt samengevoegd tot één drag-stap (bron + doel + waargenomen typen). Geen broze pixelcoördinaten."
+        },
+        {
+          "category": "Invoer",
+          "technique": "Modifier-toetscombinaties",
+          "detail": "Een losse \"k\" is tekstinvoer-ruis; met metaKey: true is het een Cmd-K-snelkoppeling. De opnemer houdt de combo, gooit de ruis weg, behoudt de modifier-toestand voor afspelen."
+        },
+        {
+          "category": "Invoer",
+          "technique": "contenteditable-blokken",
+          "detail": "change vuurt nooit op contenteditable. We haken input + compositionend, debouncen 300 ms en zenden één change-stap met de uiteindelijke innerText — zelfde vorm als een tekstveld."
+        },
+        {
+          "category": "Invoer",
+          "technique": "ARIA-combobox & typeahead",
+          "detail": "Elke klik-stap wordt verrijkt met comboboxContext (optie-tekst, root-selector); als directe klik bij afspelen faalt, typt de fallback de tekst, ArrowDown tot aria-activedescendant overeenkomt, dan Enter."
+        }
+      ],
+      "footNote": "<strong>Dertien van zestien.</strong> Plus vier <em>composite</em>-fixtures — Notion, Linear, Jira, Salesforce — die twaalf tot vijftien van deze technieken aaneenrijgen tot één samenhangende flow. <link>Naar de playground →</link>"
+    },
+    "example": {
+      "tag": "Uitgewerkt voorbeeld",
+      "title": "Een vijf-minuten browserritueel, <em>gedistilleerd tot dertig seconden.</em>",
+      "byline": [
+        "Veldnotities",
+        "Opgenomen 2026-02-19, 16:42 UTC",
+        "50× afgespeeld zonder ingrijpen"
+      ],
+      "p1": "Elke maandagochtend opent een operations-engineer bij een kleine leverancier hetzelfde portaal, klikt op <strong>Nieuwe inkooporder</strong>, plakt een SKU uit een CSV, typt een aantal en klikt op <strong>Verzenden</strong>. Dan opnieuw. En opnieuw. Tweehonderd rijen per week, elke week, al veertien maanden. Een vijf-minuten ritueel, herhaald tot het werkblad eindigt.",
+      "p2": "Precies het soort taak waarvoor een opnemer wordt aangeprezen — en precies het soort waarop de meeste opnemers struikelen. Het leveranciersportaal roteert Tailwind-hashklassen bij elke deploy. De Verzenden-knop zit in een dynamische tabelrij die na elke opslag opnieuw rendert. Het auth-cookie verloopt om twaalf uur. Selenium-scripts tegen deze pagina overleven gemiddeld twee weken en beginnen dan stilletjes te falen.",
+      "sub1": "De opname",
+      "p3": "De engineer zet de extensie vast in de werkbalk, opent het portaal, klikt op <strong>Opname starten</strong> en voert de taak exact één keer uit. Acht klikken, twee getypte waarden, één verzenden. Het zijpaneel toont een live feed van events terwijl ze gebeuren — inclusief ruis: scroll, focus, blur, per ongeluk over het help-icoon bewogen muis. Drieëntwintig events vastgelegd in 4,6 seconden.",
+      "ev1Title": "raw events · 23",
+      "ev1Meta": "verstreken 4,6 s",
+      "ev1Caption": "Het ruwe log bewaart alles; distillatie beslist wat ertoe doet.",
+      "sub2": "De distillatie",
+      "p4": "Binnen de service worker veranderen zes kleine doorgangen het rumoerige log in een deterministische specificatie. Opeenvolgende klikken worden samengevoegd. Toetsenbordgroepen worden gevouwen tot één <code>type()</code>-aanroep. De getypte waarden — <code>\"SKU-1029\"</code> en <code>\"50\"</code> — worden gescoord tegen tien regex-priors; beide halen de 0,7-drempel en worden <code>{'{{sku}}'}</code> en <code>{'{{quantity}}'}</code>. De Verzenden-klik wordt gemarkeerd met een waarschuwing omdat het doel binnen een dynamische lijst zit, dus SKILL.md voegt een rij-match-voorwaarde toe in plaats van een vast CSS-pad te klikken.",
+      "ev2Title": "before / after",
+      "ev2Meta": "23 events → 4 stappen",
+      "ev2BeforeLabel": "— BEFORE (raw)",
+      "ev2AfterLabel": "+ AFTER (distilled)",
+      "ev2AutoLabel": "+ AUTO-DETECTED",
+      "ev2Caption": "Acht toetsaanslagen worden één geparametriseerde fill — dezelfde vorm bij elke replay.",
+      "sub3": "De overdracht",
+      "p5": "De engineer plaatst de resulterende markdown in <code>~/.claude/skills/create-purchase-order/SKILL.md</code> en typt één zin tegen Claude Code. De agent vindt de skill op naam, lost de precondition op (het opgeslagen cookie is geldig tot twaalf uur), itereert over de vijftig rijen in het CSV en rapporteert terug. Drie minuten elf seconden later is het werk gedaan. Niemand keek toe.",
+      "ev3Title": "claude code · stdout",
+      "ev3Meta": "3 m 11 s · 0 retries",
+      "ev3Caption": "Eén zin erin, vijftig inkooporders eruit. De agent stelde geen enkele vraag.",
+      "postscript": {
+        "label": "Postscriptum",
+        "titleLine1": "De kosten van een vijf-minuten ritueel,",
+        "titleLine2": "uitgesmeerd over een werkjaar.",
+        "n1Label": "mediaan handmatig",
+        "n2Label": "mediaan agent",
+        "n3Label": "teruggewonnen, alleen al deze taak"
+      },
+      "readMore": "Wil je het op zwaardere fixtures zien? <link>Probeer de playground →</link>"
+    }
   },
   "notFound": {
     "message": "Doorverwijzen…",
@@ -474,6 +457,85 @@
           "contactEmail": "support@skill-recorder.dev"
         }
       ]
+    }
+  },
+  "playground": {
+    "meta": {
+      "title": "Playground — Skill Recorder",
+      "description": "Eenentwintig stresstest-fixtures ontworpen om naïeve browseropnemers te breken. Gehashte klassen, Shadow DOM, multi-tab-flows, IME-compositie, drag-and-drop.",
+      "keywords": "skill recorder playground, browserautomatiseringstests, opnemer-fixtures, stresstest"
+    },
+    "hero": {
+      "eyebrow": "De playground",
+      "titleLine1": "Eenentwintig fixtures, ontworpen om",
+      "titleLine2Em": "naïeve opnemers te breken.",
+      "lead": "Elke pagina hieronder is een gecontroleerde valstrik — gehashte klassen, lui geladen modals, Shadow DOM, multi-tab-flows, IME-compositie, drag-and-drop. Installeer de extensie, klik op <code>Start</code>, voer de <em>Try this</em>-stappen uit en vergelijk de vastgelegde <code>ActionStep[]</code> met de verwachte output op elke pagina.",
+      "steps": [
+        "installeren",
+        "vastmaken aan werkbalk",
+        "fixture openen",
+        "Start",
+        "volg \"Try this\"",
+        "Save as Skill"
+      ]
+    },
+    "matrix": {
+      "heading": "Dekkingsmatrix",
+      "totalSuffix": "fixtures totaal",
+      "rows": {
+        "F": "real-world composites — Notion / Linear / Jira / Salesforce",
+        "A": "selectorstabiliteit — gehashte klassen, identieke broers/zussen, i18n",
+        "B": "async + timing — SPA-routes, lui geladen modals",
+        "C": "multi-surface — iframes, Shadow DOM, maskeren, nieuwe tab",
+        "D": "invoer-specialiteit — drag, bestand, combo's, contenteditable, klembord, combobox"
+      }
+    },
+    "fixtures": "fixtures",
+    "category": {
+      "A": {
+        "title": "Selectorstabiliteit",
+        "blurb": "Selectors moeten blijven werken na dynamische klassen, identieke broers/zussen en locale-wisselingen."
+      },
+      "B": {
+        "title": "Async + timing",
+        "blurb": "Afspelen moet wachten op SPA-routes, gedebouncede zoekopdrachten en lui gemonteerde modals."
+      },
+      "C": {
+        "title": "Multi-surface",
+        "blurb": "Iframes, Shadow DOM en multi-tab-flows zijn eerste klas."
+      },
+      "D": {
+        "title": "Invoer-specialiteit",
+        "blurb": "Drag/drop, bestandsupload, modifier-combo's, contenteditable, klembord, ARIA-combobox."
+      },
+      "E": {
+        "title": "Parametrisering",
+        "blurb": "Detecteer automatisch welke getypte waarden en URL-segmenten herbruikbare parameters moeten worden."
+      },
+      "F": {
+        "title": "Real-world composites",
+        "blurb": "Substantiële productachtige fixtures die 12+ moeilijkheidspunten aaneenrijgen tot één samenhangende workflow — het dichtst dat de playground komt bij \"houdt dit een werkdag stand?\"."
+      }
+    },
+    "compositeKicker": {
+      "F1-notion": "Blok-editor",
+      "F2-linear": "Issue-tracker",
+      "F3-jira": "Sprint-board",
+      "F4-salesforce": "CRM"
+    },
+    "difficultyPoints": "moeilijkheidspunten",
+    "scenario": {
+      "crumbCategory": "Categorie",
+      "back": "← Alle scenario's",
+      "frameLabel": "Live fixture · interageer terwijl de opnemer draait",
+      "openInNewTab": "Open in nieuwe tab ↗",
+      "cardTryThis": "Probeer dit",
+      "cardWhyHard": "Waarom dit moeilijk is",
+      "cardCoverage": "Gedekte moeilijkheidspunten",
+      "cardCoverageHelp": "Elke tag hieronder linkt naar de geïsoleerde demo van dat ene moeilijkheidspunt — handig als de composite ergens breekt en je wilt bisecten.",
+      "cardExpected": "Verwachte opnemer-output",
+      "replayHead": "Replay-log · claude code · stdout",
+      "replayNote": "gesimuleerd · geen live data"
     }
   }
 }

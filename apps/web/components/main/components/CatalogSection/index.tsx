@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import styled from 'styled-components';
 
 /* ────────────────────────────────────────────────────────────────────
@@ -11,105 +12,29 @@ import styled from 'styled-components';
  * ──────────────────────────────────────────────────────────────────── */
 
 type Row = {
-  category: string;
-  technique: string;
-  detail: string;
   state: 'shipped' | 'auto' | 'partial';
   fixture: { tag: string; slug: string };
 };
 
-const ROWS: Row[] = [
-  {
-    category: 'Selectors',
-    technique: 'Hashed class & ID rotation',
-    detail: 'Tailwind-style classes such as btn__primary--ab3f9c rotate on every deploy; the resolver falls through 6 tiers (testid → id → aria → text → css → xpath) so a re-hashed button still picks.',
-    state: 'shipped',
-    fixture: { tag: 'A2', slug: 'A2-dynamic-classes' },
-  },
-  {
-    category: 'Selectors',
-    technique: 'Identical sibling rows',
-    detail: 'Six rows with literally identical "Pick" buttons — only position distinguishes them. We anchor each click by fingerprintIndex so the right row is clicked, even after the list reorders.',
-    state: 'shipped',
-    fixture: { tag: 'A3', slug: 'A3-identical-siblings' },
-  },
-  {
-    category: 'Selectors',
-    technique: 'Locale-stable identifiers',
-    detail: '"Continue" / "继续" / "Weiter" all map to the same data-i18n-key="action.continue". The recorder prefers locale-independent attributes so a skill recorded in English replays under Chinese.',
-    state: 'shipped',
-    fixture: { tag: 'A4', slug: 'A4-i18n' },
-  },
-  {
-    category: 'Async',
-    technique: 'SPA route transitions',
-    detail: 'pushState and hashchange transitions are tracked without reload; replay waits for the new content to mount instead of probing an empty container.',
-    state: 'shipped',
-    fixture: { tag: 'B1', slug: 'B1-spa-route' },
-  },
-  {
-    category: 'Async',
-    technique: 'Lazy-mounted modals',
-    detail: 'The Confirm button doesn\'t exist when the trigger is clicked. elementVisible polls until the target shows up before dispatching the next step — no flaky timeouts.',
-    state: 'shipped',
-    fixture: { tag: 'B3', slug: 'B3-lazy-modal' },
-  },
-  {
-    category: 'Surfaces',
-    technique: 'Same-origin iframes',
-    detail: 'all_frames: true injects per-frame; actions are tagged with the originating frameId, then re-resolved by URL across re-renders so a stale frameId never blocks replay.',
-    state: 'shipped',
-    fixture: { tag: 'C1', slug: 'C1-iframe-same-origin' },
-  },
-  {
-    category: 'Surfaces',
-    technique: 'Sensitive-field redaction',
-    detail: 'password / phone / credit-card / SSN inputs are detected by type + autocomplete + name and replaced with *** before they ever hit storage. The bytes never leave the page.',
-    state: 'shipped',
-    fixture: { tag: 'C2', slug: 'C2-iframe-cross-origin' },
-  },
-  {
-    category: 'Surfaces',
-    technique: 'Shadow DOM piercing',
-    detail: 'A custom shadow selector kind encodes the path as { host, inner } segments; the resolver walks shadowRoot.querySelector at each boundary, so Web Components are first-class.',
-    state: 'shipped',
-    fixture: { tag: 'C3', slug: 'C3-shadow-dom' },
-  },
-  {
-    category: 'Surfaces',
-    technique: 'Cross-tab handoff',
-    detail: 'When a flow opens a new tab — print preview, OAuth, quote generation — recording follows via chrome.tabs.onCreated. Replay re-creates the tab through chrome.tabs.create.',
-    state: 'shipped',
-    fixture: { tag: 'C4', slug: 'C4-multi-tab' },
-  },
-  {
-    category: 'Input',
-    technique: 'Native drag & drop',
-    detail: 'A dragstart → dragover → drop chain with a shared DataTransfer coalesces into one drag step (source + target + types observed). No brittle pixel coordinates.',
-    state: 'shipped',
-    fixture: { tag: 'D1', slug: 'D1-dragdrop' },
-  },
-  {
-    category: 'Input',
-    technique: 'Modifier-key chords',
-    detail: 'A bare "k" keypress is text-input noise; with metaKey: true it\'s a Cmd-K shortcut. The recorder keeps the chord and drops the noise, preserving modifier state for replay.',
-    state: 'shipped',
-    fixture: { tag: 'D3', slug: 'D3-modifier-keys' },
-  },
-  {
-    category: 'Input',
-    technique: 'contenteditable blocks',
-    detail: 'change never fires on contenteditable. We hook input + compositionend, debounce 300ms, and emit one change step with the final innerText — same shape as a text input.',
-    state: 'shipped',
-    fixture: { tag: 'D4', slug: 'D4-contenteditable' },
-  },
-  {
-    category: 'Input',
-    technique: 'ARIA combobox & typeahead',
-    detail: 'Each click step is enriched with comboboxContext (option text, root selector); if the direct click fails on replay, the fallback types the text, ArrowDown until aria-activedescendant matches, then Enter.',
-    state: 'shipped',
-    fixture: { tag: 'D6', slug: 'D6-combobox' },
-  },
+/**
+ * Order-stable metadata for each catalog row. Visible copy (category,
+ * technique, detail) comes from i18n in the SAME ORDER as this array;
+ * see messages/<locale>.json :: main.catalog.rows.
+ */
+const ROW_META: Row[] = [
+  { state: 'shipped', fixture: { tag: 'A2', slug: 'A2-dynamic-classes' } },
+  { state: 'shipped', fixture: { tag: 'A3', slug: 'A3-identical-siblings' } },
+  { state: 'shipped', fixture: { tag: 'A4', slug: 'A4-i18n' } },
+  { state: 'shipped', fixture: { tag: 'B1', slug: 'B1-spa-route' } },
+  { state: 'shipped', fixture: { tag: 'B3', slug: 'B3-lazy-modal' } },
+  { state: 'shipped', fixture: { tag: 'C1', slug: 'C1-iframe-same-origin' } },
+  { state: 'shipped', fixture: { tag: 'C2', slug: 'C2-iframe-cross-origin' } },
+  { state: 'shipped', fixture: { tag: 'C3', slug: 'C3-shadow-dom' } },
+  { state: 'shipped', fixture: { tag: 'C4', slug: 'C4-multi-tab' } },
+  { state: 'shipped', fixture: { tag: 'D1', slug: 'D1-dragdrop' } },
+  { state: 'shipped', fixture: { tag: 'D3', slug: 'D3-modifier-keys' } },
+  { state: 'shipped', fixture: { tag: 'D4', slug: 'D4-contenteditable' } },
+  { state: 'shipped', fixture: { tag: 'D6', slug: 'D6-combobox' } },
 ];
 
 const Section = styled.section`
@@ -363,59 +288,64 @@ const FootNote = styled.p`
   }
 `;
 
+type RowCopy = { category: string; technique: string; detail: string };
+
 export default function CatalogSection() {
+  const t = useTranslations('main.catalog');
+  const rowsCopy = t.raw('rows') as RowCopy[];
+
   return (
     <Section id="catalog">
       <Container>
         <Head>
           <div>
-            <Tag>Specification</Tag>
+            <Tag>{t('tag')}</Tag>
             <Title>
-              What survives a recording?{' '}
-              <em>Eleven hard cases, end-to-end.</em>
+              {t.rich('title', { em: (chunks) => <em>{chunks}</em> })}
             </Title>
           </div>
           <div>
-            <Lead>
-              The browser is full of recorder traps — hashed classes, lazy modals, shadow DOM,
-              cross-tab flows, IME composition, drag-and-drop. Each row below is a real
-              fixture in the playground; click any of them to record against it yourself.
-            </Lead>
-            <SmallNote>green dot = shipped · blue = automatic</SmallNote>
+            <Lead>{t('lead')}</Lead>
+            <SmallNote>{t('smallNote')}</SmallNote>
           </div>
         </Head>
 
         <Sheet>
           <SheetHead>
-            <span>Category</span>
-            <span>Technique</span>
-            <span>What we do about it</span>
-            <span style={{ textAlign: 'right' }}>Fixture</span>
+            <span>{t('columns.category')}</span>
+            <span>{t('columns.technique')}</span>
+            <span>{t('columns.detail')}</span>
+            <span style={{ textAlign: 'right' }}>{t('columns.fixture')}</span>
           </SheetHead>
 
-          {ROWS.map((row, i) => (
-            <RowLink
-              key={`${row.fixture.slug}`}
-              href={`/playground/s/${row.fixture.slug}`}
-              $first={i === 0}
-            >
-              <Cat>{row.category}</Cat>
-              <Tech>
-                <StateDot $state={row.state} aria-hidden="true" title={row.state} />
-                {row.technique}
-              </Tech>
-              <Detail>{row.detail}</Detail>
-              <FixtureLink className="row-fixture">
-                {row.fixture.tag} →
-              </FixtureLink>
-            </RowLink>
-          ))}
+          {ROW_META.map((row, i) => {
+            const copy = rowsCopy[i];
+            return (
+              <RowLink
+                key={`${row.fixture.slug}`}
+                href={`/playground/s/${row.fixture.slug}`}
+                $first={i === 0}
+              >
+                <Cat>{copy?.category}</Cat>
+                <Tech>
+                  <StateDot $state={row.state} aria-hidden="true" title={row.state} />
+                  {copy?.technique}
+                </Tech>
+                <Detail>{copy?.detail}</Detail>
+                <FixtureLink className="row-fixture">
+                  {row.fixture.tag} →
+                </FixtureLink>
+              </RowLink>
+            );
+          })}
         </Sheet>
 
         <FootNote>
-          <strong>Thirteen of sixteen.</strong> Plus four <em>composite</em> fixtures —{' '}
-          Notion, Linear, Jira, Salesforce — that chain twelve to fifteen of these techniques
-          into a single coherent flow. <Link href="/playground">See the playground →</Link>
+          {t.rich('footNote', {
+            strong: (chunks) => <strong>{chunks}</strong>,
+            em: (chunks) => <em>{chunks}</em>,
+            link: (chunks) => <Link href="/playground">{chunks}</Link>,
+          })}
         </FootNote>
       </Container>
     </Section>

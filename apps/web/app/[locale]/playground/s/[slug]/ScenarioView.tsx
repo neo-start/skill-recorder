@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import styled from 'styled-components';
 import { SCENARIOS, type Scenario } from '../../scenarios';
 
@@ -236,9 +237,10 @@ interface Props {
 }
 
 function TryThisCard({ tryThis }: { tryThis: string[] }) {
+  const t = useTranslations('playground.scenario');
   return (
     <Card>
-      <CardTitle>Try this</CardTitle>
+      <CardTitle>{t('cardTryThis')}</CardTitle>
       <TryList>
         {tryThis.map((line, i) => (
           <li key={i}>{line}</li>
@@ -249,22 +251,21 @@ function TryThisCard({ tryThis }: { tryThis: string[] }) {
 }
 
 function WhyHardCard({ whyHard }: { whyHard: string }) {
+  const t = useTranslations('playground.scenario');
   return (
     <Card>
-      <CardTitle>Why this is hard</CardTitle>
+      <CardTitle>{t('cardWhyHard')}</CardTitle>
       <CardBody>{whyHard}</CardBody>
     </Card>
   );
 }
 
 function CoverageCard({ coverage }: { coverage: string[] }) {
+  const t = useTranslations('playground.scenario');
   return (
     <Card>
-      <CardTitle>Difficulty points covered</CardTitle>
-      <CoverageHelp>
-        Each tag below links to the isolated demo for that single difficulty point — useful if the
-        composite breaks somewhere and you want to bisect.
-      </CoverageHelp>
+      <CardTitle>{t('cardCoverage')}</CardTitle>
+      <CoverageHelp>{t('cardCoverageHelp')}</CoverageHelp>
       <CoverageGrid>
         {coverage.map((tag) => {
           const slug = coverageSlug(tag);
@@ -282,9 +283,10 @@ function CoverageCard({ coverage }: { coverage: string[] }) {
 }
 
 function ExpectedJsonCard({ expected }: { expected: unknown }) {
+  const t = useTranslations('playground.scenario');
   return (
     <Card>
-      <CardTitle>Expected recorder output</CardTitle>
+      <CardTitle>{t('cardExpected')}</CardTitle>
       <CodeBlock>{JSON.stringify(expected, null, 2)}</CodeBlock>
     </Card>
   );
@@ -437,6 +439,7 @@ const ReplayBody = styled.pre`
 `;
 
 function ReplayLogCard({ slug }: { slug: string }) {
+  const t = useTranslations('playground.scenario');
   const log = REPLAY_LOG[slug];
   if (!log) return null;
   // Lightly colour up the lines: prefix ▸ blue, ✓ green, ⚠ orange, ⏸ amber.
@@ -450,8 +453,8 @@ function ReplayLogCard({ slug }: { slug: string }) {
   return (
     <ReplayCard>
       <ReplayHead>
-        <span>Replay log · claude code · stdout</span>
-        <span>simulated · not live data</span>
+        <span>{t('replayHead')}</span>
+        <span>{t('replayNote')}</span>
       </ReplayHead>
       <ReplayBody>{lines}</ReplayBody>
     </ReplayCard>
@@ -459,15 +462,17 @@ function ReplayLogCard({ slug }: { slug: string }) {
 }
 
 export default function ScenarioView({ scenario }: Props) {
+  const t = useTranslations('playground');
+  const tCrumb = useTranslations('layout.nav');
   const fixtureUrl = `/playground/${scenario.slug}.html`;
   const isComposite = !!scenario.coverage?.length;
 
   const frame = (
     <FrameWrap>
       <FrameHead>
-        <span>Live fixture · interact with it while the recorder is running</span>
+        <span>{t('scenario.frameLabel')}</span>
         <FrameLink href={fixtureUrl} target="_blank" rel="noopener">
-          Open in new tab ↗
+          {t('scenario.openInNewTab')}
         </FrameLink>
       </FrameHead>
       <Frame src={fixtureUrl} title={scenario.title} $tall={isComposite} />
@@ -477,9 +482,9 @@ export default function ScenarioView({ scenario }: Props) {
   return (
     <Wrap>
       <Crumbs>
-        <Link href="/playground">Playground</Link> &nbsp;/&nbsp; Category {scenario.category}
+        <Link href="/playground">{tCrumb('playground')}</Link> &nbsp;/&nbsp; {t('scenario.crumbCategory')} {scenario.category}
       </Crumbs>
-      <BackLink href="/playground">← All scenarios</BackLink>
+      <BackLink href="/playground">{t('scenario.back')}</BackLink>
       <H1>{scenario.title}</H1>
       <Tag>{scenario.tagline}</Tag>
 

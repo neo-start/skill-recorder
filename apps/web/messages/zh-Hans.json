@@ -1,6 +1,7 @@
 {
   "layout": {
     "nav": {
+      "playground": "演练场",
       "blog": "博客",
       "cta": "添加到 Chrome",
       "signIn": "登录",
@@ -8,21 +9,22 @@
       "closeMenu": "关闭菜单",
       "openMenu": "打开菜单",
       "viewAllArticles": "查看全部文章",
+      "openPlayground": "进入演练场",
       "blogItems": {
-        "ecommerce": "为 AI 智能体录制浏览器流程",
-        "noCode": "从点击到 SKILL.md：完整实战",
-        "leads": "如何把一次录制提炼成可复用技能",
-        "pagination": "用 browse CLI 回放浏览器流程"
-      },
-      "playground": "演练场"
+        "ecommerce": "为 AI Agent 录制浏览器流程",
+        "noCode": "从一次点击到 SKILL.md：完整走查",
+        "leads": "如何把一次录制蒸馏成可复用 Skill",
+        "pagination": "用 browse CLI 重放流程"
+      }
     },
     "footer": {
-      "tagline": "录制一次，永久回放。",
+      "tagline": "录一次，回放一辈子。",
+      "playground": "演练场",
       "blog": "博客",
-      "blogHome": "所有文章",
-      "blogEcommerce": "为 AI 智能体录制浏览器流程",
+      "blogHome": "全部文章",
+      "blogEcommerce": "为 AI Agent 录制浏览器流程",
       "blogNoCode": "从点击到 SKILL.md",
-      "blogLeads": "把一次录制提炼成技能",
+      "blogLeads": "把录制蒸馏成 Skill",
       "legal": "支持",
       "privacy": "隐私政策",
       "terms": "服务条款",
@@ -31,21 +33,21 @@
   },
   "blog": {
     "meta": {
-      "title": "博客 | Skill Recorder — 为 AI 智能体打造的浏览器自动化",
-      "description": "关于录制浏览器流程、将其提炼为 SKILL.md 文件、并用 AI 智能体回放的指南与笔记。",
+      "title": "博客 | Skill Recorder — 为 AI Agent 录制浏览器自动化",
+      "description": "录制浏览器流程、蒸馏成 SKILL.md、并交给 AI Agent 重放的实践指南。",
       "keywords": "skill recorder 博客, 浏览器自动化, claude code 技能, browse cli, SKILL.md"
     },
     "hero": {
       "title": "录制与回放指南",
-      "description": "实用教程：捕获浏览器流程，提炼为可移植的 SKILL.md 文件，并交由 Claude Code 回放。",
+      "description": "捕获浏览器流程、蒸馏为可移植的 SKILL.md 文件、并交给 Claude Code 回放的实战教程。",
       "articles": "文章",
       "categories": "分类",
       "free": "免费",
       "toRead": "待读"
     },
     "loadMore": "加载更多",
-    "readMore": "阅读全文",
-    "minRead": "分钟阅读",
+    "readMore": "继续阅读",
+    "minRead": "分钟",
     "breadcrumbs": {
       "home": "首页",
       "blog": "博客"
@@ -55,336 +57,333 @@
   },
   "main": {
     "meta": {
-      "title": "Skill Recorder | 把浏览器流程变成 SKILL.md 文件",
-      "description": "用 Chrome 扩展录制任意浏览器流程，并提炼为 SKILL.md 文件，让 Claude Code 等 AI 智能体自主回放。",
-      "keywords": "skill recorder, 浏览器自动化, claude code 技能, SKILL.md, browse cli, ai 智能体自动化, chrome 扩展"
+      "title": "Skill Recorder | 把浏览器流程变成 SKILL.md",
+      "description": "Chrome 扩展，录制任意浏览器流程并蒸馏成 SKILL.md 文件，让 Claude Code 这样的 AI Agent 自主重放。",
+      "keywords": "skill recorder, 浏览器自动化, claude code 技能, SKILL.md, browse cli, ai agent 自动化, chrome 扩展"
     },
     "hero": {
-      "title": "录制一次流程，让 AI 永久回放。",
-      "subtitle": "一款 Chrome 扩展，捕获你的浏览器流程，并提炼为 AI 智能体可回放的 SKILL.md。",
-      "ctaPrimary": "立即安装",
-      "note": "公测期间免费，无需注册。"
+      "eyebrow": "浏览器流程录制器 · Chrome MV3",
+      "titleLine1": "你演示过一次。",
+      "titleLine2Em": "为什么还在亲手做？",
+      "lead": "Skill Recorder 是一个 Chrome 扩展，看你走完一次浏览器流程<em>就够了</em> — 然后写出一份 <hand>SKILL.md</hand>，这是一份纯 markdown 规约，Claude Code（或任何接入 <code>browse</code> CLI 的 Agent）都能照着回放，不需要选择器、不需要胶水代码、不需要盯着看。",
+      "ctaPrimary": "添加到 Chrome",
+      "ctaSecondary": "试试压力测试场景 →",
+      "captionLine1": "↑ 一段五分钟的采购单流程，",
+      "captionLine2": "录一次，<strong>永久重放。</strong>"
     },
-    "howItWorks": {
-      "title": "从浏览器演示到可回放技能，仅需 <accent>3 步</accent>",
-      "steps": {
-        "install": {
-          "number": "01",
-          "title": "安装扩展",
-          "desc": "几秒内将 Skill Recorder 添加到 Chrome。",
-          "imgAlt": "安装 Skill Recorder Chrome 扩展"
-        },
-        "scrape": {
-          "number": "02",
-          "title": "录制你的流程",
-          "desc": "点击开始，把任务走一遍，我们会捕获每一步操作。",
-          "imgAlt": "一键录制浏览器流程"
-        },
-        "export": {
-          "number": "03",
-          "title": "导出为 SKILL.md",
-          "desc": "把提炼后的 markdown 文件直接保存到你的 Claude Code 技能目录。",
-          "imgAlt": "下载可供 Claude Code 使用的 SKILL.md 文件"
-        }
+    "anatomy": {
+      "tag": "结构剖析",
+      "title": "三阶段，<em>一点击之间。</em>",
+      "lead": "我们交付的，是一个小巧的 Chrome MV3 扩展加一段 4 KB 的蒸馏管线。录制器接入 <code>chrome.debugger</code>，做到 DOM 级别的保真；蒸馏完全在 service worker 里跑；回放通过 <code>browse</code> CLI 读取 SKILL.md。没有服务器，也没有胶水代码。",
+      "wireToDistill": "23 个事件 →",
+      "wireToReplay": "SKILL.md →",
+      "capture": {
+        "name": "捕获",
+        "meta": "侧边栏",
+        "desc": "Content script 里有一个 <strong>per-frame 端口</strong>，把每个 DOM 事件转发给 service worker。Shadow DOM 和同源 iframe 都被透明穿透。",
+        "bullets": [
+          "六级选择器解析（testid → id → aria → text → css → xpath）",
+          "tabPorts: Map<tabId, Map<frameId, Port>>",
+          "IME 感知输入缓冲 · paste · drag"
+        ]
+      },
+      "distill": {
+        "name": "蒸馏",
+        "meta": "Service worker · 30 秒",
+        "desc": "六次小规模处理把嘈杂的事件流变成确定性规约。自动参数化只在<strong>置信度 0.7 以上</strong>触发；低于这个值，录制器会先问而不是猜。",
+        "bullets": [
+          "paramConfidence(step) — 启发式阶梯",
+          "auth-boundary 检测 — opaque token + cookies",
+          "UUID · 数字 ID · email · ISO 日期 · 货币"
+        ]
+      },
+      "replay": {
+        "name": "回放",
+        "meta": "browse CLI",
+        "desc": "<code>browse</code> CLI 把 SKILL.md 当作纯 markdown 来读 — 没有 schema、没有运行时、没有逃生口。<strong>每一步都可审计</strong>。",
+        "bullets": [
+          "幂等重跑 · 鉴权暂停 + 恢复",
+          "结构化日志 ↦ JSONL 重放历史",
+          "支持 Claude Code、Cline、纯 shell"
+        ]
       }
     },
-    "features": {
-      "title": "捕获每一次点击，<accent>提炼每一项技能</accent>",
-      "ctas": {
-        "f1": "立即录制",
-        "f2": "干净提炼",
-        "f3": "随处回放",
-        "f4": "交给 Claude"
+    "catalog": {
+      "tag": "技术规格",
+      "title": "一次录制能扛住什么？<em>十三个硬骨头，全链路。</em>",
+      "lead": "浏览器里到处是录制器陷阱 — 哈希类名、懒加载弹窗、Shadow DOM、多标签流程、IME 输入法合成、拖拽。下表每一行都对应演练场里的一个真实场景，点进去就可以亲自录制。",
+      "smallNote": "绿点 = 已发布 · 蓝点 = 自动",
+      "columns": {
+        "category": "分类",
+        "technique": "技术",
+        "detail": "我们的处理方式",
+        "fixture": "场景"
       },
-      "f1": {
-        "title": "按下录制就这么简单",
-        "desc": "无需脚本，无需选择器。点击开始，像演示给同事看一样把任务走一遍。我们实时捕获 <highlight>每一次点击、按键与跳转</highlight>。停止录制时，你就得到了一份可提炼的完美回放。",
-        "imgAlt": "一键录制浏览器流程"
-      },
-      "f2": {
-        "title": "开箱即用的智能提炼",
-        "desc": "对话会自动剔除噪音，<highlight>将每个输入值转为参数</highlight>，并用 ⚠️ 标记动态列表上的点击，让智能体安全回放。无需手动清理，无需折腾正则。",
-        "imgAlt": "把录制提炼为干净的 SKILL.md"
-      },
-      "f3": {
-        "title": "在任意 AI 智能体上回放",
-        "desc": "输出是一份可移植的 <highlight>SKILL.md</highlight> 文件——AI 智能体能读懂的纯 markdown。把它放进 Claude Code 的技能目录，智能体即可通过 <highlight>browse</highlight> CLI 回放整个流程，无需任何粘合代码。",
-        "imgAlt": "用 Claude Code 回放 SKILL.md 流程"
-      },
-      "f4": {
-        "title": "隐私优先设计",
-        "desc": "所有录制都留在你的浏览器里，不会上传任何内容。认证令牌绝不离开你的设备——我们会自动检测它们，标记为 <highlight>Precondition: signed in</highlight>，并在该认证时由智能体提示你完成登录。",
-        "imgAlt": "Skill Recorder 完全本地运行，无任何上传"
-      }
-    },
-    "useCases": {
-      "title": "为每一项重复的浏览器任务而生",
-      "cases": {
-        "ecommerce": {
-          "title": "自动化重复表单",
-          "desc": "录制一次提交流程，把 SKILL.md 交给 Claude。智能体会连夜处理几十种变体，无需你盯着屏幕。",
-          "cta": "录制表单"
+      "rows": [
+        {
+          "category": "选择器",
+          "technique": "哈希类名 & ID 轮换",
+          "detail": "Tailwind 风格的类名（例如 btn__primary--ab3f9c）每次部署都换；解析器走 6 级回退（testid → id → aria → text → css → xpath），换过哈希的按钮照样命中。"
         },
-        "reviews": {
-          "title": "每日仪表盘巡检",
-          "desc": "录制一次穿过分析仪表盘的点击路径。让智能体每天早晨拉取同样的数据并发到 Slack。",
-          "cta": "录制仪表盘"
+        {
+          "category": "选择器",
+          "technique": "完全相同的兄弟行",
+          "detail": "六行里都是一模一样的 \"Pick\" 按钮 — 只有位置不同。我们用 fingerprintIndex 锚定每次点击，即便列表重排，点击的还是对的那行。"
         },
-        "seo": {
-          "title": "每周审计竞品站点",
-          "desc": "在一个站点上演示一次审计清单。技能会在你的整张追踪列表上回放，每周一早 9 点准时运行。",
-          "cta": "录制审计"
+        {
+          "category": "选择器",
+          "technique": "语言无关的标识",
+          "detail": "\"Continue\" / \"继续\" / \"Weiter\" 都映射到同一个 data-i18n-key=\"action.continue\"。录制器优先使用语言无关属性，所以英文录的 Skill 能在中文页面下回放。"
         },
-        "leads": {
-          "title": "反复构建客户名单",
-          "desc": "在某个商业目录上走一次搜索流程。同一份录制可永久复用于新的搜索关键词，无需写脚本。",
-          "cta": "录制搜索"
+        {
+          "category": "异步",
+          "technique": "SPA 路由切换",
+          "detail": "pushState 和 hashchange 都被跟踪，无需 reload；回放会等待新内容挂载，而不是去探一个空容器。"
         },
-        "jobs": {
-          "title": "追踪招聘网站",
-          "desc": "演示一次筛选 + 滚动 + 导出流程。智能体会在你关心的每个招聘网站上每天自动运行。",
-          "cta": "录制招聘网站"
+        {
+          "category": "异步",
+          "technique": "懒加载弹窗",
+          "detail": "触发那一刻 Confirm 按钮还不存在。elementVisible 会一直轮询，直到目标出现才下发下一步 — 没有靠 timeout 拼。"
         },
-        "realestate": {
-          "title": "监控房源列表",
-          "desc": "录制一次带筛选条件的房源搜索。智能体按计划重跑，第一时间为你发现新匹配。",
-          "cta": "录制房源"
+        {
+          "category": "界面",
+          "technique": "同源 iframe",
+          "detail": "all_frames: true 注入每一帧；动作带上来源 frameId，且会在 URL 重渲染时按 URL 重新解析，过期的 frameId 不会卡住回放。"
         },
-        "hotels": {
-          "title": "比价旅行价格",
-          "desc": "演示一次你常用的酒店搜索。让智能体跨日期与平台轮询价格，无需任何手动操作。",
-          "cta": "录制搜索"
+        {
+          "category": "界面",
+          "technique": "敏感字段脱敏",
+          "detail": "password / phone / 信用卡 / SSN 输入被 type + autocomplete + name 检测出来，落入存储前替换成 ***。字节永远不离开页面。"
+        },
+        {
+          "category": "界面",
+          "technique": "Shadow DOM 穿透",
+          "detail": "自定义的 shadow 选择器把路径编码成 { host, inner } 段；解析器在每个边界走一遍 shadowRoot.querySelector，所以 Web Components 是一等公民。"
+        },
+        {
+          "category": "界面",
+          "technique": "跨标签流转",
+          "detail": "当一段流程打开新标签 — 打印预览、OAuth、报价生成 — 录制通过 chrome.tabs.onCreated 跟上。回放通过 chrome.tabs.create 重新打开新标签。"
+        },
+        {
+          "category": "输入",
+          "technique": "原生拖拽",
+          "detail": "dragstart → dragover → drop 三件套带共享 DataTransfer，合并成一个 drag 步骤（源 + 目标 + 观察到的类型）。不依赖脆弱的像素坐标。"
+        },
+        {
+          "category": "输入",
+          "technique": "修饰键组合",
+          "detail": "孤立的 \"k\" 是文本输入噪音；加上 metaKey: true 就成了 Cmd-K 快捷键。录制器留下组合键、丢弃噪音，保留修饰状态供回放。"
+        },
+        {
+          "category": "输入",
+          "technique": "contenteditable 块",
+          "detail": "contenteditable 上 change 事件永远不触发。我们勾住 input + compositionend，去抖 300 毫秒，以最终 innerText 合成一个 change 步骤 — 和文本框形状一致。"
+        },
+        {
+          "category": "输入",
+          "technique": "ARIA combobox & 类型提示",
+          "detail": "每次点击都附上 comboboxContext（选项文本、根选择器）；如果回放时直接点击失败，回退会键入文本、按 ArrowDown 直到 aria-activedescendant 匹配，再按 Enter。"
         }
-      }
+      ],
+      "footNote": "<strong>十六中的十三个。</strong>另外还有四个<em>综合场景</em> — Notion、Linear、Jira、Salesforce — 把其中十二到十五个技术串成一段完整流程。<link>看演练场 →</link>"
     },
-    "testimonials": {
-      "title": "构建者们怎么说",
-      "items": [
-        {
-          "quote": "以前每接入一个重复流程，我都要写 200 行 Playwright。现在在浏览器里录一次，把 SKILL.md 交给 Claude，事情就办妥了。",
-          "name": "Lena R.",
-          "role": "资深工程师"
-        },
-        {
-          "quote": "提炼这一步才是亮点。每个输入值都会自动变成参数，所以同一份录制就能覆盖一整批输入。",
-          "name": "Marcus T.",
-          "role": "AI 工作流负责人"
-        },
-        {
-          "quote": "运维团队负责录制流程，智能体负责回放。两边都不用碰代码或选择器。这条鸿沟被填平，意义重大。",
-          "name": "Priya N.",
-          "role": "内部工具负责人"
-        },
-        {
-          "quote": "认证检测让它真正可以投入生产。技能会在登录步骤暂停、提示真人，然后继续执行，绝不泄漏令牌。",
-          "name": "Sam K.",
-          "role": "安全工程师"
-        },
-        {
-          "quote": "我午饭前就构建了三个技能，每个都替代了一段半小时的浏览器例行操作。browse CLI 集成正是我想要的 API。",
-          "name": "Ahmed S.",
-          "role": "独立开发者"
-        },
-        {
-          "quote": "我以前要维护 Selenium 脚本，每次按钮位置一变就会挂掉。有了 SKILL.md，智能体读取的是意图而不是选择器。维护工作减少了 80%。",
-          "name": "Yuki H.",
-          "role": "QA 自动化工程师"
-        },
-        {
-          "quote": "隐私这一点最终拍板。没有任何内容离开浏览器，认证令牌也从不接触任何服务器。合规一次会议就过了。",
-          "name": "Diana F.",
-          "role": "平台工程师"
-        }
-      ]
-    },
-    "faq": {
-      "title": "常见问题",
-      "contact": "找不到答案？请联系",
-      "items": [
-        {
-          "question": "真的免费吗？",
-          "answer": "是的——Skill Recorder 在公测期间完全免费。安装扩展即可立即开始录制，无需注册，也无需提供支付信息。"
-        },
-        {
-          "question": "录制数据保存在哪里？",
-          "answer": "全部保存在你的浏览器里。我们不会上传你的录制、认证令牌或页面内容。录制留在你的设备上，直到你主动导出提炼后的 SKILL.md 文件。"
-        },
-        {
-          "question": "什么是 SKILL.md，如何使用？",
-          "answer": "SKILL.md 是一份可移植的 markdown 文件，把自动化浏览器流程描述为一系列步骤。Claude Code 等 AI 智能体会从技能目录加载它，并通过 browse CLI 回放——无需额外的粘合代码。"
-        },
-        {
-          "question": "它如何处理登录页面？",
-          "answer": "Skill Recorder 会自动检测认证边界，并插入 Precondition: signed in 标记。智能体回放技能时会在登录步骤暂停并提示真人，而不是泄漏会话令牌。"
-        },
-        {
-          "question": "如果页面变了，我的技能会不会失效？",
-          "answer": "提炼步骤记录的是语义意图（例如\"点击提交按钮\"），并在多个选择器之间回退兜底。技能对小范围的 DOM 变化容忍度远远高于硬编码的 Selenium 脚本。"
-        },
-        {
-          "question": "我必须使用 Claude Code 才能用这些输出吗？",
-          "answer": "目前 Claude Code 是主要集成，但格式本身是纯 markdown。任何遵循 browse CLI 约定的智能体都能读取 SKILL.md 文件。"
-        }
-      ]
+    "example": {
+      "tag": "实例走读",
+      "title": "一次五分钟的浏览器仪式，<em>蒸馏成三十秒。</em>",
+      "byline": ["现场笔记", "录于 2026-02-19，16:42 UTC", "重放 50 次零人工干预"],
+      "p1": "每个周一早上，一家小型供应商的运营工程师都打开同一个门户，点<strong>新建采购单</strong>，从 CSV 里粘一个 SKU、敲一个数量，再点<strong>提交</strong>。然后再来一遍。一周两百行，一周接一周，已经持续十四个月。这是一个五分钟仪式，重复到表格结束。",
+      "p2": "这正是常被推销给录制器的那种任务 — 也正是大多数录制器栽跟头的那种任务。供应商门户每次发布都换 Tailwind 哈希类名。提交按钮藏在每次保存就重渲染的动态表格行里。鉴权 cookie 中午就过期。基于这个页面写的 Selenium 脚本平均能撑两周，然后开始悄悄失败。",
+      "sub1": "录制",
+      "p3": "工程师把扩展钉到工具栏，打开门户，点<strong>开始录制</strong>，原原本本做一遍。八次点击、两个填值、一次提交。侧边栏显示事件实时流 — 包括噪音：滚动、focus、blur、不小心划过帮助图标的鼠标。4.6 秒里录到 23 个事件。",
+      "ev1Title": "raw events · 23",
+      "ev1Meta": "用时 4.6 秒",
+      "ev1Caption": "原始日志保留一切；蒸馏负责决定什么重要。",
+      "sub2": "蒸馏",
+      "p4": "Service worker 里六次小规模处理把嘈杂日志变成确定性规约。相邻点击合并。键盘流合并成一次 <code>type()</code> 调用。两个键入值 — <code>\"SKU-1029\"</code> 和 <code>\"50\"</code> — 被十个正则先验打分；都过了 0.7 阈值，分别变成 <code>{'{{sku}}'}</code> 和 <code>{'{{quantity}}'}</code>。提交按钮点击因为落在动态列表里被打上警告标记，所以 SKILL.md 加上行匹配条件而不是写死 CSS 路径。",
+      "ev2Title": "before / after",
+      "ev2Meta": "23 个事件 → 4 步",
+      "ev2BeforeLabel": "— BEFORE (raw)",
+      "ev2AfterLabel": "+ AFTER (distilled)",
+      "ev2AutoLabel": "+ AUTO-DETECTED",
+      "ev2Caption": "八次按键变成一个带参数的 fill — 每次回放都是同一个形状。",
+      "sub3": "交接",
+      "p5": "工程师把生成的 markdown 放到 <code>~/.claude/skills/create-purchase-order/SKILL.md</code>，给 Claude Code 敲了一句话。Agent 按名字找到这个 Skill，解出前置条件（存的 cookie 中午前都还有效），遍历 CSV 里五十行，回头汇报。三分十一秒后，事儿就办完了。没人盯着它跑。",
+      "ev3Title": "claude code · stdout",
+      "ev3Meta": "3 分 11 秒 · 零重试",
+      "ev3Caption": "一句话进，五十张采购单出。Agent 一个问题都没问。",
+      "postscript": {
+        "label": "后记",
+        "titleLine1": "一段五分钟仪式的成本，",
+        "titleLine2": "摊平到一个工作年里。",
+        "n1Label": "人工平均耗时",
+        "n2Label": "Agent 平均耗时",
+        "n3Label": "仅此一项每年节省"
+      },
+      "readMore": "想看更难的场景？<link>试试演练场 →</link>"
     },
     "cta": {
-      "title": "60 秒录下你的第一个技能",
-      "button": "立即安装",
-      "note": "公测期间免费，无需注册。"
+      "eyebrow": "拿到录制器",
+      "title": "录一次流程。<em>下面的一千次让 Agent 跑。</em>",
+      "sub": "公开 beta 期间免费。不需要账号、不上传、不发送遥测。整个 bundle 4.5 MB；录制留在你机器上，你要导出才会动。",
+      "ctaPrimary": "添加到 Chrome",
+      "playgroundLink": "或者在 21 个压力测试场景上试一下 →",
+      "footLeft": "SKILL.md — 人和 Agent 之间的纯 markdown 契约。"
+    }
+  },
+  "playground": {
+    "meta": {
+      "title": "演练场 — Skill Recorder",
+      "description": "21 个为打垮天真录制器而设计的压力测试场景。哈希类名、Shadow DOM、跨标签流程、IME 合成、拖拽。",
+      "keywords": "skill recorder 演练场, 浏览器自动化测试, 录制器场景, 压力测试"
     },
-    "stats": [
-      {
-        "value": "↓ 80%",
-        "label": "相较 Selenium 的维护量"
-      },
-      {
-        "value": "0",
-        "label": "所需代码行数"
-      },
-      {
-        "value": "1 次点击",
-        "label": "即可开始录制"
-      },
-      {
-        "value": "↑ 100%",
-        "label": "全本地——零上传"
+    "hero": {
+      "eyebrow": "演练场",
+      "titleLine1": "21 个场景，专为",
+      "titleLine2Em": "打垮天真录制器而生。",
+      "lead": "下面每一页都是一个有控的陷阱 — 哈希类名、懒加载弹窗、Shadow DOM、跨标签流程、IME 合成、拖拽。装上扩展，点 <code>Start</code>，跑一遍 <em>Try this</em> 步骤，再对照每页上列出的 <code>ActionStep[]</code> 期望输出。",
+      "steps": [
+        "安装",
+        "钉到工具栏",
+        "打开一个场景",
+        "Start",
+        "照着 \"Try this\" 做",
+        "Save as Skill"
+      ]
+    },
+    "matrix": {
+      "heading": "覆盖矩阵",
+      "totalSuffix": "个场景",
+      "rows": {
+        "F": "真实产品综合 — Notion / Linear / Jira / Salesforce",
+        "A": "选择器稳定性 — 哈希类名、相同兄弟节点、多语言",
+        "B": "异步 + 时序 — SPA 路由、懒加载弹窗",
+        "C": "多界面 — iframe、Shadow DOM、脱敏、新标签",
+        "D": "特殊输入 — 拖拽、文件、组合键、contenteditable、剪贴板、combobox"
       }
-    ]
+    },
+    "fixtures": "个场景",
+    "category": {
+      "A": {
+        "title": "选择器稳定性",
+        "blurb": "选择器要在动态类名、相同兄弟节点、locale 切换之后依然可用。"
+      },
+      "B": {
+        "title": "异步 + 时序",
+        "blurb": "回放需要等 SPA 路由、防抖搜索、懒加载弹窗。"
+      },
+      "C": {
+        "title": "多界面",
+        "blurb": "Iframe、Shadow DOM、多标签流程都是一等公民。"
+      },
+      "D": {
+        "title": "特殊输入",
+        "blurb": "拖拽、文件上传、组合键、contenteditable、剪贴板、ARIA combobox。"
+      },
+      "E": {
+        "title": "参数化",
+        "blurb": "自动识别哪些键入值和 URL 段落应该变成可复用参数。"
+      },
+      "F": {
+        "title": "真实产品综合",
+        "blurb": "有分量的产品形态场景，把 12 个以上难点串成完整工作流 — 演练场里最接近\"扛得住一天工作\"的部分。"
+      }
+    },
+    "compositeKicker": {
+      "F1-notion": "块编辑器",
+      "F2-linear": "议题追踪",
+      "F3-jira": "迭代看板",
+      "F4-salesforce": "CRM"
+    },
+    "difficultyPoints": "个难点",
+    "scenario": {
+      "crumbCategory": "类目",
+      "back": "← 全部场景",
+      "frameLabel": "实时场景 · 边录边操作",
+      "openInNewTab": "在新标签打开 ↗",
+      "cardTryThis": "试试这些",
+      "cardWhyHard": "为什么难",
+      "cardCoverage": "覆盖的难点",
+      "cardCoverageHelp": "下面每个标签都链到那个单点难点的独立 demo — 综合场景出问题时方便定位。",
+      "cardExpected": "期望的录制输出",
+      "replayHead": "重放日志 · claude code · stdout",
+      "replayNote": "模拟数据 · 非实时"
+    }
   },
   "notFound": {
-    "message": "正在跳转…",
-    "backHome": "返回首页"
+    "message": "重定向中…",
+    "backHome": "回到首页"
   },
   "policy": {
     "privacy": {
       "meta": {
         "title": "隐私政策 | Skill Recorder",
-        "description": "Skill Recorder 如何处理你的录制、浏览器数据以及在使用扩展过程中产生的任何信息。",
+        "description": "Skill Recorder 如何处理你的录制、浏览器数据和你在使用扩展时生成的一切信息。",
         "keywords": "skill recorder 隐私, 浏览器扩展隐私, 录制隐私, 数据保护"
       },
       "title": "隐私政策",
       "effectiveDate": "生效日期：2026 年 1 月 1 日",
-      "intro": "Skill Recorder 是一款 Chrome 扩展，捕获你明确录制的浏览器流程，并将其提炼为 SKILL.md 文件。本隐私政策说明哪些信息留存在你的设备上、我们不收集哪些数据，以及你对自身数据享有的权利。",
+      "intro": "Skill Recorder 是一个 Chrome 扩展，捕获你主动开始录制的浏览器流程并蒸馏成 SKILL.md 文件。本隐私政策说明哪些信息留在你设备上、我们不收集什么，以及你对自己数据的权利。",
       "sections": [
         {
           "heading": "1. 我们收集的信息",
-          "paragraphs": [
-            "Skill Recorder 以本地运行为设计目标。扩展会在你的设备上处理以下数据："
-          ],
+          "paragraphs": ["Skill Recorder 设计为本地运行。扩展在你设备上处理以下内容："],
           "bullets": [
-            {
-              "label": "录制操作：",
-              "text": "你明确开始录制的流程中的点击、按键、跳转与 DOM 快照，本地存储在浏览器的 IndexedDB 中。"
-            },
-            {
-              "label": "提炼技能：",
-              "text": "你生成的 SKILL.md 文件，在你导出或删除之前都仅在本地保存。"
-            },
-            {
-              "label": "匿名遥测：",
-              "text": "基础事件计数（例如\"开始录制\"、\"导出技能\"），用于帮助我们改进产品。不包含任何页面内容、认证令牌或个人身份信息。"
-            }
+            { "label": "录制动作：", "text": "你主动开始录制的流程里产生的点击、按键、导航和 DOM 快照。存储在你浏览器的 IndexedDB 里。" },
+            { "label": "蒸馏 Skill：", "text": "你生成的 SKILL.md 文件。本地存储，直到你导出或删除。" },
+            { "label": "匿名遥测：", "text": "基础事件计数（例如 \"recording started\"、\"skill exported\"），帮助我们改进产品。不含页面内容、鉴权 token 或 PII。" }
           ],
-          "trailing": "Skill Recorder 不会收集密码、支付信息，也不会收集你未明确录制的会话中的任何页面内容。"
+          "trailing": "Skill Recorder 不收集密码、支付信息，也不收集你未主动录制的会话里的任何页面内容。"
         },
         {
-          "heading": "2. 我们如何使用你的信息",
-          "paragraphs": [
-            "Skill Recorder 处理的信息仅用于："
-          ],
+          "heading": "2. 我们如何使用这些信息",
+          "paragraphs": ["Skill Recorder 处理的信息仅用于："],
           "bullets": [
-            {
-              "label": "",
-              "text": "忠实重建你录制流程的回放。"
-            },
-            {
-              "label": "",
-              "text": "运行提炼流水线，将原始录制转化为干净的 SKILL.md。"
-            },
-            {
-              "label": "",
-              "text": "在你点击下载时，将 SKILL.md 文件导出到你的文件系统。"
-            },
-            {
-              "label": "",
-              "text": "通过匿名事件计数改进产品可用性。"
-            }
+            { "label": "", "text": "忠实重放你录制的流程。" },
+            { "label": "", "text": "运行把原始录制变成干净 SKILL.md 的蒸馏管线。" },
+            { "label": "", "text": "你点 Download 时把 SKILL.md 导出到本地文件系统。" },
+            { "label": "", "text": "通过匿名事件计数改进产品可用性。" }
           ],
-          "trailing": "我们不会将你的数据用于广告、行为画像或跨站追踪。"
+          "trailing": "我们不把你的数据用于广告、行为画像或跨站跟踪。"
         },
         {
           "heading": "3. 数据存储与保留",
           "paragraphs": [],
           "bullets": [
-            {
-              "label": "本地存储：",
-              "text": "录制、提炼后的技能与偏好都存储在浏览器的 IndexedDB 与 chrome.storage 中。除非你删除，否则它们将一直留在你的设备上。"
-            },
-            {
-              "label": "无云端同步：",
-              "text": "Skill Recorder 不会将你的录制上传到任何服务器。没有账户，没有云端历史，没有共享工作区。"
-            }
+            { "label": "本地存储：", "text": "录制、蒸馏的 Skill 和偏好设置存在浏览器的 IndexedDB 和 chrome.storage 里。你删除前都留在你设备上。" },
+            { "label": "无云同步：", "text": "Skill Recorder 不把你的录制上传到任何服务器。没有账号、没有云端历史、没有共享工作区。" }
           ],
-          "trailing": "你可以随时通过扩展设置或卸载扩展，清除全部本地存储的数据。"
+          "trailing": "你可以随时通过扩展设置或卸载扩展来清空所有本地数据。"
         },
         {
           "heading": "4. 第三方服务",
-          "paragraphs": [
-            "Skill Recorder 不会将录制数据发送给第三方。扩展发起的网络请求仅限于：",
-            "这些请求不包含任何页面内容或录制的操作。"
-          ],
+          "paragraphs": ["Skill Recorder 不向第三方发送录制数据。扩展唯一发起的网络请求是：", "这些调用不包含任何页面内容或录制动作。"],
           "bullets": [
-            {
-              "label": "更新检查：",
-              "text": "Chrome 应用商店，用于接收扩展更新。"
-            },
-            {
-              "label": "遥测：",
-              "text": "一个匿名化的分析端点，仅用于统计你已选择加入的事件。退出后即停用。"
-            }
+            { "label": "更新检查：", "text": "Chrome Web Store，用于获取扩展更新。" },
+            { "label": "遥测：", "text": "匿名分析端点，仅用于统计已选择加入的事件。关掉就不会发。" }
           ]
         },
         {
           "heading": "5. 扩展权限",
-          "paragraphs": [
-            "Skill Recorder 申请以下权限以正常运行："
-          ],
+          "paragraphs": ["Skill Recorder 请求以下权限以运行："],
           "bullets": [
-            {
-              "label": "activeTab:",
-              "text": "访问你明确选择录制的标签页。"
-            },
-            {
-              "label": "scripting:",
-              "text": "注入内容脚本，在录制期间捕获点击、按键与跳转。"
-            },
-            {
-              "label": "storage:",
-              "text": "在你的设备上本地保存录制与提炼后的技能。"
-            },
-            {
-              "label": "sidePanel:",
-              "text": "打开录制侧边栏，列出你已捕获的流程。"
-            }
+            { "label": "activeTab：", "text": "访问你明确选择录制的标签页。" },
+            { "label": "scripting：", "text": "在录制期间注入内容脚本以捕获点击、按键和导航。" },
+            { "label": "storage：", "text": "在你设备上本地持久化录制和蒸馏的 Skill。" },
+            { "label": "sidePanel：", "text": "打开列出你已捕获流程的录制侧边栏。" }
           ]
         },
         {
           "heading": "6. 数据安全",
-          "paragraphs": [
-            "由于所有数据都留在你的设备上，攻击面被限定在浏览器的本地存储之内。我们采取合理措施，防止不可信的页面内容向录制流水线注入数据。"
-          ]
+          "paragraphs": ["因为所有数据都留在你设备上，攻击面仅限于浏览器本地存储。我们采取合理措施防止不受信任的页面内容注入到录制管线。"]
         },
         {
           "heading": "7. 政策变更",
-          "paragraphs": [
-            "本隐私政策可能不定期更新。更新内容将在本页面发布，并标注新的生效日期。"
-          ]
+          "paragraphs": ["本隐私政策可能不定期更新。更新会发布在本页面并附带新的生效日期。"]
         },
         {
-          "heading": "8. 联系我们",
-          "paragraphs": [
-            "如对本隐私政策有任何疑问，请联系："
-          ],
+          "heading": "8. 联系",
+          "paragraphs": ["如对本隐私政策有疑问，请通过以下方式联系我们："],
           "contactEmail": "support@skill-recorder.dev"
         }
       ]
@@ -392,85 +391,55 @@
     "terms": {
       "meta": {
         "title": "服务条款 | Skill Recorder",
-        "description": "管理你使用 Skill Recorder 浏览器扩展与网站的规则与条件。",
+        "description": "规范你使用 Skill Recorder 浏览器扩展及网站的规则与条件。",
         "keywords": "skill recorder 条款, 服务条款, 浏览器扩展条款"
       },
       "title": "服务条款",
       "effectiveDate": "生效日期：2026 年 1 月 1 日",
-      "intro": "本服务条款（\"条款\"）管理你对 Skill Recorder 浏览器扩展及网站（统称\"服务\"）的使用。安装或使用 Skill Recorder 即表示你同意本条款。",
+      "intro": "本《服务条款》（以下简称\"条款\"）规范你对 Skill Recorder 浏览器扩展及网站（统称\"服务\"）的使用。安装或使用 Skill Recorder 即视为你同意本条款。",
       "sections": [
         {
           "heading": "1. 服务说明",
-          "paragraphs": [
-            "Skill Recorder 是一款浏览器扩展，捕获用户驱动的浏览器流程，并将其提炼为可移植的 SKILL.md 文件，供 AI 智能体使用。本服务按\"原样\"提供，并可能随时更新或修改。"
-          ]
+          "paragraphs": ["Skill Recorder 是一个浏览器扩展，捕获用户驱动的浏览器流程并蒸馏成可移植的 SKILL.md 文件供 AI Agent 使用。本服务\"按现状\"提供，我们可能随时更新或修改。"]
         },
         {
           "heading": "2. 允许的使用",
-          "paragraphs": [
-            "你只能将 Skill Recorder 用于合法目的。你同意不得："
-          ],
+          "paragraphs": ["你只能将 Skill Recorder 用于合法目的。你同意不："],
           "bullets": [
-            {
-              "label": "",
-              "text": "违反目标网站的服务条款或 robots.txt 规则录制或自动化任何流程。"
-            },
-            {
-              "label": "",
-              "text": "未经当事人同意，使用 Skill Recorder 收集个人数据。"
-            },
-            {
-              "label": "",
-              "text": "利用本服务从事任何非法活动，包括未授权的账户访问、垃圾信息或欺诈。"
-            },
-            {
-              "label": "",
-              "text": "未经许可，尝试逆向工程、修改或分发本扩展。"
-            }
+            { "label": "", "text": "录制或自动化违反任一网站服务条款或 robots.txt 指令的流程。" },
+            { "label": "", "text": "在未经个人同意的情况下使用 Skill Recorder 收集其个人数据。" },
+            { "label": "", "text": "将服务用于任何非法活动，包括未授权账户访问、垃圾邮件或欺诈。" },
+            { "label": "", "text": "未经许可逆向工程、修改或重新分发扩展。" }
           ],
-          "trailing": "你独自负责确保对 Skill Recorder 的使用符合适用法律以及所录制网站的条款。"
+          "trailing": "你需自行确保对 Skill Recorder 的使用符合适用法律及你录制的任何网站的条款。"
         },
         {
           "heading": "3. 知识产权",
-          "paragraphs": [
-            "Skill Recorder 扩展、网站及所有相关内容归 Skill Recorder 所有，并受适用的知识产权法律保护。我们授予你有限、非独占、不可转让的许可，可按本条款将本服务用于个人或商业用途。"
-          ]
+          "paragraphs": ["Skill Recorder 扩展、网站及所有相关内容归 Skill Recorder 所有，受适用知识产权法保护。我们授予你一个有限的、非独占的、不可转让的许可，依本条款用于个人或商业目的。"]
         },
         {
-          "heading": "4. 免费版与付费方案",
-          "paragraphs": [
-            "Skill Recorder 在公测期间完全免费。付费方案可能在未来推出，并提前通知。我们保留在合理通知下调整功能范围与价格的权利。"
-          ]
+          "heading": "4. 免费层与付费方案",
+          "paragraphs": ["Skill Recorder 公开 beta 期间免费。未来可能推出付费方案，会提前通知。我们保留以合理通知方式调整功能范围和价格的权利。"]
         },
         {
           "heading": "5. 免责声明",
-          "paragraphs": [
-            "本服务按\"原样\"提供，不附任何明示或暗示的保证。我们不保证服务永不中断、绝无错误，亦不保证提炼后的 SKILL.md 输出在每个网站上都能正确回放。浏览器流程的回放依赖于第三方网站的结构，而该结构可能在不通知的情况下变更。"
-          ]
+          "paragraphs": ["本服务\"按现状\"提供，不附带任何明示或暗示的保证。我们不保证服务不间断、无错误，也不保证蒸馏出的 SKILL.md 在所有网站上都能正确回放。浏览器流程回放依赖第三方网站的结构，这些结构可能随时变化。"]
         },
         {
           "heading": "6. 责任限制",
-          "paragraphs": [
-            "在法律允许的最大范围内，对于因使用本服务而产生的任何间接、附带、特殊或后果性损害（包括但不限于数据丢失、对回放流程的依赖，或因录制活动引发的法律索赔），Skill Recorder 概不负责。"
-          ]
+          "paragraphs": ["在法律允许的最大范围内，Skill Recorder 对你使用服务而产生的任何间接、附带、特殊或后果性损害不承担责任，包括但不限于数据丢失、对重放流程的依赖、或与你的录制活动相关的法律索赔。"]
         },
         {
           "heading": "7. 终止",
-          "paragraphs": [
-            "对于违反本条款或我们认定的其他原因，我们保留随时暂停或终止本服务访问权的权利。"
-          ]
+          "paragraphs": ["我们保留因违反本条款或出于任何其他自行判断之原因随时暂停或终止你对服务的访问的权利。"]
         },
         {
           "heading": "8. 条款变更",
-          "paragraphs": [
-            "我们可能不定期更新本条款。条款变更发布后继续使用本服务，即视为接受修订后的条款。"
-          ]
+          "paragraphs": ["我们可能不定期更新本条款。变更发布后继续使用服务即视为接受修订后的条款。"]
         },
         {
-          "heading": "9. 联系我们",
-          "paragraphs": [
-            "如对本条款有任何疑问，请联系："
-          ],
+          "heading": "9. 联系",
+          "paragraphs": ["如对本条款有疑问，请通过以下方式联系我们："],
           "contactEmail": "support@skill-recorder.dev"
         }
       ]

@@ -391,8 +391,6 @@ function ChromeIcon() {
 }
 
 export default function HeroSection() {
-  // Translations are kept for the headline/cta surface so locales still work;
-  // editorial copy that doesn't yet have translations falls back to English.
   const t = useTranslations('main.hero');
 
   return (
@@ -401,27 +399,27 @@ export default function HeroSection() {
         <Left>
           <Eyebrow>
             <Pulse aria-hidden="true" />
-            Browser flow recorder · Chrome MV3
+            {t('eyebrow')}
           </Eyebrow>
 
           <Headline>
-            You demoed it once.<br />
-            <em>Why are you still doing it?</em>
+            {t('titleLine1')}<br />
+            <em>{t('titleLine2Em')}</em>
           </Headline>
 
           <Lead>
-            Skill Recorder is a Chrome extension that watches you walk through a browser task <em>once</em> — then
-            writes a <HandNote>SKILL.md</HandNote>, a plain-markdown spec that Claude Code (or any agent on the{' '}
-            <code>browse</code> CLI) replays without selectors, glue code, or babysitting.
+            {t.rich('lead', {
+              em: (chunks) => <em>{chunks}</em>,
+              hand: (chunks) => <HandNote>{chunks}</HandNote>,
+              code: (chunks) => <code>{chunks}</code>,
+            })}
           </Lead>
 
           <Ctas>
             <Primary size="lg" href={withUTM(CTA_URL, 'hero_cta')}>
               <ChromeIcon /> {t('ctaPrimary')}
             </Primary>
-            <Secondary href="/playground">
-              Try a stress-test fixture →
-            </Secondary>
+            <Secondary href="/playground">{t('ctaSecondary')}</Secondary>
           </Ctas>
 
           <SpecStrip aria-label="Technical readout">
@@ -482,8 +480,8 @@ export default function HeroSection() {
           </Card>
 
           <Caption>
-            ↑ a five-minute purchase-order flow,<br />
-            captured once and <strong>replayed forever.</strong>
+            {t('captionLine1')}<br />
+            {t.rich('captionLine2', { strong: (chunks) => <strong>{chunks}</strong> })}
           </Caption>
         </Panel>
       </Grid>

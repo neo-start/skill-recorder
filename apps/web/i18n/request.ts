@@ -2,6 +2,7 @@ import { getRequestConfig } from 'next-intl/server';
 import { routing } from './routing';
 
 export default getRequestConfig(async ({ requestLocale }) => {
+  // In static export mode, requestLocale comes from generateStaticParams
   let locale = await requestLocale;
 
   if (!locale || !routing.locales.includes(locale as any)) {

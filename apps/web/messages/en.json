@@ -1,6 +1,7 @@
 {
   "layout": {
     "nav": {
+      "playground": "Playground",
       "blog": "Blog",
       "cta": "Add to Chrome",
       "signIn": "Sign in",
@@ -8,16 +9,17 @@
       "closeMenu": "Close menu",
       "openMenu": "Open menu",
       "viewAllArticles": "View all articles",
+      "openPlayground": "Open Playground",
       "blogItems": {
         "ecommerce": "Recording Browser Flows for AI Agents",
         "noCode": "From Click to SKILL.md: A Complete Walkthrough",
         "leads": "How to Distill a Recording into a Reusable Skill",
         "pagination": "Replaying Flows with the browse CLI"
-      },
-      "playground": "Playground"
+      }
     },
     "footer": {
       "tagline": "Record once. Replay forever.",
+      "playground": "Playground",
       "blog": "Blog",
       "blogHome": "All Articles",
       "blogEcommerce": "Recording Browser Flows for AI Agents",
@@ -60,196 +62,253 @@
       "keywords": "skill recorder, browser automation, claude code skills, SKILL.md, browse cli, ai agent automation, chrome extension"
     },
     "hero": {
-      "title": "Record a Flow Once. Let AI Replay It Forever.",
-      "subtitle": "A Chrome extension that captures your browser flow and distills it into a SKILL.md AI agents can re-run.",
-      "ctaPrimary": "Install Now",
-      "note": "Free during beta. No account required."
+      "eyebrow": "Browser flow recorder · Chrome MV3",
+      "titleLine1": "You demoed it once.",
+      "titleLine2Em": "Why are you still doing it?",
+      "lead": "Skill Recorder is a Chrome extension that watches you walk through a browser task <em>once</em> — then writes a <hand>SKILL.md</hand>, a plain-markdown spec that Claude Code (or any agent on the <code>browse</code> CLI) replays without selectors, glue code, or babysitting.",
+      "ctaPrimary": "Add to Chrome",
+      "ctaSecondary": "Try a stress-test fixture →",
+      "captionLine1": "↑ a five-minute purchase-order flow,",
+      "captionLine2": "captured once and <strong>replayed forever.</strong>"
     },
-    "howItWorks": {
-      "title": "From Browser Demo to Replayable Skill in <accent>3 Steps</accent>",
-      "steps": {
-        "install": {
-          "number": "01",
-          "title": "Install the Extension",
-          "desc": "Add Skill Recorder to Chrome in seconds.",
-          "imgAlt": "Install the Skill Recorder Chrome extension"
-        },
-        "scrape": {
-          "number": "02",
-          "title": "Record Your Flow",
-          "desc": "Click Start, walk through the task once, and we capture every action.",
-          "imgAlt": "Record a browser flow with one click"
-        },
-        "export": {
-          "number": "03",
-          "title": "Export as SKILL.md",
-          "desc": "Save the distilled markdown file straight into your Claude Code skills folder.",
-          "imgAlt": "Download a SKILL.md file ready for Claude Code"
-        }
+    "anatomy": {
+      "tag": "Anatomy",
+      "title": "Three stages, <em>one click apart.</em>",
+      "lead": "What we ship is a small Chrome MV3 extension and a 4-KB distillation pipeline. The recorder taps into <code>chrome.debugger</code> for DOM-level fidelity; the distiller runs entirely in the service worker; the replay reads the resulting SKILL.md through the <code>browse</code> CLI. No server. No glue code.",
+      "wireToDistill": "23 events →",
+      "wireToReplay": "SKILL.md →",
+      "capture": {
+        "name": "Capture",
+        "meta": "Side panel",
+        "desc": "A <strong>per-frame port</strong> in the content script forwards every DOM event to the service worker. Shadow DOM and same-origin iframes are pierced transparently.",
+        "bullets": [
+          "6-tier selector resolver (testid → id → aria → text → css → xpath)",
+          "tabPorts: Map<tabId, Map<frameId, Port>>",
+          "IME-aware input buffering · paste · drag"
+        ]
+      },
+      "distill": {
+        "name": "Distill",
+        "meta": "Service worker · 30s",
+        "desc": "Six small passes turn a noisy event log into a deterministic spec. Auto-parameterization only fires above <strong>0.7 confidence</strong>; below that the recorder asks rather than guesses.",
+        "bullets": [
+          "paramConfidence(step) — heuristic ladder",
+          "auth-boundary detection — opaque token + cookies",
+          "UUID · numeric ID · email · ISO date · currency"
+        ]
+      },
+      "replay": {
+        "name": "Replay",
+        "meta": "browse CLI",
+        "desc": "The <code>browse</code> CLI reads SKILL.md as plain markdown — no schema, no runtime, no escape hatches. <strong>Every step is auditable</strong>.",
+        "bullets": [
+          "idempotent re-runs · auth pause + resume",
+          "structured logs ↦ JSONL replay history",
+          "works with Claude Code, Cline, plain shell"
+        ]
       }
     },
-    "features": {
-      "title": "Capture Every Click, <accent>Distill Every Skill</accent>",
-      "ctas": {
-        "f1": "Record Now",
-        "f2": "Distill Cleanly",
-        "f3": "Replay Anywhere",
-        "f4": "Hand Off to Claude"
+    "catalog": {
+      "tag": "Specification",
+      "title": "What survives a recording? <em>Thirteen hard cases, end-to-end.</em>",
+      "lead": "The browser is full of recorder traps — hashed classes, lazy modals, shadow DOM, cross-tab flows, IME composition, drag-and-drop. Each row below is a real fixture in the playground; click any of them to record against it yourself.",
+      "smallNote": "green dot = shipped · blue = automatic",
+      "columns": {
+        "category": "Category",
+        "technique": "Technique",
+        "detail": "What we do about it",
+        "fixture": "Fixture"
       },
-      "f1": {
-        "title": "Just Hit Record",
-        "desc": "No scripts, no selectors. Click Start and demo the task like you would for a coworker. We capture <highlight>every click, keystroke, and navigation</highlight> in real time. When you stop, you have a perfect replay ready to distill.",
-        "imgAlt": "One-click recording of a browser flow"
-      },
-      "f2": {
-        "title": "Smart Distillation, Out of the Box",
-        "desc": "The dialog auto-strips noise, <highlight>turns every typed value into a parameter</highlight>, and flags clicks on dynamic lists with ⚠️ warnings so agents replay them safely. No manual cleanup, no regex wrangling.",
-        "imgAlt": "Distilling a recording into a clean SKILL.md"
-      },
-      "f3": {
-        "title": "Replay on Any AI Agent",
-        "desc": "The output is a portable <highlight>SKILL.md</highlight> file — plain markdown an AI agent can read. Drop it into Claude Code's skills directory and the agent replays the flow via the <highlight>browse</highlight> CLI without any glue code.",
-        "imgAlt": "Replaying a SKILL.md flow with Claude Code"
-      },
-      "f4": {
-        "title": "Privacy-First by Design",
-        "desc": "All recording lives in your browser. Nothing uploads. Auth tokens never leave your machine — we detect them, mark them as <highlight>Precondition: signed in</highlight>, and let the agent prompt you when it's time to authenticate.",
-        "imgAlt": "Skill Recorder runs locally with no upload"
-      }
-    },
-    "useCases": {
-      "title": "Built for Every Repetitive Browser Task",
-      "cases": {
-        "ecommerce": {
-          "title": "Automate Repetitive Forms",
-          "desc": "Record a single submission and hand the SKILL.md to Claude. The agent fills in dozens of variants overnight without you babysitting.",
-          "cta": "Record Forms"
+      "rows": [
+        {
+          "category": "Selectors",
+          "technique": "Hashed class & ID rotation",
+          "detail": "Tailwind-style classes such as btn__primary--ab3f9c rotate on every deploy; the resolver falls through 6 tiers (testid → id → aria → text → css → xpath) so a re-hashed button still picks."
         },
-        "reviews": {
-          "title": "Run Daily Dashboard Checks",
-          "desc": "Capture the click path through your analytics dashboard once. Let an agent pull the same numbers every morning and post them to Slack.",
-          "cta": "Record Dashboards"
+        {
+          "category": "Selectors",
+          "technique": "Identical sibling rows",
+          "detail": "Six rows with literally identical \"Pick\" buttons — only position distinguishes them. We anchor each click by fingerprintIndex so the right row is clicked, even after the list reorders."
         },
-        "seo": {
-          "title": "Audit Competitor Sites Weekly",
-          "desc": "Demo the audit checklist on one site. The skill replays it across your whole tracking list, every Monday at 9am.",
-          "cta": "Record Audits"
+        {
+          "category": "Selectors",
+          "technique": "Locale-stable identifiers",
+          "detail": "\"Continue\" / \"继续\" / \"Weiter\" all map to the same data-i18n-key=\"action.continue\". The recorder prefers locale-independent attributes so a skill recorded in English replays under Chinese."
         },
-        "leads": {
-          "title": "Build Lead Lists Repeatedly",
-          "desc": "Walk through one search query on a business directory. Reuse the recording for new search terms forever, no scripts needed.",
-          "cta": "Record Searches"
+        {
+          "category": "Async",
+          "technique": "SPA route transitions",
+          "detail": "pushState and hashchange transitions are tracked without reload; replay waits for the new content to mount instead of probing an empty container."
         },
-        "jobs": {
-          "title": "Track Job Boards",
-          "desc": "Show the filter + scroll + export flow once. Your agent runs it daily across every board you care about.",
-          "cta": "Record Job Boards"
+        {
+          "category": "Async",
+          "technique": "Lazy-mounted modals",
+          "detail": "The Confirm button doesn't exist when the trigger is clicked. elementVisible polls until the target shows up before dispatching the next step — no flaky timeouts."
         },
-        "realestate": {
-          "title": "Monitor Property Listings",
-          "desc": "Record one listings search with your filters. The agent re-runs it on a schedule and surfaces new matches.",
-          "cta": "Record Listings"
+        {
+          "category": "Surfaces",
+          "technique": "Same-origin iframes",
+          "detail": "all_frames: true injects per-frame; actions are tagged with the originating frameId, then re-resolved by URL across re-renders so a stale frameId never blocks replay."
         },
-        "hotels": {
-          "title": "Compare Travel Prices",
-          "desc": "Demo your typical hotel search once. Let agents poll prices across dates and platforms without manual effort.",
-          "cta": "Record Searches"
+        {
+          "category": "Surfaces",
+          "technique": "Sensitive-field redaction",
+          "detail": "password / phone / credit-card / SSN inputs are detected by type + autocomplete + name and replaced with *** before they ever hit storage. The bytes never leave the page."
+        },
+        {
+          "category": "Surfaces",
+          "technique": "Shadow DOM piercing",
+          "detail": "A custom shadow selector kind encodes the path as { host, inner } segments; the resolver walks shadowRoot.querySelector at each boundary, so Web Components are first-class."
+        },
+        {
+          "category": "Surfaces",
+          "technique": "Cross-tab handoff",
+          "detail": "When a flow opens a new tab — print preview, OAuth, quote generation — recording follows via chrome.tabs.onCreated. Replay re-creates the tab through chrome.tabs.create."
+        },
+        {
+          "category": "Input",
+          "technique": "Native drag & drop",
+          "detail": "A dragstart → dragover → drop chain with a shared DataTransfer coalesces into one drag step (source + target + types observed). No brittle pixel coordinates."
+        },
+        {
+          "category": "Input",
+          "technique": "Modifier-key chords",
+          "detail": "A bare \"k\" keypress is text-input noise; with metaKey: true it's a Cmd-K shortcut. The recorder keeps the chord and drops the noise, preserving modifier state for replay."
+        },
+        {
+          "category": "Input",
+          "technique": "contenteditable blocks",
+          "detail": "change never fires on contenteditable. We hook input + compositionend, debounce 300ms, and emit one change step with the final innerText — same shape as a text input."
+        },
+        {
+          "category": "Input",
+          "technique": "ARIA combobox & typeahead",
+          "detail": "Each click step is enriched with comboboxContext (option text, root selector); if the direct click fails on replay, the fallback types the text, ArrowDown until aria-activedescendant matches, then Enter."
         }
-      }
+      ],
+      "footNote": "<strong>Thirteen of sixteen.</strong> Plus four <em>composite</em> fixtures — Notion, Linear, Jira, Salesforce — that chain twelve to fifteen of these techniques into a single coherent flow. <link>See the playground →</link>"
     },
-    "testimonials": {
-      "title": "What Builders Are Saying",
-      "items": [
-        {
-          "quote": "I used to write 200 lines of Playwright every time I onboarded a new repetitive workflow. Now I record it once in the browser, hand the SKILL.md to Claude, and it just works.",
-          "name": "Lena R.",
-          "role": "Staff Engineer"
-        },
-        {
-          "quote": "The distillation step is what sells it. Every typed value becomes a parameter automatically, so the same recording covers an entire batch of inputs.",
-          "name": "Marcus T.",
-          "role": "AI Workflow Lead"
-        },
-        {
-          "quote": "Our ops team records flows. The agents replay them. Nobody on either side needs to touch code or selectors. That gap closing is huge.",
-          "name": "Priya N.",
-          "role": "Head of Internal Tools"
-        },
-        {
-          "quote": "Auth detection is what made this production-ready for us. The skill pauses at the login step, prompts the human, and resumes. No leaked tokens.",
-          "name": "Sam K.",
-          "role": "Security Engineer"
-        },
-        {
-          "quote": "I built three skills before lunch. Each one replaced a half-hour browser ritual. The browse CLI integration is exactly the API I wanted.",
-          "name": "Ahmed S.",
-          "role": "Indie Hacker"
-        },
-        {
-          "quote": "I used to maintain Selenium scripts that broke every time a button moved. With SKILL.md the agent reads the intent, not the selector. Maintenance dropped 80%.",
-          "name": "Yuki H.",
-          "role": "QA Automation Engineer"
-        },
-        {
-          "quote": "The privacy story sealed it. Nothing leaves the browser, auth tokens never touch any server. Compliance signed off in one meeting.",
-          "name": "Diana F.",
-          "role": "Platform Engineer"
-        }
-      ]
-    },
-    "faq": {
-      "title": "Frequently asked questions",
-      "contact": "Can't find the answer? Reach us at",
-      "items": [
-        {
-          "question": "Is it really free?",
-          "answer": "Yes — Skill Recorder is free during beta. Install the extension and start recording immediately. No account, no payment details required."
-        },
-        {
-          "question": "Where does the recording data live?",
-          "answer": "Entirely in your browser. We never upload your recordings, your auth tokens, or your page content. Recordings stay on your device until you choose to export the distilled SKILL.md file."
-        },
-        {
-          "question": "What is SKILL.md and how is it used?",
-          "answer": "SKILL.md is a portable markdown file that describes an automated browser flow as a sequence of steps. AI agents like Claude Code load it from a skills directory and replay it via the browse CLI — no extra glue code."
-        },
-        {
-          "question": "How does it handle login pages?",
-          "answer": "Skill Recorder auto-detects auth boundaries and inserts a Precondition: signed in marker. When an agent replays the skill, it pauses at the auth step and prompts the human, instead of leaking session tokens."
-        },
-        {
-          "question": "What if the page changes? Will my skill break?",
-          "answer": "The distillation step records semantic intent (\"click the Submit button\") and falls back across multiple selectors. Skills tolerate small DOM changes far better than hard-coded Selenium scripts."
-        },
-        {
-          "question": "Do I need Claude Code to use the output?",
-          "answer": "Claude Code is the primary integration today, but the format is plain markdown. Any agent that supports the browse CLI conventions can consume a SKILL.md file."
-        }
-      ]
+    "example": {
+      "tag": "Worked example",
+      "title": "A five-minute browser ritual, <em>distilled to thirty seconds.</em>",
+      "byline": ["Field notebook", "Recorded 2026-02-19, 16:42 UTC", "Replay 50× without intervention"],
+      "p1": "Every Monday morning an operations engineer at a small supplier opens the same portal, clicks <strong>New purchase order</strong>, pastes a SKU from a CSV, types a quantity, and clicks <strong>Submit</strong>. Then they do it again. And again. Two hundred rows a week, every week, for the last fourteen months. It is a five-minute ritual repeated until the spreadsheet ends.",
+      "p2": "This is the kind of task that gets a recorder pitched at it — and exactly the kind of task most recorders fail at. The supplier portal rotates Tailwind class hashes on every deploy. The submit button lives inside a dynamic table row that re-renders after each save. The auth cookie expires at noon. Selenium scripts written against this page survive two weeks on average, then quietly start failing.",
+      "sub1": "The recording",
+      "p3": "The engineer pins the extension to their toolbar, opens the portal, clicks <strong>Start recording</strong>, and performs the task exactly once. Eight clicks, two typed values, one submit. The side panel shows a live feed of events as they happen — including the noise: scroll, focus, blur, accidental mousemoves over the help icon. Twenty-three events captured in 4.6 seconds.",
+      "ev1Title": "raw events · 23",
+      "ev1Meta": "elapsed 4.6s",
+      "ev1Caption": "The raw log keeps everything; the distiller decides what matters.",
+      "sub2": "The distillation",
+      "p4": "Inside the service worker, six small passes turn the noisy log into a deterministic spec. Consecutive clicks merge. Keystroke groups fold into a single <code>type()</code> call. The typed values — <code>\"SKU-1029\"</code> and <code>\"50\"</code> — are scored against ten regex priors; both clear the 0.7 threshold and become <code>{'{{sku}}'}</code> and <code>{'{{quantity}}'}</code>. The submit button click is flagged with a warning because its target sits inside a dynamic list, so the SKILL.md adds a row-match condition rather than clicking a fixed CSS path.",
+      "ev2Title": "before / after",
+      "ev2Meta": "23 events → 4 steps",
+      "ev2BeforeLabel": "— BEFORE (raw)",
+      "ev2AfterLabel": "+ AFTER (distilled)",
+      "ev2AutoLabel": "+ AUTO-DETECTED",
+      "ev2Caption": "Eight keystrokes become one parameterized fill — the same shape every replay.",
+      "sub3": "The hand-off",
+      "p5": "The engineer drops the resulting markdown into <code>~/.claude/skills/create-purchase-order/SKILL.md</code> and types a single sentence into Claude Code. The agent finds the skill by name, resolves the precondition (the saved cookie is still valid until noon), iterates over the fifty rows in the CSV, and reports back. Three minutes eleven seconds later, the work is done. No human watched it run.",
+      "ev3Title": "claude code · stdout",
+      "ev3Meta": "3m 11s · 0 retries",
+      "ev3Caption": "One sentence in, fifty purchase orders out. The agent never asked a question.",
+      "postscript": {
+        "label": "Postscript",
+        "titleLine1": "The cost of a five-minute ritual,",
+        "titleLine2": "amortized over a working year.",
+        "n1Label": "median manual run",
+        "n2Label": "median agent run",
+        "n3Label": "recovered, this task alone"
+      },
+      "readMore": "Want to see it on harder fixtures? <link>Try the playground →</link>"
     },
     "cta": {
-      "title": "Record Your First Skill in 60 Seconds",
-      "button": "Install Now",
-      "note": "Free during beta. No account required."
+      "eyebrow": "Get the recorder",
+      "title": "Record one flow. <em>Let an agent run the next thousand.</em>",
+      "sub": "Free during the open beta. No account, no upload, no telemetry. The entire bundle is 4.5 MB; recordings live on your machine until you choose to export them.",
+      "ctaPrimary": "Add to Chrome",
+      "playgroundLink": "Or try it against 21 stress-test fixtures →",
+      "footLeft": "SKILL.md — a plain-markdown contract between humans and agents."
+    }
+  },
+  "playground": {
+    "meta": {
+      "title": "Playground — Skill Recorder",
+      "description": "Twenty-one stress-test fixtures designed to break naïve browser recorders. Hashed classes, shadow DOM, cross-tab flows, IME composition, drag-and-drop.",
+      "keywords": "skill recorder playground, browser automation tests, recorder fixtures, stress test"
     },
-    "stats": [
-      {
-        "value": "↓ 80%",
-        "label": "Maintenance vs Selenium"
-      },
-      {
-        "value": "0",
-        "label": "Lines of Code Needed"
-      },
-      {
-        "value": "1 click",
-        "label": "To Start a Recording"
-      },
-      {
-        "value": "↑ 100%",
-        "label": "Local — Nothing Uploaded"
+    "hero": {
+      "eyebrow": "The playground",
+      "titleLine1": "Twenty-one fixtures designed to",
+      "titleLine2Em": "break naïve recorders.",
+      "lead": "Each page below is a controlled trap — hashed classes, lazy modals, shadow DOM, cross-tab flows, IME composition, drag-and-drop. Install the extension, click <code>Start</code>, run the <em>Try this</em> steps, and compare the captured <code>ActionStep[]</code> against the expected output we've spelled out on each page.",
+      "steps": [
+        "install",
+        "pin to toolbar",
+        "open a fixture",
+        "Start",
+        "follow \"Try this\"",
+        "Save as Skill"
+      ]
+    },
+    "matrix": {
+      "heading": "Coverage matrix",
+      "totalSuffix": "fixtures total",
+      "rows": {
+        "F": "real-world composites — Notion / Linear / Jira / Salesforce",
+        "A": "selector stability — hashed classes, identical siblings, i18n",
+        "B": "async + timing — SPA routes, lazy modals",
+        "C": "multi-surface — iframes, shadow DOM, redaction, new tab",
+        "D": "input specialness — drag, file, chords, contenteditable, clipboard, combobox"
       }
-    ]
+    },
+    "fixtures": "fixtures",
+    "category": {
+      "A": {
+        "title": "Selector stability",
+        "blurb": "Selectors must keep working after dynamic classes, identical siblings, and locale changes."
+      },
+      "B": {
+        "title": "Async + timing",
+        "blurb": "Replay must wait for SPA routes, debounced searches, and lazy-mounted modals."
+      },
+      "C": {
+        "title": "Multi-surface",
+        "blurb": "Iframes, shadow DOM, and multi-tab flows are first-class."
+      },
+      "D": {
+        "title": "Input specialness",
+        "blurb": "Drag/drop, file upload, modifier chords, contenteditable, clipboard, ARIA combobox."
+      },
+      "E": {
+        "title": "Parameterization",
+        "blurb": "Auto-detect which typed values and URL segments should become reusable parameters."
+      },
+      "F": {
+        "title": "Real-world composites",
+        "blurb": "Substantial product-flavored fixtures that chain 12+ difficulty points into one coherent workflow — the closest the playground gets to \"would this survive a day at my job\"."
+      }
+    },
+    "compositeKicker": {
+      "F1-notion": "Block editor",
+      "F2-linear": "Issue tracker",
+      "F3-jira": "Sprint board",
+      "F4-salesforce": "CRM"
+    },
+    "difficultyPoints": "difficulty points",
+    "scenario": {
+      "crumbCategory": "Category",
+      "back": "← All scenarios",
+      "frameLabel": "Live fixture · interact with it while the recorder is running",
+      "openInNewTab": "Open in new tab ↗",
+      "cardTryThis": "Try this",
+      "cardWhyHard": "Why this is hard",
+      "cardCoverage": "Difficulty points covered",
+      "cardCoverageHelp": "Each tag below links to the isolated demo for that single difficulty point — useful if the composite breaks somewhere and you want to bisect.",
+      "cardExpected": "Expected recorder output",
+      "replayHead": "Replay log · claude code · stdout",
+      "replayNote": "simulated · not live data"
+    }
   },
   "notFound": {
     "message": "Redirecting…",
@@ -293,22 +352,10 @@
             "Information processed by Skill Recorder is used solely to:"
           ],
           "bullets": [
-            {
-              "label": "",
-              "text": "Reconstruct a faithful replay of the flow you recorded."
-            },
-            {
-              "label": "",
-              "text": "Run the distillation pipeline that turns a raw recording into a clean SKILL.md."
-            },
-            {
-              "label": "",
-              "text": "Enable export of the SKILL.md file to your filesystem when you click Download."
-            },
-            {
-              "label": "",
-              "text": "Improve product usability through anonymized event counts."
-            }
+            { "label": "", "text": "Reconstruct a faithful replay of the flow you recorded." },
+            { "label": "", "text": "Run the distillation pipeline that turns a raw recording into a clean SKILL.md." },
+            { "label": "", "text": "Enable export of the SKILL.md file to your filesystem when you click Download." },
+            { "label": "", "text": "Improve product usability through anonymized event counts." }
           ],
           "trailing": "We do not use your data for advertising, behavioural profiling, or cross-site tracking."
         },
@@ -334,38 +381,18 @@
             "These calls do not include any page content or recorded actions."
           ],
           "bullets": [
-            {
-              "label": "Update Check:",
-              "text": "Chrome Web Store, to receive extension updates."
-            },
-            {
-              "label": "Telemetry:",
-              "text": "An anonymized analytics endpoint, used only to count opt-in events. Disabled if you opt out."
-            }
+            { "label": "Update Check:", "text": "Chrome Web Store, to receive extension updates." },
+            { "label": "Telemetry:", "text": "An anonymized analytics endpoint, used only to count opt-in events. Disabled if you opt out." }
           ]
         },
         {
           "heading": "5. Extension Permissions",
-          "paragraphs": [
-            "Skill Recorder requests the following permissions to operate:"
-          ],
+          "paragraphs": ["Skill Recorder requests the following permissions to operate:"],
           "bullets": [
-            {
-              "label": "activeTab:",
-              "text": "Access the tab you explicitly choose to record."
-            },
-            {
-              "label": "scripting:",
-              "text": "Inject the content script that captures clicks, keystrokes, and navigations during a recording."
-            },
-            {
-              "label": "storage:",
-              "text": "Persist recordings and distilled skills locally on your device."
-            },
-            {
-              "label": "sidePanel:",
-              "text": "Open the recording sidepanel that lists your captured flows."
-            }
+            { "label": "activeTab:", "text": "Access the tab you explicitly choose to record." },
+            { "label": "scripting:", "text": "Inject the content script that captures clicks, keystrokes, and navigations during a recording." },
+            { "label": "storage:", "text": "Persist recordings and distilled skills locally on your device." },
+            { "label": "sidePanel:", "text": "Open the recording sidepanel that lists your captured flows." }
           ]
         },
         {
@@ -382,9 +409,7 @@
         },
         {
           "heading": "8. Contact",
-          "paragraphs": [
-            "If you have questions about this Privacy Policy, please contact us at:"
-          ],
+          "paragraphs": ["If you have questions about this Privacy Policy, please contact us at:"],
           "contactEmail": "support@skill-recorder.dev"
         }
       ]
@@ -407,26 +432,12 @@
         },
         {
           "heading": "2. Permitted Use",
-          "paragraphs": [
-            "You may use Skill Recorder for lawful purposes only. You agree not to:"
-          ],
+          "paragraphs": ["You may use Skill Recorder for lawful purposes only. You agree not to:"],
           "bullets": [
-            {
-              "label": "",
-              "text": "Record or automate flows in violation of a website's Terms of Service or robots.txt directives."
-            },
-            {
-              "label": "",
-              "text": "Use Skill Recorder to collect personal data about individuals without their consent."
-            },
-            {
-              "label": "",
-              "text": "Use the Service to engage in any illegal activity, including unauthorized account access, spam, or fraud."
-            },
-            {
-              "label": "",
-              "text": "Attempt to reverse-engineer, modify, or redistribute the extension without permission."
-            }
+            { "label": "", "text": "Record or automate flows in violation of a website's Terms of Service or robots.txt directives." },
+            { "label": "", "text": "Use Skill Recorder to collect personal data about individuals without their consent." },
+            { "label": "", "text": "Use the Service to engage in any illegal activity, including unauthorized account access, spam, or fraud." },
+            { "label": "", "text": "Attempt to reverse-engineer, modify, or redistribute the extension without permission." }
           ],
           "trailing": "You are solely responsible for ensuring your use of Skill Recorder complies with applicable laws and the terms of any website you record."
         },
@@ -468,9 +479,7 @@
         },
         {
           "heading": "9. Contact",
-          "paragraphs": [
-            "For questions about these Terms, please contact us at:"
-          ],
+          "paragraphs": ["For questions about these Terms, please contact us at:"],
           "contactEmail": "support@skill-recorder.dev"
         }
       ]

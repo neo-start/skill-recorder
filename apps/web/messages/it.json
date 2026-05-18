@@ -14,7 +14,8 @@
         "leads": "Come distillare una registrazione in una skill riutilizzabile",
         "pagination": "Riprodurre i flussi con il browse CLI"
       },
-      "playground": "Playground"
+      "playground": "Playground",
+      "openPlayground": "Apri il Playground"
     },
     "footer": {
       "tagline": "Registra una volta. Riproduci per sempre.",
@@ -26,7 +27,8 @@
       "legal": "Supporto",
       "privacy": "Informativa sulla privacy",
       "terms": "Termini di servizio",
-      "copyright": "© 2026 Skill Recorder. Tutti i diritti riservati."
+      "copyright": "© 2026 Skill Recorder. Tutti i diritti riservati.",
+      "playground": "Playground"
     }
   },
   "blog": {
@@ -56,200 +58,181 @@
   "main": {
     "meta": {
       "title": "Skill Recorder | Trasforma i flussi del browser in file SKILL.md",
-      "description": "Registra qualsiasi flusso del browser con un'estensione Chrome e distillalo in un file SKILL.md che agenti AI come Claude Code possono rieseguire in autonomia.",
-      "keywords": "skill recorder, automazione browser, skill claude code, SKILL.md, browse cli, automazione agenti ai, estensione chrome"
+      "description": "Un'estensione Chrome che registra qualsiasi flusso del browser e lo distilla in un file SKILL.md che agenti IA come Claude Code possono rieseguire in autonomia.",
+      "keywords": "skill recorder, automazione browser, claude code skills, SKILL.md, browse cli, automazione agente ia, estensione chrome"
     },
     "hero": {
-      "title": "Registra un flusso una volta. Lascia che l'AI lo riproduca per sempre.",
-      "subtitle": "Un'estensione Chrome che cattura il tuo flusso nel browser e lo distilla in un SKILL.md che gli agenti AI possono rieseguire.",
-      "ctaPrimary": "Installa ora",
-      "note": "Gratis durante la beta. Nessun account richiesto."
-    },
-    "howItWorks": {
-      "title": "Dalla demo nel browser alla skill riproducibile in <accent>3 passi</accent>",
-      "steps": {
-        "install": {
-          "number": "01",
-          "title": "Installa l'estensione",
-          "desc": "Aggiungi Skill Recorder a Chrome in pochi secondi.",
-          "imgAlt": "Installa l'estensione Chrome di Skill Recorder"
-        },
-        "scrape": {
-          "number": "02",
-          "title": "Registra il tuo flusso",
-          "desc": "Clicca su Avvia, esegui l'attività una volta e noi catturiamo ogni azione.",
-          "imgAlt": "Registra un flusso del browser con un solo clic"
-        },
-        "export": {
-          "number": "03",
-          "title": "Esporta come SKILL.md",
-          "desc": "Salva il file markdown distillato direttamente nella tua cartella skill di Claude Code.",
-          "imgAlt": "Scarica un file SKILL.md pronto per Claude Code"
-        }
-      }
-    },
-    "features": {
-      "title": "Cattura ogni clic, <accent>distilla ogni skill</accent>",
-      "ctas": {
-        "f1": "Registra ora",
-        "f2": "Distilla in modo pulito",
-        "f3": "Riproduci ovunque",
-        "f4": "Affida a Claude"
-      },
-      "f1": {
-        "title": "Premi solo Registra",
-        "desc": "Niente script, niente selettori. Clicca su Avvia e mostra l'attività come faresti con un collega. Catturiamo <highlight>ogni clic, battitura e navigazione</highlight> in tempo reale. Quando ti fermi, hai una riproduzione perfetta pronta da distillare.",
-        "imgAlt": "Registrazione con un clic di un flusso del browser"
-      },
-      "f2": {
-        "title": "Distillazione intelligente, pronta all'uso",
-        "desc": "La finestra rimuove automaticamente il rumore, <highlight>trasforma ogni valore digitato in un parametro</highlight> e segnala i clic su liste dinamiche con avvisi ⚠️ affinché gli agenti li riproducano in sicurezza. Niente pulizia manuale, niente regex da gestire.",
-        "imgAlt": "Distillazione di una registrazione in un SKILL.md pulito"
-      },
-      "f3": {
-        "title": "Riproduci su qualsiasi agente AI",
-        "desc": "Il risultato è un file <highlight>SKILL.md</highlight> portabile — semplice markdown che un agente AI può leggere. Mettilo nella directory delle skill di Claude Code e l'agente riproduce il flusso tramite il <highlight>browse</highlight> CLI senza alcun codice di collegamento.",
-        "imgAlt": "Riproduzione di un flusso SKILL.md con Claude Code"
-      },
-      "f4": {
-        "title": "Privacy al primo posto, fin dalla progettazione",
-        "desc": "Tutta la registrazione rimane nel tuo browser. Niente viene caricato. I token di autenticazione non lasciano mai la tua macchina — li rileviamo, li contrassegniamo come <highlight>Precondition: signed in</highlight> e lasciamo che l'agente ti chieda di autenticarti al momento giusto.",
-        "imgAlt": "Skill Recorder funziona in locale senza caricamenti"
-      }
-    },
-    "useCases": {
-      "title": "Pensato per ogni attività ripetitiva nel browser",
-      "cases": {
-        "ecommerce": {
-          "title": "Automatizza moduli ripetitivi",
-          "desc": "Registra un singolo invio e affida il SKILL.md a Claude. L'agente compila decine di varianti durante la notte senza che tu debba sorvegliarlo.",
-          "cta": "Registra moduli"
-        },
-        "reviews": {
-          "title": "Esegui controlli giornalieri sulle dashboard",
-          "desc": "Cattura una sola volta il percorso di clic nella tua dashboard di analytics. Lascia che un agente recuperi gli stessi numeri ogni mattina e li pubblichi su Slack.",
-          "cta": "Registra dashboard"
-        },
-        "seo": {
-          "title": "Analizza i siti dei concorrenti ogni settimana",
-          "desc": "Mostra la checklist di audit su un sito. La skill la riproduce sull'intero elenco di monitoraggio, ogni lunedì alle 9.",
-          "cta": "Registra audit"
-        },
-        "leads": {
-          "title": "Costruisci liste di lead in modo ripetibile",
-          "desc": "Esegui una sola query di ricerca su una directory di aziende. Riutilizza la registrazione per nuovi termini di ricerca per sempre, senza alcuno script.",
-          "cta": "Registra ricerche"
-        },
-        "jobs": {
-          "title": "Monitora le bacheche di lavoro",
-          "desc": "Mostra una volta il flusso filtro + scorrimento + esportazione. Il tuo agente lo esegue ogni giorno su tutte le bacheche che ti interessano.",
-          "cta": "Registra bacheche di lavoro"
-        },
-        "realestate": {
-          "title": "Monitora gli annunci immobiliari",
-          "desc": "Registra una ricerca di annunci con i tuoi filtri. L'agente la riesegue secondo programma e fa emergere le nuove corrispondenze.",
-          "cta": "Registra annunci"
-        },
-        "hotels": {
-          "title": "Confronta i prezzi dei viaggi",
-          "desc": "Mostra una volta la tua tipica ricerca di hotel. Lascia che gli agenti monitorino i prezzi su date e piattaforme senza sforzo manuale.",
-          "cta": "Registra ricerche"
-        }
-      }
-    },
-    "testimonials": {
-      "title": "Cosa dicono i builder",
-      "items": [
-        {
-          "quote": "Prima scrivevo 200 righe di Playwright ogni volta che integravo un nuovo flusso ripetitivo. Ora lo registro una volta nel browser, passo il SKILL.md a Claude e funziona e basta.",
-          "name": "Lena R.",
-          "role": "Staff Engineer"
-        },
-        {
-          "quote": "Il passaggio di distillazione è ciò che fa la differenza. Ogni valore digitato diventa automaticamente un parametro, così la stessa registrazione copre un intero batch di input.",
-          "name": "Marcus T.",
-          "role": "Responsabile workflow AI"
-        },
-        {
-          "quote": "Il nostro team ops registra i flussi. Gli agenti li riproducono. Nessuno dalle due parti deve toccare codice o selettori. Chiudere questo divario è enorme.",
-          "name": "Priya N.",
-          "role": "Responsabile strumenti interni"
-        },
-        {
-          "quote": "Il rilevamento dell'autenticazione è ciò che lo ha reso pronto per la produzione per noi. La skill si mette in pausa al passaggio di login, chiede all'umano e riprende. Nessun token trapelato.",
-          "name": "Sam K.",
-          "role": "Security Engineer"
-        },
-        {
-          "quote": "Ho creato tre skill prima di pranzo. Ognuna ha sostituito un rituale del browser di mezz'ora. L'integrazione con il browse CLI è esattamente l'API che volevo.",
-          "name": "Ahmed S.",
-          "role": "Indie Hacker"
-        },
-        {
-          "quote": "Prima mantenevo script Selenium che si rompevano ogni volta che un pulsante si spostava. Con SKILL.md l'agente legge l'intento, non il selettore. La manutenzione è scesa dell'80%.",
-          "name": "Yuki H.",
-          "role": "Ingegnere di automazione QA"
-        },
-        {
-          "quote": "L'aspetto privacy è stato decisivo. Niente lascia il browser, i token di autenticazione non toccano mai alcun server. La compliance ha dato il via libera in una sola riunione.",
-          "name": "Diana F.",
-          "role": "Platform Engineer"
-        }
-      ]
-    },
-    "faq": {
-      "title": "Domande frequenti",
-      "contact": "Non trovi la risposta? Scrivici a",
-      "items": [
-        {
-          "question": "È davvero gratis?",
-          "answer": "Sì — Skill Recorder è gratis durante la beta. Installa l'estensione e inizia a registrare subito. Nessun account, nessun dettaglio di pagamento richiesto."
-        },
-        {
-          "question": "Dove risiedono i dati delle registrazioni?",
-          "answer": "Interamente nel tuo browser. Non carichiamo mai le tue registrazioni, i tuoi token di autenticazione o il contenuto delle pagine. Le registrazioni rimangono sul tuo dispositivo finché non scegli di esportare il file SKILL.md distillato."
-        },
-        {
-          "question": "Cos'è SKILL.md e come si usa?",
-          "answer": "SKILL.md è un file markdown portabile che descrive un flusso del browser automatizzato come una sequenza di passi. Gli agenti AI come Claude Code lo caricano da una directory di skill e lo riproducono tramite il browse CLI — senza codice di collegamento aggiuntivo."
-        },
-        {
-          "question": "Come gestisce le pagine di login?",
-          "answer": "Skill Recorder rileva automaticamente i confini di autenticazione e inserisce un marcatore Precondition: signed in. Quando un agente riproduce la skill, si mette in pausa al passaggio di autenticazione e chiede all'umano, invece di far trapelare i token di sessione."
-        },
-        {
-          "question": "E se la pagina cambia? La mia skill si romperà?",
-          "answer": "Il passaggio di distillazione registra l'intento semantico (\"clicca sul pulsante Invia\") e ricorre a più selettori di fallback. Le skill tollerano piccoli cambiamenti nel DOM molto meglio degli script Selenium hard-coded."
-        },
-        {
-          "question": "Mi serve Claude Code per usare l'output?",
-          "answer": "Claude Code è l'integrazione principale oggi, ma il formato è semplice markdown. Qualsiasi agente che supporti le convenzioni del browse CLI può utilizzare un file SKILL.md."
-        }
-      ]
+      "ctaPrimary": "Aggiungi a Chrome",
+      "eyebrow": "Registratore di flussi browser · Chrome MV3",
+      "titleLine1": "L'hai mostrato una volta.",
+      "titleLine2Em": "Perché lo stai ancora facendo?",
+      "lead": "Skill Recorder è un'estensione Chrome che ti guarda eseguire un compito nel browser <em>una volta</em> — poi scrive un <hand>SKILL.md</hand>, una specifica in markdown puro che Claude Code (o qualsiasi agente sulla CLI <code>browse</code>) riproduce senza selettori, glue code o supervisione.",
+      "ctaSecondary": "Prova una fixture di stress →",
+      "captionLine1": "↑ un flusso di ordine d'acquisto di cinque minuti,",
+      "captionLine2": "registrato una volta e <strong>riprodotto per sempre.</strong>"
     },
     "cta": {
-      "title": "Registra la tua prima skill in 60 secondi",
-      "button": "Installa ora",
-      "note": "Gratis durante la beta. Nessun account richiesto."
+      "eyebrow": "Procurati il registratore",
+      "sub": "Gratis durante la beta aperta. Nessun account, nessun upload, nessuna telemetria. L'intero bundle è 4,5 MB; le registrazioni vivono sulla tua macchina finché non scegli di esportarle.",
+      "ctaPrimary": "Aggiungi a Chrome",
+      "playgroundLink": "Oppure provalo contro 21 fixture di stress →",
+      "footLeft": "SKILL.md — un contratto in markdown puro tra umani e agenti."
     },
-    "stats": [
-      {
-        "value": "↓ 80%",
-        "label": "Manutenzione rispetto a Selenium"
+    "anatomy": {
+      "tag": "Anatomia",
+      "title": "Tre fasi, <em>a un clic di distanza.</em>",
+      "lead": "Quello che spediamo è una piccola estensione Chrome MV3 e una pipeline di distillazione da 4 KB. Il registratore aggancia <code>chrome.debugger</code> per fedeltà a livello DOM; la distillazione gira interamente nel service worker; la riproduzione legge il SKILL.md risultante tramite la CLI <code>browse</code>. Nessun server. Nessun glue code.",
+      "wireToDistill": "23 eventi →",
+      "wireToReplay": "SKILL.md →",
+      "capture": {
+        "name": "Cattura",
+        "meta": "Pannello laterale",
+        "desc": "Una <strong>porta per frame</strong> nel content script inoltra ogni evento DOM al service worker. Shadow DOM e iframe della stessa origine vengono attraversati in modo trasparente.",
+        "bullets": [
+          "Risolutore di selettori a 6 livelli (testid → id → aria → text → css → xpath)",
+          "tabPorts: Map<tabId, Map<frameId, Port>>",
+          "Buffer di input consapevole dell'IME · paste · drag"
+        ]
       },
-      {
-        "value": "0",
-        "label": "Righe di codice necessarie"
+      "distill": {
+        "name": "Distilla",
+        "meta": "Service worker · 30 s",
+        "desc": "Sei piccole passate trasformano un log rumoroso di eventi in una specifica deterministica. L'auto-parametrizzazione si attiva solo sopra <strong>0,7 di confidenza</strong>; sotto, il registratore chiede invece di indovinare.",
+        "bullets": [
+          "paramConfidence(step) — scala euristica",
+          "rilevamento auth-boundary — token opaco + cookie",
+          "UUID · ID numerico · email · data ISO · valuta"
+        ]
       },
-      {
-        "value": "1 clic",
-        "label": "Per avviare una registrazione"
-      },
-      {
-        "value": "↑ 100%",
-        "label": "Locale — Niente viene caricato"
+      "replay": {
+        "name": "Riproduci",
+        "meta": "browse CLI",
+        "desc": "La CLI <code>browse</code> legge SKILL.md come markdown puro — nessuno schema, nessun runtime, nessuna scappatoia. <strong>Ogni passo è verificabile</strong>.",
+        "bullets": [
+          "ri-esecuzioni idempotenti · pausa + ripresa auth",
+          "log strutturati ↦ cronologia JSONL",
+          "funziona con Claude Code, Cline, shell semplice"
+        ]
       }
-    ]
+    },
+    "catalog": {
+      "tag": "Specifica",
+      "title": "Cosa sopravvive a una registrazione? <em>Tredici casi duri, end-to-end.</em>",
+      "lead": "Il browser è pieno di trappole per i registratori — classi hashate, modali pigre, Shadow DOM, flussi multi-tab, composizione IME, drag-and-drop. Ogni riga sotto è una fixture reale nel playground; clicca su una qualunque per registrare tu stesso.",
+      "smallNote": "punto verde = spedito · blu = automatico",
+      "columns": {
+        "category": "Categoria",
+        "technique": "Tecnica",
+        "detail": "Cosa facciamo al riguardo",
+        "fixture": "Fixture"
+      },
+      "rows": [
+        {
+          "category": "Selettori",
+          "technique": "Rotazione hash di classe e ID",
+          "detail": "Le classi stile Tailwind come btn__primary--ab3f9c ruotano ad ogni deploy; il resolver attraversa 6 livelli (testid → id → aria → text → css → xpath), così un pulsante ri-hashato colpisce comunque."
+        },
+        {
+          "category": "Selettori",
+          "technique": "Righe fratelle identiche",
+          "detail": "Sei righe con pulsanti \"Pick\" letteralmente identici — solo la posizione distingue. Ancoriamo ogni clic con fingerprintIndex, così viene cliccata la riga giusta anche dopo il riordino."
+        },
+        {
+          "category": "Selettori",
+          "technique": "Identificatori stabili al locale",
+          "detail": "\"Continue\" / \"继续\" / \"Weiter\" mappano tutti sullo stesso data-i18n-key=\"action.continue\". Il registratore preferisce attributi indipendenti dal locale, così uno skill registrato in inglese viene riprodotto in cinese."
+        },
+        {
+          "category": "Async",
+          "technique": "Transizioni di rotta SPA",
+          "detail": "Le transizioni pushState e hashchange sono tracciate senza reload; la riproduzione attende il mount del nuovo contenuto invece di sondare un contenitore vuoto."
+        },
+        {
+          "category": "Async",
+          "technique": "Modali montate tardi",
+          "detail": "Il pulsante Confirm non esiste quando viene cliccato il trigger. elementVisible interroga finché il target compare prima di inviare il passo successivo — niente timeout fragili."
+        },
+        {
+          "category": "Superfici",
+          "technique": "iframe stessa origine",
+          "detail": "all_frames: true inietta per frame; le azioni sono etichettate con la frameId di origine, poi ri-risolte per URL tra rerendering, così una frameId stantia non blocca mai la riproduzione."
+        },
+        {
+          "category": "Superfici",
+          "technique": "Mascheramento campi sensibili",
+          "detail": "Gli input password / phone / carta / SSN vengono rilevati da type + autocomplete + name e sostituiti con *** prima di toccare lo storage. I byte non lasciano mai la pagina."
+        },
+        {
+          "category": "Superfici",
+          "technique": "Perforazione Shadow DOM",
+          "detail": "Un tipo di selettore shadow personalizzato codifica il percorso come segmenti { host, inner }; il resolver cammina shadowRoot.querySelector ad ogni confine, così i Web Components sono cittadini di prima classe."
+        },
+        {
+          "category": "Superfici",
+          "technique": "Handoff tra tab",
+          "detail": "Quando un flusso apre una nuova tab — anteprima di stampa, OAuth, generazione preventivo — la registrazione segue via chrome.tabs.onCreated. La riproduzione ricrea la tab via chrome.tabs.create."
+        },
+        {
+          "category": "Input",
+          "technique": "Drag & drop nativo",
+          "detail": "Una catena dragstart → dragover → drop con DataTransfer condiviso si fonde in un passo drag (sorgente + destinazione + tipi osservati). Niente coordinate di pixel fragili."
+        },
+        {
+          "category": "Input",
+          "technique": "Combinazioni di modificatori",
+          "detail": "Una \"k\" da sola è rumore di input testuale; con metaKey: true è una scorciatoia Cmd-K. Il registratore tiene il combo, scarta il rumore, preserva lo stato del modificatore per la riproduzione."
+        },
+        {
+          "category": "Input",
+          "technique": "Blocchi contenteditable",
+          "detail": "change non scatta mai su contenteditable. Agganciamo input + compositionend, debounce 300 ms, emettiamo un passo change con l'innerText finale — stessa forma di un campo testo."
+        },
+        {
+          "category": "Input",
+          "technique": "Combobox ARIA e typeahead",
+          "detail": "Ogni passo di clic è arricchito con comboboxContext (testo opzione, selettore radice); se il clic diretto fallisce in riproduzione, il fallback digita il testo, ArrowDown finché aria-activedescendant combacia, poi Enter."
+        }
+      ],
+      "footNote": "<strong>Tredici su sedici.</strong> Più quattro fixture <em>composite</em> — Notion, Linear, Jira, Salesforce — che concatenano da dodici a quindici di queste tecniche in un singolo flusso coerente. <link>Vedi il playground →</link>"
+    },
+    "example": {
+      "tag": "Esempio elaborato",
+      "title": "Un rituale browser di cinque minuti, <em>distillato in trenta secondi.</em>",
+      "byline": [
+        "Taccuino sul campo",
+        "Registrato 2026-02-19, 16:42 UTC",
+        "Riprodotto 50× senza intervento"
+      ],
+      "p1": "Ogni lunedì mattina un'ingegnera operativa di un piccolo fornitore apre lo stesso portale, clicca <strong>Nuovo ordine d'acquisto</strong>, incolla un SKU da un CSV, digita una quantità e clicca <strong>Invia</strong>. Poi rifà tutto. E di nuovo. Duecento righe a settimana, ogni settimana, da quattordici mesi. È un rituale di cinque minuti ripetuto finché il foglio non finisce.",
+      "p2": "È esattamente il tipo di compito a cui viene proposto un registratore — e esattamente il tipo su cui la maggior parte dei registratori inciampa. Il portale ruota gli hash delle classi Tailwind a ogni deploy. Il pulsante Invia vive dentro una riga di tabella dinamica che si rirende dopo ogni salvataggio. Il cookie di auth scade a mezzogiorno. Gli script Selenium contro questa pagina sopravvivono in media due settimane, poi iniziano silenziosamente a rompersi.",
+      "sub1": "La registrazione",
+      "p3": "L'ingegnera fissa l'estensione alla barra degli strumenti, apre il portale, clicca <strong>Avvia registrazione</strong> e svolge il compito esattamente una volta. Otto clic, due valori digitati, un invio. Il pannello laterale mostra un feed in diretta degli eventi — rumore incluso: scroll, focus, blur, mousemove accidentali sull'icona di aiuto. Ventitré eventi catturati in 4,6 secondi.",
+      "ev1Title": "raw events · 23",
+      "ev1Meta": "trascorsi 4,6 s",
+      "ev1Caption": "Il log grezzo conserva tutto; la distillazione decide cosa conta.",
+      "sub2": "La distillazione",
+      "p4": "Dentro il service worker, sei piccole passate trasformano il log rumoroso in una specifica deterministica. I clic consecutivi si fondono. I gruppi di tasti si piegano in una sola chiamata <code>type()</code>. I valori digitati — <code>\"SKU-1029\"</code> e <code>\"50\"</code> — vengono valutati contro dieci prior regex; entrambi superano la soglia 0,7 e diventano <code>{'{{sku}}'}</code> e <code>{'{{quantity}}'}</code>. Il clic Invia è segnalato con un warning perché il suo target è dentro una lista dinamica, quindi SKILL.md aggiunge una condizione di match per riga invece di cliccare un percorso CSS fisso.",
+      "ev2Title": "before / after",
+      "ev2Meta": "23 eventi → 4 passi",
+      "ev2BeforeLabel": "— BEFORE (raw)",
+      "ev2AfterLabel": "+ AFTER (distilled)",
+      "ev2AutoLabel": "+ AUTO-DETECTED",
+      "ev2Caption": "Otto tasti diventano un fill parametrizzato — stessa forma ad ogni riproduzione.",
+      "sub3": "Il passaggio di consegne",
+      "p5": "L'ingegnera mette il markdown risultante in <code>~/.claude/skills/create-purchase-order/SKILL.md</code> e scrive una sola frase a Claude Code. L'agente trova lo skill per nome, risolve la precondizione (il cookie salvato è valido fino a mezzogiorno), itera sulle cinquanta righe del CSV e fa rapporto. Tre minuti e undici secondi dopo, il lavoro è fatto. Nessuno l'ha guardato girare.",
+      "ev3Title": "claude code · stdout",
+      "ev3Meta": "3 m 11 s · 0 tentativi",
+      "ev3Caption": "Una frase entra, cinquanta ordini escono. L'agente non ha fatto nemmeno una domanda.",
+      "postscript": {
+        "label": "Poscritto",
+        "titleLine1": "Il costo di un rituale di cinque minuti,",
+        "titleLine2": "ammortizzato su un anno di lavoro.",
+        "n1Label": "mediana manuale",
+        "n2Label": "mediana agente",
+        "n3Label": "recuperate, solo da questo compito"
+      },
+      "readMore": "Vuoi vederlo su fixture più dure? <link>Prova il playground →</link>"
+    }
   },
   "notFound": {
     "message": "Reindirizzamento in corso…",
@@ -474,6 +457,85 @@
           "contactEmail": "support@skill-recorder.dev"
         }
       ]
+    }
+  },
+  "playground": {
+    "meta": {
+      "title": "Playground — Skill Recorder",
+      "description": "Ventuno fixture di stress progettate per rompere registratori ingenui. Classi hashate, Shadow DOM, flussi multi-tab, composizione IME, drag-and-drop.",
+      "keywords": "skill recorder playground, test automazione browser, fixture registratore, stress test"
+    },
+    "hero": {
+      "eyebrow": "Il playground",
+      "titleLine1": "Ventuno fixture progettate per",
+      "titleLine2Em": "rompere registratori ingenui.",
+      "lead": "Ogni pagina qui sotto è una trappola controllata — classi hashate, modali pigre, Shadow DOM, flussi multi-tab, composizione IME, drag-and-drop. Installa l'estensione, clicca <code>Start</code>, esegui i passi di <em>Try this</em> e confronta l'<code>ActionStep[]</code> catturato con l'output atteso descritto in ogni pagina.",
+      "steps": [
+        "installa",
+        "fissa alla barra",
+        "apri una fixture",
+        "Start",
+        "segui \"Try this\"",
+        "Save as Skill"
+      ]
+    },
+    "matrix": {
+      "heading": "Matrice di copertura",
+      "totalSuffix": "fixture in totale",
+      "rows": {
+        "F": "compositi del mondo reale — Notion / Linear / Jira / Salesforce",
+        "A": "stabilità dei selettori — classi hashate, fratelli identici, i18n",
+        "B": "async + timing — rotte SPA, modali pigre",
+        "C": "multi-superficie — iframe, Shadow DOM, mascheramento, nuova tab",
+        "D": "specialità input — drag, file, combo, contenteditable, appunti, combobox"
+      }
+    },
+    "fixtures": "fixture",
+    "category": {
+      "A": {
+        "title": "Stabilità dei selettori",
+        "blurb": "I selettori devono continuare a funzionare dopo classi dinamiche, fratelli identici e cambi di locale."
+      },
+      "B": {
+        "title": "Async + timing",
+        "blurb": "La riproduzione deve aspettare rotte SPA, ricerche debounciate e modali montate tardi."
+      },
+      "C": {
+        "title": "Multi-superficie",
+        "blurb": "Iframe, Shadow DOM e flussi multi-tab sono di prima classe."
+      },
+      "D": {
+        "title": "Specialità input",
+        "blurb": "Drag/drop, upload file, combo di modificatori, contenteditable, appunti, combobox ARIA."
+      },
+      "E": {
+        "title": "Parametrizzazione",
+        "blurb": "Auto-rileva quali valori digitati e segmenti URL dovrebbero diventare parametri riutilizzabili."
+      },
+      "F": {
+        "title": "Compositi del mondo reale",
+        "blurb": "Fixture sostanziose in forma di prodotto che concatenano oltre 12 punti di difficoltà in un workflow coerente — il più vicino che il playground arriva a \"reggerebbe una giornata di lavoro?\"."
+      }
+    },
+    "compositeKicker": {
+      "F1-notion": "Editor a blocchi",
+      "F2-linear": "Tracker issue",
+      "F3-jira": "Bacheca sprint",
+      "F4-salesforce": "CRM"
+    },
+    "difficultyPoints": "punti di difficoltà",
+    "scenario": {
+      "crumbCategory": "Categoria",
+      "back": "← Tutti gli scenari",
+      "frameLabel": "Fixture in diretta · interagisci mentre il registratore gira",
+      "openInNewTab": "Apri in una nuova tab ↗",
+      "cardTryThis": "Prova questo",
+      "cardWhyHard": "Perché è difficile",
+      "cardCoverage": "Punti di difficoltà coperti",
+      "cardCoverageHelp": "Ogni tag qui sotto collega alla demo isolata di quel singolo punto di difficoltà — utile se il composito si rompe da qualche parte e vuoi bisecare.",
+      "cardExpected": "Output atteso del registratore",
+      "replayHead": "Log di riproduzione · claude code · stdout",
+      "replayNote": "simulato · non sono dati live"
     }
   }
 }

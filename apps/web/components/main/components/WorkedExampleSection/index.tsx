@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import styled from 'styled-components';
 
 /* ────────────────────────────────────────────────────────────────────
@@ -365,52 +366,39 @@ const ReadMore = styled.div`
 `;
 
 export default function WorkedExampleSection() {
+  const t = useTranslations('main.example');
+  const byline = t.raw('byline') as string[];
+
   return (
     <Section id="example">
       <Container>
-        <Tag>Worked example</Tag>
+        <Tag>{t('tag')}</Tag>
         <Title>
-          A five-minute browser ritual,{' '}
-          <em>distilled to thirty seconds.</em>
+          {t.rich('title', { em: (chunks) => <em>{chunks}</em> })}
         </Title>
         <Byline>
-          <span>Field notebook</span>
-          <span>Recorded 2026-02-19, 16:42 UTC</span>
-          <span>Replay 50× without intervention</span>
+          {byline.map((line) => <span key={line}>{line}</span>)}
         </Byline>
 
         <Article>
           <ArticleInner>
             <Para className="lead">
-              Every Monday morning an operations engineer at a small supplier opens the same portal,
-              clicks <strong>New purchase order</strong>, pastes a SKU from a CSV, types a quantity, and clicks{' '}
-              <strong>Submit</strong>. Then they do it again. And again. Two hundred rows a week,
-              every week, for the last fourteen months. It is a five-minute ritual repeated until
-              the spreadsheet ends.
+              {t.rich('p1', { strong: (chunks) => <strong>{chunks}</strong> })}
             </Para>
 
-            <Para>
-              This is the kind of task that gets a recorder pitched at it — and exactly the kind of task most
-              recorders fail at. The supplier portal rotates Tailwind class hashes on every deploy. The submit
-              button lives inside a dynamic table row that re-renders after each save. The auth cookie expires
-              at noon. Selenium scripts written against this page survive two weeks on average, then quietly
-              start failing.
-            </Para>
+            <Para>{t('p2')}</Para>
 
-            <Sub>The recording</Sub>
+            <Sub>{t('sub1')}</Sub>
 
             <Para>
-              The engineer pins the extension to their toolbar, opens the portal, clicks <strong>Start recording</strong>,
-              and performs the task exactly once. Eight clicks, two typed values, one submit. The side panel shows
-              a live feed of events as they happen — including the noise: scroll, focus, blur, accidental mousemoves
-              over the help icon. Twenty-three events captured in 4.6 seconds.
+              {t.rich('p3', { strong: (chunks) => <strong>{chunks}</strong> })}
             </Para>
 
             <Evidence>
               <EvidenceCard>
                 <EvHead>
-                  <span>raw events · 23</span>
-                  <span>elapsed 4.6s</span>
+                  <span>{t('ev1Title')}</span>
+                  <span>{t('ev1Meta')}</span>
                 </EvHead>
                 <EvBody>
 {`01  `}<Kw>navigate</Kw>{`  `}<Str>"/orders/new"</Str>{`            `}<Cmt>// 304 → 200</Cmt>{`
@@ -424,30 +412,24 @@ export default function WorkedExampleSection() {
 …   `}<Cmt>16 more (scroll · focus · mousemove · blur · resize)</Cmt>
                 </EvBody>
               </EvidenceCard>
-              <EvCaption>The raw log keeps everything; the distiller decides what matters.</EvCaption>
+              <EvCaption>{t('ev1Caption')}</EvCaption>
             </Evidence>
 
-            <Sub>The distillation</Sub>
+            <Sub>{t('sub2')}</Sub>
 
             <Para>
-              Inside the service worker, six small passes turn the noisy log into a deterministic spec.
-              Consecutive clicks merge. Keystroke groups fold into a single <code>type()</code> call. The
-              typed values — <code>"SKU-1029"</code> and <code>"50"</code> — are scored against
-              ten regex priors; both clear the 0.7 threshold and become <code>{`{{sku}}`}</code> and{' '}
-              <code>{`{{quantity}}`}</code>. The submit button click is flagged with a warning because
-              its target sits inside a dynamic list, so the SKILL.md adds a row-match condition rather than
-              clicking a fixed CSS path.
+              {t.rich('p4', { code: (chunks) => <code>{chunks}</code> })}
             </Para>
 
             <Evidence>
               <EvidenceCard>
                 <EvHead>
-                  <span>before / after</span>
-                  <span>23 events → 4 steps</span>
+                  <span>{t('ev2Title')}</span>
+                  <span>{t('ev2Meta')}</span>
                 </EvHead>
                 <Diff>
                   <DiffSide>
-                    <div className="head">— BEFORE (raw)</div>
+                    <div className="head">{t('ev2BeforeLabel')}</div>
                     <div><Cmt>type</Cmt> <Str>"S"</Str> → #sku</div>
                     <div><Cmt>type</Cmt> <Str>"K"</Str> → #sku</div>
                     <div><Cmt>type</Cmt> <Str>"U"</Str> → #sku</div>
@@ -458,33 +440,29 @@ export default function WorkedExampleSection() {
                     <div><Cmt>type</Cmt> <Str>"9"</Str> → #sku</div>
                   </DiffSide>
                   <DiffSide>
-                    <div className="head">+ AFTER (distilled)</div>
+                    <div className="head">{t('ev2AfterLabel')}</div>
                     <div><Ok>fill</Ok> <Str>"#sku"</Str> with <Param>{`{{sku}}`}</Param></div>
                     <div style={{ height: 12 }} />
-                    <div className="head" style={{ marginTop: 8 }}>+ AUTO-DETECTED</div>
+                    <div className="head" style={{ marginTop: 8 }}>{t('ev2AutoLabel')}</div>
                     <div><Cmt>// 8 chars · alphanumeric · prefix SKU-</Cmt></div>
                     <div><Cmt>// confidence 0.94</Cmt></div>
                   </DiffSide>
                 </Diff>
               </EvidenceCard>
-              <EvCaption>Eight keystrokes become one parameterized fill — the same shape every replay.</EvCaption>
+              <EvCaption>{t('ev2Caption')}</EvCaption>
             </Evidence>
 
-            <Sub>The hand-off</Sub>
+            <Sub>{t('sub3')}</Sub>
 
             <Para>
-              The engineer drops the resulting markdown into{' '}
-              <code>~/.claude/skills/create-purchase-order/SKILL.md</code> and types a single sentence into
-              Claude Code. The agent finds the skill by name, resolves the precondition (the saved cookie
-              is still valid until noon), iterates over the fifty rows in the CSV, and reports back.
-              Three minutes eleven seconds later, the work is done. No human watched it run.
+              {t.rich('p5', { code: (chunks) => <code>{chunks}</code> })}
             </Para>
 
             <Evidence>
               <EvidenceCard>
                 <EvHead>
-                  <span>claude code · stdout</span>
-                  <span>3m 11s · 0 retries</span>
+                  <span>{t('ev3Title')}</span>
+                  <span>{t('ev3Meta')}</span>
                 </EvHead>
                 <EvBody>
 {`> `}<Cmt>create purchase orders for the rows in ~/Desktop/feb-orders.csv</Cmt>{`
@@ -502,35 +480,37 @@ export default function WorkedExampleSection() {
 `}
                 </EvBody>
               </EvidenceCard>
-              <EvCaption>One sentence in, fifty purchase orders out. The agent never asked a question.</EvCaption>
+              <EvCaption>{t('ev3Caption')}</EvCaption>
             </Evidence>
           </ArticleInner>
 
           <Postscript>
             <div>
-              <PsLabel>Postscript</PsLabel>
+              <PsLabel>{t('postscript.label')}</PsLabel>
               <PsTitle>
-                The cost of a five-minute ritual,<br />amortized over a working year.
+                {t('postscript.titleLine1')}<br />{t('postscript.titleLine2')}
               </PsTitle>
             </div>
             <Numbers>
               <NumCell>
                 <NumValue>4:18<NumUnit>min</NumUnit></NumValue>
-                <NumLabel>median manual run</NumLabel>
+                <NumLabel>{t('postscript.n1Label')}</NumLabel>
               </NumCell>
               <NumCell>
                 <NumValue>3.8<NumUnit>sec</NumUnit></NumValue>
-                <NumLabel>median agent run</NumLabel>
+                <NumLabel>{t('postscript.n2Label')}</NumLabel>
               </NumCell>
               <NumCell>
                 <NumValue>~187<NumUnit>hrs/yr</NumUnit></NumValue>
-                <NumLabel>recovered, this task alone</NumLabel>
+                <NumLabel>{t('postscript.n3Label')}</NumLabel>
               </NumCell>
             </Numbers>
           </Postscript>
 
           <ReadMore>
-            Want to see it on harder fixtures? <Link href="/playground">Try the playground →</Link>
+            {t.rich('readMore', {
+              link: (chunks) => <Link href="/playground">{chunks}</Link>,
+            })}
           </ReadMore>
         </Article>
       </Container>

@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import styled from 'styled-components';
 
 /* ────────────────────────────────────────────────────────────────────
@@ -375,22 +376,34 @@ const Ok = styled.span`
   font-weight: 600;
 `;
 
+const InlineCode = styled.code`
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  color: var(--color-primary-600);
+`;
+
 export default function AnatomySection() {
+  const t = useTranslations('main.anatomy');
+  const captureBullets = t.raw('capture.bullets') as string[];
+  const distillBullets = t.raw('distill.bullets') as string[];
+  const replayBullets = t.raw('replay.bullets') as string[];
+
   return (
     <Section id="anatomy">
       <Container>
         <Head>
           <div>
-            <Tag>Anatomy</Tag>
+            <Tag>{t('tag')}</Tag>
             <Title>
-              Three stages, <em>one click apart.</em>
+              {t.rich('title', { em: (chunks) => <em>{chunks}</em> })}
             </Title>
           </div>
           <Lead>
-            What we ship is a small Chrome MV3 extension and a 4-KB distillation pipeline.
-            The recorder taps into <code>chrome.debugger</code> for DOM-level fidelity; the distiller
-            runs entirely in the service worker; the replay reads the resulting SKILL.md
-            through the <code>browse</code> CLI. No server. No glue code.
+            {t.rich('lead', { code: (chunks) => <code>{chunks}</code> })}
           </Lead>
         </Head>
 
@@ -399,8 +412,8 @@ export default function AnatomySection() {
           <Stage>
             <StageHead>
               <StageNum>i.</StageNum>
-              <StageName>Capture</StageName>
-              <StageMeta>Side panel</StageMeta>
+              <StageName>{t('capture.name')}</StageName>
+              <StageMeta>{t('capture.meta')}</StageMeta>
             </StageHead>
             <StageBody>
               <SidePanelMock>
@@ -417,20 +430,19 @@ export default function AnatomySection() {
                 <Evt><span>00:09</span><span>click <em style={{color:'#fde68a',fontStyle:'normal'}}>btn.Submit</em></span></Evt>
               </SidePanelMock>
               <StageDesc>
-                A <strong>per-frame port</strong> in the content script forwards every DOM event to the
-                service worker. Shadow DOM and same-origin iframes are pierced transparently.
+                {t.rich('capture.desc', { strong: (chunks) => <strong>{chunks}</strong> })}
               </StageDesc>
               <Bullets>
-                <li><span>6-tier selector resolver (testid → id → aria → text → css → xpath)</span></li>
-                <li><span>tabPorts: Map&lt;tabId, Map&lt;frameId, Port&gt;&gt;</span></li>
-                <li><span>IME-aware input buffering · paste · drag</span></li>
+                {captureBullets.map((b) => (
+                  <li key={b}><span>{b}</span></li>
+                ))}
               </Bullets>
             </StageBody>
           </Stage>
 
           <Connector>
             <Wire />
-            <WireLabel>23 events →</WireLabel>
+            <WireLabel>{t('wireToDistill')}</WireLabel>
             <Wire />
           </Connector>
 
@@ -438,8 +450,8 @@ export default function AnatomySection() {
           <Stage>
             <StageHead>
               <StageNum>ii.</StageNum>
-              <StageName>Distill</StageName>
-              <StageMeta>Service worker · 30s</StageMeta>
+              <StageName>{t('distill.name')}</StageName>
+              <StageMeta>{t('distill.meta')}</StageMeta>
             </StageHead>
             <StageBody>
               <DistillFlow>
@@ -451,21 +463,19 @@ export default function AnatomySection() {
                 <FlowRow><span>✓</span><span>flag dynamic-list clicks</span><span>1 ⚠ note</span></FlowRow>
               </DistillFlow>
               <StageDesc>
-                Six small passes turn a noisy event log into a deterministic spec.
-                Auto-parameterization only fires above <strong>0.7 confidence</strong>; below
-                that the recorder asks rather than guesses.
+                {t.rich('distill.desc', { strong: (chunks) => <strong>{chunks}</strong> })}
               </StageDesc>
               <Bullets>
-                <li><span>paramConfidence(step) — heuristic ladder</span></li>
-                <li><span>auth-boundary detection — opaque token + cookies</span></li>
-                <li><span>UUID · numeric ID · email · ISO date · currency</span></li>
+                {distillBullets.map((b) => (
+                  <li key={b}><span>{b}</span></li>
+                ))}
               </Bullets>
             </StageBody>
           </Stage>
 
           <Connector>
             <Wire />
-            <WireLabel>SKILL.md →</WireLabel>
+            <WireLabel>{t('wireToReplay')}</WireLabel>
             <Wire />
           </Connector>
 
@@ -473,8 +483,8 @@ export default function AnatomySection() {
           <Stage>
             <StageHead>
               <StageNum>iii.</StageNum>
-              <StageName>Replay</StageName>
-              <StageMeta>browse CLI</StageMeta>
+              <StageName>{t('replay.name')}</StageName>
+              <StageMeta>{t('replay.meta')}</StageMeta>
             </StageHead>
             <StageBody>
               <Terminal>
@@ -493,21 +503,15 @@ Loaded 4 steps · 2 params · 1 precondition
                 </Out>
               </Terminal>
               <StageDesc>
-                The <code style={{
-                  fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
-                  fontSize: '0.9em',
-                  background: 'var(--color-bg-subtle)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: 4,
-                  padding: '1px 5px',
-                  color: 'var(--color-primary-600)',
-                }}>browse</code> CLI reads SKILL.md as plain markdown — no schema, no
-                runtime, no escape hatches. <strong>Every step is auditable</strong>.
+                {t.rich('replay.desc', {
+                  code: (chunks) => <InlineCode>{chunks}</InlineCode>,
+                  strong: (chunks) => <strong>{chunks}</strong>,
+                })}
               </StageDesc>
               <Bullets>
-                <li><span>idempotent re-runs · auth pause + resume</span></li>
-                <li><span>structured logs ↦ JSONL replay history</span></li>
-                <li><span>works with Claude Code, Cline, plain shell</span></li>
+                {replayBullets.map((b) => (
+                  <li key={b}><span>{b}</span></li>
+                ))}
               </Bullets>
             </StageBody>
           </Stage>
