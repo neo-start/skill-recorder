@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>D3 · Modifier-key shortcuts</title>
+    <style>
+      body { font: 14px system-ui, sans-serif; padding: 32px; }
+      #palette {
+        position: fixed;
+        inset: 25% 30%;
+        background: white;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        padding: 16px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      }
+      [hidden] { display: none !important; }
+      .ok { color: #15803d; margin-top: 12px; }
+      input { padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; width: 220px; }
+    </style>
+  </head>
+  <body>
+    <h1>D3 Modifier Keys</h1>
+    <p>Press <kbd>Meta+K</kbd> (or <kbd>Ctrl+K</kbd>) to open the command palette. Tap an input and try <kbd>Ctrl+Enter</kbd> to submit without losing focus.</p>
+    <button id="focus-trap" data-testid="focus">Focus me first</button>
+    <input id="quick" aria-label="Quick command" placeholder="say something then Ctrl+Enter" />
+    <div id="palette" hidden role="dialog" aria-label="Command palette">Command palette is open.</div>
+    <div id="result" class="ok" hidden></div>
+    <script>
+      const result = document.getElementById('result');
+      const palette = document.getElementById('palette');
+      // The whole-document modifier shortcut.
+      document.addEventListener('keydown', (ev) => {
+        if ((ev.metaKey || ev.ctrlKey) && ev.key.toLowerCase() === 'k') {
+          ev.preventDefault();
+          palette.hidden = false;
+          result.hidden = false;
+          result.textContent = `opened palette via ${ev.metaKey ? 'Meta' : 'Ctrl'}+K`;
+        }
+        if (ev.ctrlKey && ev.key === 'Enter') {
+          ev.preventDefault();
+          const q = document.getElementById('quick');
+          result.hidden = false;
+          result.textContent = `submitted "${q.value}" via Ctrl+Enter`;
+        }
+      });
+    </script>
+  </body>
+</html>

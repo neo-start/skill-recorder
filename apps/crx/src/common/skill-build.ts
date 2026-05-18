@@ -37,9 +37,13 @@ export function buildDrafts(actions: ActionStep[]): DraftStep[] {
     const action = mapAction(a.type);
     let isParam = false;
     let paramName = '';
-    if (action === 'fill' && !a.masked && (a.value ?? '').length > 0) {
-      // Default-mark every non-masked fill as a parameter. Most RPA flows
-      // want every typed value to be variable. User can untoggle.
+    // File upload (D2): always parameterize as `file_path` since the recorded
+    // filename is rarely the one the agent will want at replay time.
+    if (action === 'fill' && a.inputType === 'file') {
+      isParam = true;
+      paramName = 'file_path';
+    } else if (action === 'fill' && !a.masked && (a.value ?? '').length > 0) {
+      // Default-mark every non-masked fill as a parameter.
       isParam = true;
       paramName = suggestParamNameForFill(a, fillIdx++);
     }
@@ -115,10 +119,21 @@ function toSkillStep(d: DraftStep, _idx: number, kept: DraftStep[]): SkillStep {
         ? d.isParam
           ? `\${${sanitizeParamName(d.paramName)}}`
           : d.value
-        : undefined,
+        : d.action === 'copy' || d.action === 'paste'
+          ? d.isParam
+            ? `\${${sanitizeParamName(d.paramName)}}`
+            : d.value
+          : undefined,
     key: d.raw.key,
+    modifiers: d.raw.modifiers,
     scrollX: d.raw.scrollX,
     scrollY: d.raw.scrollY,
+    dragFrom: d.raw.dragFrom
+      ? { selectors: d.raw.dragFrom.selectors, fingerprint: d.raw.dragFrom.fingerprint }
+      : undefined,
+    dragTo: d.raw.dragTo
+      ? { selectors: d.raw.dragTo.selectors, fingerprint: d.raw.dragTo.fingerprint }
+      : undefined,
     expectation: deriveExpectation(d, next),
   };
 }
@@ -161,6 +176,12 @@ export function mapAction(t: ActionStep['type']): SkillActionType {
       return 'scroll';
     case 'submit':
       return 'submit';
+    case 'drag':
+      return 'drag';
+    case 'copy':
+      return 'copy';
+    case 'paste':
+      return 'paste';
   }
 }
 
@@ -180,11 +201,22 @@ export function defaultIntent(a: ActionStep, action: SkillActionType): string {
       return label ? `Fill "${label}"` : `Fill ${a.fingerprint?.tag ?? 'field'}`;
     }
     case 'press_key':
-      return `Press ${a.key}`;
+      return `Press ${formatChord(a.key ?? '', a.modifiers)}`;
     case 'scroll':
       return `Scroll`;
     case 'submit':
       return aria || text ? `Submit "${aria || text}"` : 'Submit form';
+    case 'drag': {
+      const fromLabel = a.dragFrom?.fingerprint?.attrs?.['aria-label'] || a.dragFrom?.fingerprint?.text || a.dragFrom?.fingerprint?.tag || 'source';
+      const toLabel = a.dragTo?.fingerprint?.attrs?.['aria-label'] || a.dragTo?.fingerprint?.text || a.dragTo?.fingerprint?.tag || 'target';
+      return `Drag "${fromLabel}" onto "${toLabel}"`;
+    }
+    case 'copy':
+      return `Copy "${(a.value ?? '').slice(0, 32)}" to clipboard`;
+    case 'paste': {
+      const label = aria || (text && text !== a.fingerprint?.tag ? text : '') || a.fingerprint?.tag || 'target';
+      return `Paste into "${label}"`;
+    }
   }
 }
 
@@ -204,6 +236,15 @@ export function describeRaw(a: ActionStep): string {
       return `(${a.scrollX},${a.scrollY})`;
     case 'submit':
       return selPreview;
+    case 'drag': {
+      const fromText = a.dragFrom?.fingerprint?.text || a.dragFrom?.selectors?.[0]?.value || '';
+      const toText = a.dragTo?.fingerprint?.text || a.dragTo?.selectors?.[0]?.value || '';
+      return `${fromText} → ${toText}`;
+    }
+    case 'copy':
+      return `"${(a.value ?? '').slice(0, 48)}"`;
+    case 'paste':
+      return `"${(a.value ?? '').slice(0, 48)}" → ${selPreview}`;
     default:
       return '';
   }
@@ -435,6 +476,17 @@ export function detectAuthSignals(actions: ActionStep[], startUrl: string): Skil
 }
 
 // ─── Misc helpers ───────────────────────────────────────────────────────
+
+export function formatChord(key: string, modifiers?: ActionStep['modifiers']): string {
+  if (!modifiers) return key;
+  const parts: string[] = [];
+  if (modifiers.meta) parts.push('Meta');
+  if (modifiers.ctrl) parts.push('Control');
+  if (modifiers.alt) parts.push('Alt');
+  if (modifiers.shift) parts.push('Shift');
+  parts.push(key);
+  return parts.join('+');
+}
 
 export function shortUrl(u: string): string {
   try {

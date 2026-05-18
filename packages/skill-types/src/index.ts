@@ -31,7 +31,10 @@ export type ActionStepType =
   | 'keyDown'
   | 'keyUp'
   | 'scroll'
-  | 'submit';
+  | 'submit'
+  | 'drag'
+  | 'copy'
+  | 'paste';
 
 export type SelectorKind = 'testid' | 'id' | 'aria' | 'text' | 'css' | 'xpath';
 
@@ -84,14 +87,59 @@ export interface ActionStep {
   value?: string;
   inputType?: string;
   masked?: boolean;
+  /**
+   * For `change` steps on `<input type="file">`. Recorder captures metadata
+   * only — never the file contents. Replay cannot synthesize a File without
+   * a user gesture, so it surfaces a structured "requiresFileInput" failure
+   * that the sidepanel/host resolves.
+   */
+  fileMeta?: Array<{ name: string; size: number; type: string; lastModified?: number }>;
 
   // keyDown / keyUp
   key?: string;
   code?: string;
+  /** Modifier-key state captured at the moment of the keydown. */
+  modifiers?: {
+    meta?: boolean;
+    ctrl?: boolean;
+    shift?: boolean;
+    alt?: boolean;
+  };
 
   // scroll
   scrollX?: number;
   scrollY?: number;
+
+  // drag (D1)
+  /** Source element of the drag. `selectors`/`fingerprint` describe the same thing. */
+  dragFrom?: {
+    selectors: SelectorEntry[];
+    fingerprint: ElementFingerprint;
+    offsetX?: number;
+    offsetY?: number;
+  };
+  /** Drop target. */
+  dragTo?: {
+    selectors: SelectorEntry[];
+    fingerprint: ElementFingerprint;
+    offsetX?: number;
+    offsetY?: number;
+  };
+  /** DataTransfer.types observed during the drag (`text/plain`, `text/html`, …). */
+  dataTransferTypes?: string[];
+
+  // ARIA combobox enrichment (D6) — present on `click` steps that land on a
+  // role=option inside a role=listbox controlled by an aria-combobox input.
+  // Replay can then fall back to "focus combobox, type, ArrowDown, Enter" if
+  // the recorded option element no longer exists at the same position.
+  comboboxContext?: {
+    combobox: {
+      selectors: SelectorEntry[];
+      fingerprint: ElementFingerprint;
+    };
+    optionText: string;
+    optionValue?: string;
+  };
 }
 
 // ─── Replay session ───
@@ -136,7 +184,7 @@ export interface ReplayState {
 
 // ─── Skill (distilled, reusable) ───
 
-export type SkillActionType = 'navigate' | 'click' | 'fill' | 'press_key' | 'scroll' | 'submit';
+export type SkillActionType = 'navigate' | 'click' | 'fill' | 'press_key' | 'scroll' | 'submit' | 'drag' | 'copy' | 'paste';
 
 export interface SkillParameter {
   name: string;
@@ -156,8 +204,19 @@ export interface SkillStep {
   url?: string;
   valueTemplate?: string;
   key?: string;
+  modifiers?: { meta?: boolean; ctrl?: boolean; shift?: boolean; alt?: boolean };
   scrollX?: number;
   scrollY?: number;
+
+  /** Drag-and-drop: source/target descriptors carried through to the renderer. */
+  dragFrom?: {
+    selectors: SelectorEntry[];
+    fingerprint: ElementFingerprint;
+  };
+  dragTo?: {
+    selectors: SelectorEntry[];
+    fingerprint: ElementFingerprint;
+  };
 
   expectation?: {
     description: string;

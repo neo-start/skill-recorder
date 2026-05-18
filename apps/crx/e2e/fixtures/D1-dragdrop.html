@@ -1,8 +1,77 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><title>D1-dragdrop (stub)</title></head>
-<body style="font:14px system-ui,sans-serif;padding:32px">
-<h1>D1-dragdrop</h1>
-<p>Placeholder. Implemented in its respective roadmap phase.</p>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>D1 · Drag & Drop</title>
+    <style>
+      body { font: 14px system-ui, sans-serif; padding: 32px; }
+      .row { display: flex; gap: 32px; }
+      .col {
+        flex: 1;
+        min-height: 240px;
+        padding: 12px;
+        border: 2px dashed #94a3b8;
+        border-radius: 8px;
+      }
+      .col.over { border-color: #3b82f6; background: rgba(59, 130, 246, 0.08); }
+      h2 { margin: 0 0 12px; font-size: 13px; color: #475569; text-transform: uppercase; letter-spacing: 0.04em; }
+      .card {
+        background: #f3f4f6;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        padding: 8px 12px;
+        margin-bottom: 6px;
+        cursor: grab;
+      }
+      .card[draggable="true"]:active { cursor: grabbing; }
+      .ok { color: #15803d; margin-top: 16px; }
+    </style>
+  </head>
+  <body>
+    <h1>D1 Drag & Drop</h1>
+    <p>Drag a card from the left column onto the right column. The page records the moved card's id.</p>
+    <div class="row">
+      <div class="col" id="src" data-testid="src-col">
+        <h2>Backlog</h2>
+        <div class="card" id="task-1" draggable="true" data-testid="task-1" aria-label="Write spec">Write spec</div>
+        <div class="card" id="task-2" draggable="true" data-testid="task-2" aria-label="Build prototype">Build prototype</div>
+        <div class="card" id="task-3" draggable="true" data-testid="task-3" aria-label="Ship">Ship</div>
+      </div>
+      <div class="col" id="dst" data-testid="dst-col" aria-label="In progress">
+        <h2>In progress</h2>
+      </div>
+    </div>
+    <div id="result" class="ok" hidden></div>
+    <script>
+      const src = document.getElementById('src');
+      const dst = document.getElementById('dst');
+      let dragged = null;
+
+      document.addEventListener('dragstart', (ev) => {
+        if (!(ev.target instanceof HTMLElement) || !ev.target.classList.contains('card')) return;
+        dragged = ev.target;
+        ev.dataTransfer.setData('text/plain', ev.target.id);
+        ev.dataTransfer.effectAllowed = 'move';
+      });
+
+      for (const col of [src, dst]) {
+        col.addEventListener('dragover', (ev) => {
+          ev.preventDefault();
+          col.classList.add('over');
+        });
+        col.addEventListener('dragleave', () => col.classList.remove('over'));
+        col.addEventListener('drop', (ev) => {
+          ev.preventDefault();
+          col.classList.remove('over');
+          if (dragged) {
+            col.appendChild(dragged);
+            const r = document.getElementById('result');
+            r.hidden = false;
+            r.textContent = `moved ${dragged.id} into ${col.id}`;
+            dragged = null;
+          }
+        });
+      }
+    </script>
+  </body>
 </html>

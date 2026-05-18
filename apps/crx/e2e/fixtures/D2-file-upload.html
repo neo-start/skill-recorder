@@ -1,8 +1,30 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><title>D2-file-upload (stub)</title></head>
-<body style="font:14px system-ui,sans-serif;padding:32px">
-<h1>D2-file-upload</h1>
-<p>Placeholder. Implemented in its respective roadmap phase.</p>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>D2 · File Upload</title>
+    <style>
+      body { font: 14px system-ui, sans-serif; padding: 32px; }
+      input[type="file"] { display: block; margin-top: 12px; }
+      .ok { color: #15803d; margin-top: 12px; }
+    </style>
+  </head>
+  <body>
+    <h1>D2 File Upload</h1>
+    <p>Pick a file. Recorder captures filename + size + type metadata, but never the bytes.</p>
+    <label>
+      Document:
+      <input type="file" id="doc" data-testid="doc-input" aria-label="Document" />
+    </label>
+    <div id="result" class="ok" hidden></div>
+    <script>
+      document.getElementById('doc').addEventListener('change', (ev) => {
+        const file = ev.target.files[0];
+        if (!file) return;
+        const r = document.getElementById('result');
+        r.hidden = false;
+        r.textContent = `received: ${file.name} (${file.size} bytes, ${file.type || 'no mime'})`;
+      });
+    </script>
+  </body>
 </html>

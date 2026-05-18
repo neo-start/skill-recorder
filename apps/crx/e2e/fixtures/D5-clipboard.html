@@ -1,8 +1,52 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><title>D5-clipboard (stub)</title></head>
-<body style="font:14px system-ui,sans-serif;padding:32px">
-<h1>D5-clipboard</h1>
-<p>Placeholder. Implemented in its respective roadmap phase.</p>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>D5 · Clipboard</title>
+    <style>
+      body { font: 14px system-ui, sans-serif; padding: 32px; }
+      pre { background: #f8fafc; border: 1px solid #cbd5e1; padding: 10px; border-radius: 6px; }
+      textarea { width: 100%; min-height: 80px; font: inherit; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; }
+      .ok { color: #15803d; margin-top: 12px; }
+    </style>
+  </head>
+  <body>
+    <h1>D5 Clipboard</h1>
+    <p>Source text below (select all + Cmd/Ctrl+C). Then paste into the target.</p>
+    <pre id="src" data-testid="src" tabindex="0">hello from D5 clipboard fixture</pre>
+    <p><label>Target:<br /><textarea id="dst" data-testid="dst" aria-label="paste target"></textarea></label></p>
+    <div id="result" class="ok" hidden></div>
+    <script>
+      const src = document.getElementById('src');
+      const dst = document.getElementById('dst');
+      const result = document.getElementById('result');
+
+      src.addEventListener('focus', () => {
+        const range = document.createRange();
+        range.selectNodeContents(src);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      });
+
+      document.addEventListener('copy', (ev) => {
+        const text = window.getSelection().toString();
+        if (text) {
+          ev.clipboardData.setData('text/plain', text);
+          ev.preventDefault();
+          result.hidden = false;
+          result.textContent = `copied "${text.slice(0, 40)}" to clipboard`;
+        }
+      });
+
+      dst.addEventListener('paste', (ev) => {
+        const text = ev.clipboardData.getData('text/plain');
+        if (!text) return;
+        ev.preventDefault();
+        dst.value = text;
+        result.hidden = false;
+        result.textContent = `pasted "${text.slice(0, 40)}" into target`;
+      });
+    </script>
+  </body>
 </html>

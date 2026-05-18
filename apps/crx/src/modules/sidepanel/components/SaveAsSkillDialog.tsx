@@ -262,6 +262,12 @@ function kindColor(k: SkillActionType): string {
       return '#fb923c';
     case 'scroll':
       return '#a78bfa';
+    case 'drag':
+      return '#ef4444';
+    case 'copy':
+      return '#0ea5e9';
+    case 'paste':
+      return '#22d3ee';
     default:
       return '#9ca3af';
   }

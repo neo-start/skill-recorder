@@ -209,7 +209,14 @@ function renderStepBody(step: SkillStep): string[] {
       const out: string[] = [];
       if (desc) out.push(`Target: ${desc}`);
       const value = renderValue(step.valueTemplate ?? '');
-      if (top) {
+      const isFile = step.fingerprint?.attrs?.['type'] === 'file';
+      if (isFile) {
+        if (top) {
+          out.push(bashBlock(`browse upload ${quote(top.value)} ${quote(value)}`));
+        } else {
+          out.push(bashBlock(`browse snapshot\nbrowse upload <ref-of-file-input> ${quote(value)}`));
+        }
+      } else if (top) {
         out.push(bashBlock(`browse fill ${quote(top.value)} ${quote(value)}`));
       } else {
         out.push(bashBlock(`browse snapshot\nbrowse fill <selector-of-target> ${quote(value)}`));
@@ -219,8 +226,10 @@ function renderStepBody(step: SkillStep): string[] {
       return out;
     }
 
-    case 'press_key':
-      return [bashBlock(`browse press ${quote(step.key ?? 'Enter')}`), ''];
+    case 'press_key': {
+      const chord = formatChord(step.key ?? 'Enter', step.modifiers);
+      return [bashBlock(`browse press ${quote(chord)}`), ''];
+    }
 
     case 'scroll':
       return [
@@ -238,6 +247,70 @@ function renderStepBody(step: SkillStep): string[] {
         '',
       ];
     }
+
+    case 'copy': {
+      const value = step.valueTemplate ?? '';
+      return [
+        bashBlock(
+          [
+            `# Place this text on the system clipboard for the next paste step.`,
+            `browse clipboard write ${quote(renderValue(value))}`,
+          ].join('\n'),
+        ),
+        '',
+      ];
+    }
+
+    case 'paste': {
+      const top = topSelector(step.selectors, /* cssOnly */ true);
+      const value = renderValue(step.valueTemplate ?? '');
+      const out: string[] = [];
+      if (top) {
+        out.push(
+          bashBlock(
+            [
+              `# Paste into the resolved field. Most apps accept a plain fill;`,
+              `# fall back to OS clipboard + Cmd+V if the page intercepts paste.`,
+              `browse fill ${quote(top.value)} ${quote(value)}`,
+            ].join('\n'),
+          ),
+        );
+      } else {
+        out.push(bashBlock(`browse snapshot\nbrowse fill <ref-of-target> ${quote(value)}`));
+      }
+      out.push('');
+      return out;
+    }
+
+    case 'drag': {
+      const out: string[] = [];
+      const fromTop = topSelector(step.dragFrom?.selectors);
+      const toTop = topSelector(step.dragTo?.selectors);
+      const fromLabel =
+        step.dragFrom?.fingerprint?.attrs?.['aria-label'] ||
+        step.dragFrom?.fingerprint?.text ||
+        fromTop?.value ||
+        'source';
+      const toLabel =
+        step.dragTo?.fingerprint?.attrs?.['aria-label'] ||
+        step.dragTo?.fingerprint?.text ||
+        toTop?.value ||
+        'target';
+      out.push(`Drag from **${fromLabel}** onto **${toLabel}**.`);
+      out.push(
+        bashBlock(
+          [
+            '# `browse drag` is not yet a first-class verb; orchestrate with snapshot + drag.',
+            'browse snapshot',
+            `# Source ref matches: ${fromTop?.value ?? '(none)'}`,
+            `# Target ref matches: ${toTop?.value ?? '(none)'}`,
+            'browse drag <source-ref> <target-ref>',
+          ].join('\n'),
+        ),
+      );
+      out.push('');
+      return out;
+    }
   }
 }
 
@@ -250,11 +323,22 @@ function defaultIntent(step: SkillStep): string {
     case 'fill':
       return `Fill ${step.fingerprint?.text || step.fingerprint?.tag || 'field'} with ${step.valueTemplate}`;
     case 'press_key':
-      return `Press ${step.key}`;
+      return `Press ${formatChord(step.key ?? '', step.modifiers)}`;
     case 'scroll':
       return `Scroll to (${step.scrollX ?? 0}, ${step.scrollY ?? 0})`;
     case 'submit':
       return 'Submit the form';
+    case 'drag': {
+      const from = step.dragFrom?.fingerprint?.text || step.dragFrom?.fingerprint?.tag || 'source';
+      const to = step.dragTo?.fingerprint?.text || step.dragTo?.fingerprint?.tag || 'target';
+      return `Drag ${from} onto ${to}`;
+    }
+    case 'copy':
+      return `Copy "${(step.valueTemplate ?? '').slice(0, 32)}" to clipboard`;
+    case 'paste': {
+      const label = step.fingerprint?.attrs?.['aria-label'] || step.fingerprint?.text || step.fingerprint?.tag || 'target';
+      return `Paste into ${label}`;
+    }
   }
 }
 
@@ -290,6 +374,17 @@ function describeTarget(step: SkillStep): string {
 
 function renderValue(template: string): string {
   return template.replace(/\$\{(\w+)\}/g, '{{$1}}');
+}
+
+function formatChord(key: string, modifiers?: SkillStep['modifiers']): string {
+  if (!modifiers) return key;
+  const parts: string[] = [];
+  if (modifiers.meta) parts.push('Meta');
+  if (modifiers.ctrl) parts.push('Control');
+  if (modifiers.alt) parts.push('Alt');
+  if (modifiers.shift) parts.push('Shift');
+  parts.push(key);
+  return parts.join('+');
 }
 
 function bashBlock(body: string): string {

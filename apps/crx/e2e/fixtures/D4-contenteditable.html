@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>D4 · Contenteditable</title>
+    <style>
+      body { font: 14px system-ui, sans-serif; padding: 32px; }
+      .editor {
+        min-height: 100px;
+        padding: 10px;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        background: white;
+      }
+      .ok { color: #15803d; margin-top: 12px; }
+    </style>
+  </head>
+  <body>
+    <h1>D4 Contenteditable</h1>
+    <p>The block below behaves like a richtext editor. Recorder should coalesce per-keystroke input into one change step containing the resulting innerText.</p>
+    <div
+      class="editor"
+      contenteditable="true"
+      role="textbox"
+      aria-label="Notes"
+      data-testid="notes-editor"
+    ></div>
+    <div id="result" class="ok" hidden></div>
+    <script>
+      const ed = document.querySelector('.editor');
+      ed.addEventListener('blur', () => {
+        const r = document.getElementById('result');
+        r.hidden = false;
+        r.textContent = `editor content: ${ed.innerText}`;
+      });
+    </script>
+  </body>
+</html>
