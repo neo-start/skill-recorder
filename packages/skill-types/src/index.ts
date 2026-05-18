@@ -47,6 +47,18 @@ export interface ElementFingerprint {
   role: string | null;
   text: string;
   attrs: Record<string, string>;
+  /**
+   * Index among siblings sharing this exact fingerprint at record time.
+   * Used as a tiebreaker when multiple visually-identical candidates exist
+   * (e.g. n-th row of a table). Undefined when there was a unique match.
+   */
+  fingerprintIndex?: number;
+  /**
+   * Stable identifier extracted from `data-i18n-key` / `aria-label-key`
+   * attributes (or an ancestor with same), preferred over visible text
+   * when matching across locales. Undefined for sites without such hooks.
+   */
+  i18nKey?: string;
 }
 
 export interface ActionStep {

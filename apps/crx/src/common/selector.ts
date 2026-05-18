@@ -1,7 +1,18 @@
 import type { ElementFingerprint, SelectorEntry, SelectorKind } from '@skill-recorder/types';
 
 const TESTID_ATTRS = ['data-testid', 'data-test-id', 'data-test', 'data-cy', 'data-qa'];
-const STABLE_ATTRS_FOR_FINGERPRINT = ['name', 'type', 'role', 'placeholder', 'href', 'aria-label'];
+const STABLE_ATTRS_FOR_FINGERPRINT = [
+  'name',
+  'type',
+  'role',
+  'placeholder',
+  'href',
+  'aria-label',
+  // i18n-stable identifiers (preferred over visible text on multilingual sites)
+  'data-i18n-key',
+  'aria-label-key',
+];
+const I18N_KEY_ATTRS = ['data-i18n-key', 'aria-label-key'];
 const MAX_TEXT_LEN = 80;
 
 const SCORE: Record<SelectorKind, number> = {
@@ -64,12 +75,61 @@ export function fingerprint(el: Element): ElementFingerprint {
     const v = el.getAttribute(attr);
     if (v) attrs[attr] = v;
   }
-  return {
+  const fp: ElementFingerprint = {
     tag: el.tagName.toLowerCase(),
     role: el.getAttribute('role') || implicitRole(el),
     text: fingerprintText(el),
     attrs,
   };
+  const i18nKey = readI18nKey(el);
+  if (i18nKey) fp.i18nKey = i18nKey;
+  const idx = indexAmongFingerprintSiblings(el, fp);
+  if (idx !== undefined) fp.fingerprintIndex = idx;
+  return fp;
+}
+
+/**
+ * Walk self + ancestors (up to 4 levels) looking for a stable i18n key
+ * attribute. Returns the closest match — element-level wins over ancestor.
+ */
+function readI18nKey(el: Element): string | undefined {
+  let cur: Element | null = el;
+  for (let i = 0; cur && i < 4; i++) {
+    for (const attr of I18N_KEY_ATTRS) {
+      const v = cur.getAttribute(attr);
+      if (v) return v;
+    }
+    cur = cur.parentElement;
+  }
+  return undefined;
+}
+
+/**
+ * If the element shares its (tag, role, text) with siblings on the page,
+ * record which one we hit. At replay time we tiebreak via the same key.
+ * Returns undefined when the element is already unique (no tiebreak needed).
+ */
+function indexAmongFingerprintSiblings(
+  el: Element,
+  fp: ElementFingerprint,
+): number | undefined {
+  const sameTag = Array.from(document.getElementsByTagName(fp.tag));
+  const matches: Element[] = [];
+  for (const cand of sameTag) {
+    if (sameFingerprint(cand, fp)) matches.push(cand);
+  }
+  if (matches.length <= 1) return undefined;
+  const idx = matches.indexOf(el);
+  return idx >= 0 ? idx : undefined;
+}
+
+function sameFingerprint(el: Element, fp: ElementFingerprint): boolean {
+  if (el.tagName.toLowerCase() !== fp.tag) return false;
+  const role = el.getAttribute('role') || implicitRole(el);
+  if ((role || null) !== fp.role) return false;
+  // Text equality with the same fallback-aware extraction the recorder uses.
+  if (fingerprintText(el) !== fp.text) return false;
+  return true;
 }
 
 /**
@@ -129,12 +189,22 @@ export async function resolveElement(
 
   const sorted = [...selectors].sort((a, b) => b.score - a.score);
 
+  // When the fingerprint has a sibling-index tiebreak OR a locale-stable
+  // i18nKey, the generic selectors (text, aria) would happily resolve to
+  // the WRONG identical-looking element. Run fingerprintScan first so
+  // those signals win.
+  const fingerprintFirst = !!fp && (fp.fingerprintIndex !== undefined || !!fp.i18nKey);
+
   while (Date.now() < deadline) {
+    if (fingerprintFirst) {
+      const el = fingerprintScan(fp);
+      if (el) return el;
+    }
     for (const sel of sorted) {
       const el = tryFind(sel);
       if (el) return el;
     }
-    if (fp) {
+    if (!fingerprintFirst && fp) {
       const el = fingerprintScan(fp);
       if (el) return el;
     }
@@ -204,9 +274,24 @@ function findByText(text: string): Element | null {
 }
 
 function fingerprintScan(fp: ElementFingerprint): Element | null {
-  // Same tag first; then widen to common interactive containers if text+role didn't land.
-  let best = scanFingerprint(Array.from(document.getElementsByTagName(fp.tag)), fp, 50);
+  // 1. i18nKey hit takes priority — locale-independent and rare enough to be unique
+  if (fp.i18nKey) {
+    const byKey = findByI18nKey(fp.i18nKey);
+    if (byKey) return byKey;
+  }
+  // 2. Same tag first
+  const sameTag = Array.from(document.getElementsByTagName(fp.tag));
+  // 2a. If we recorded a tiebreaker, collect ALL strong matches and pick the
+  //     correct one by index. Strong = exact text + role + attrs equality
+  //     under the same threshold scanFingerprint would have considered.
+  if (fp.fingerprintIndex !== undefined) {
+    const exact = sameTag.filter((el) => sameFingerprint(el, fp));
+    if (exact.length > fp.fingerprintIndex) return exact[fp.fingerprintIndex];
+    // Fall through if the page has fewer matches than expected (DOM churn).
+  }
+  let best = scanFingerprint(sameTag, fp, 50);
   if (best) return best;
+  // 3. Widen to common interactive containers if text+role didn't land
   if (fp.text) {
     const widerTags = ['a', 'button', 'div', 'span', 'li', 'label'];
     const all: Element[] = [];
@@ -214,6 +299,15 @@ function fingerprintScan(fp: ElementFingerprint): Element | null {
     best = scanFingerprint(all, fp, 70); // higher bar when crossing tags
   }
   return best;
+}
+
+function findByI18nKey(key: string): Element | null {
+  const escaped = key.replace(/"/g, '\\"');
+  for (const attr of I18N_KEY_ATTRS) {
+    const hit = document.querySelector(`[${attr}="${escaped}"]`);
+    if (hit) return hit;
+  }
+  return null;
 }
 
 function scanFingerprint(
@@ -227,6 +321,11 @@ function scanFingerprint(
     if (fp.role && (el.getAttribute('role') === fp.role || implicitRole(el) === fp.role)) score += 30;
     for (const [k, v] of Object.entries(fp.attrs)) {
       if (el.getAttribute(k) === v) score += 15;
+    }
+    // i18nKey match outranks text — locale-independent, intent-stable
+    if (fp.i18nKey) {
+      const key = readI18nKey(el);
+      if (key === fp.i18nKey) score += 80;
     }
     if (fp.text) {
       // Use the same fallback-aware text extraction the recorder used, so
@@ -300,6 +399,15 @@ function isStableClass(c: string): boolean {
   if (/^[A-Za-z_][\w-]*$/.test(c) === false) return false;
   // Filter common css-in-js / hashed classes
   if (/^(css-|jss|sc-|emotion-|tw-|chakra-|MuiBox-)/i.test(c)) return false;
+  // CSS Modules — `Component_styles__abc123` or `_styles__abc123`
+  if (/^_?[A-Za-z]+_[A-Za-z]+__[A-Za-z0-9]{4,}$/.test(c)) return false;
+  // Vue scoped-style internal — `v-` or unmangled component class with hash
+  if (/^v-[a-f0-9]{6,}$/i.test(c)) return false;
+  // Angular emulated encapsulation host classes
+  if (/^_nghost-|^_ngcontent-/.test(c)) return false;
+  // Trailing hash (e.g. `button__primary--a3f9c2`)
+  if (/[-_][A-Fa-f0-9]{6,}$/.test(c)) return false;
+  // Generic short alpha-hash suffix
   if (/^[a-z]+-[A-Za-z0-9]{6,}$/i.test(c)) return false;
   return c.length <= 30;
 }
