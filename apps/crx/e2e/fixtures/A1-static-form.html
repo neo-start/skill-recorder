@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>A1 · Static Form</title>
+    <style>
+      body { font: 14px system-ui, sans-serif; padding: 32px; max-width: 540px; }
+      form { display: grid; gap: 12px; }
+      label { display: grid; gap: 4px; font-weight: 600; }
+      input, textarea { padding: 8px 10px; font: inherit; border: 1px solid #ccc; border-radius: 6px; }
+      button { padding: 8px 14px; font: inherit; border: 1px solid #3b82f6; background: #3b82f6; color: white; border-radius: 6px; cursor: pointer; }
+      .ok { color: #15803d; margin-top: 12px; }
+    </style>
+  </head>
+  <body>
+    <h1>A1 Static Form</h1>
+    <p>The smoke-test target. Stable selectors, no async, no SPA tricks.</p>
+    <form id="contact" data-testid="contact-form">
+      <label>
+        Name
+        <input data-testid="field-name" name="name" />
+      </label>
+      <label>
+        Email
+        <input data-testid="field-email" name="email" type="email" />
+      </label>
+      <label>
+        Message
+        <textarea data-testid="field-message" name="message" rows="3"></textarea>
+      </label>
+      <button data-testid="btn-submit" type="submit" aria-label="Send message">Send</button>
+    </form>
+    <div id="result" class="ok" hidden></div>
+    <script>
+      document.getElementById('contact').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const r = document.getElementById('result');
+        r.hidden = false;
+        r.textContent = '✓ Submitted';
+      });
+    </script>
+  </body>
+</html>

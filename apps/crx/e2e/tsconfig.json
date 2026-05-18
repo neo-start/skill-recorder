@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "types": ["node", "chrome", "@playwright/test"],
+    "isolatedModules": true,
+    "moduleResolution": "Bundler",
+    "module": "ESNext"
+  },
+  "include": ["./**/*.ts", "../src/common/skill-build.ts"]
+}
