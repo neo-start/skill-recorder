@@ -37,15 +37,19 @@ export function buildDrafts(actions: ActionStep[]): DraftStep[] {
     const action = mapAction(a.type);
     let isParam = false;
     let paramName = '';
-    // File upload (D2): always parameterize as `file_path` since the recorded
-    // filename is rarely the one the agent will want at replay time.
+    // File upload (D2): always parameterize as `file_path`.
     if (action === 'fill' && a.inputType === 'file') {
       isParam = true;
       paramName = 'file_path';
     } else if (action === 'fill' && !a.masked && (a.value ?? '').length > 0) {
-      // Default-mark every non-masked fill as a parameter.
-      isParam = true;
-      paramName = suggestParamNameForFill(a, fillIdx++);
+      // E2: auto-param only when confidence ≥ 0.7. Hardcoded-looking values
+      // (short, matches the field's own aria-label, matches placeholder) stay
+      // as literals — user can flip them in the dialog.
+      const conf = paramConfidence(a);
+      if (conf >= 0.7) {
+        isParam = true;
+        paramName = suggestParamNameForFill(a, fillIdx++);
+      }
     }
     return {
       raw: a,
@@ -57,6 +61,108 @@ export function buildDrafts(actions: ActionStep[]): DraftStep[] {
       value: a.value ?? '',
     };
   });
+}
+
+/**
+ * Score a fill step's likelihood of being a parameter. Returns 0..1. The
+ * caller treats ≥0.7 as "auto-param".
+ *
+ * +0.4 if input type / role is text-like (text/email/tel/search/url/number/textarea/searchbox)
+ * +0.3 if value looks variable (UUID, email, long mixed-case, digits ≥4)
+ * +0.2 if input has an aria-label or placeholder (gives a good param name)
+ * -0.5 if value is short and exactly matches the field's aria-label
+ * -0.5 if value matches the field's placeholder verbatim (it's the default
+ *      copy the user didn't actually fill in)
+ *
+ * Clamped to [0, 1].
+ */
+export function paramConfidence(a: ActionStep): number {
+  const fp = a.fingerprint;
+  const value = a.value ?? '';
+  if (!value) return 0;
+  let score = 0;
+  const tag = fp?.tag?.toLowerCase();
+  const inputType = (a.inputType || fp?.attrs?.type || '').toLowerCase();
+  const role = fp?.role?.toLowerCase();
+  const textLike =
+    tag === 'textarea' ||
+    role === 'textbox' ||
+    role === 'searchbox' ||
+    ['text', 'email', 'tel', 'search', 'url', 'number', ''].includes(inputType);
+  if (textLike) score += 0.4;
+  if (looksVariable(value)) score += 0.3;
+  const aria = fp?.attrs?.['aria-label'] ?? '';
+  const placeholder = fp?.attrs?.placeholder ?? '';
+  if (aria || placeholder) score += 0.2;
+  if (aria && value.length < 24 && value.toLowerCase() === aria.toLowerCase()) score -= 0.5;
+  if (placeholder && value === placeholder) score -= 0.5;
+  return Math.max(0, Math.min(1, score));
+}
+
+function looksVariable(value: string): boolean {
+  // Long-enough UUIDs, emails, urls, mixed-case strings, and digit runs all
+  // smell like "the user filled this in with their own data."
+  if (/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-/.test(value)) return true; // UUID prefix
+  if (/^\S+@\S+\.\S+$/.test(value)) return true; // email
+  if (/^https?:\/\//.test(value)) return true; // url
+  if (/\d{4,}/.test(value)) return true; // 4+ consecutive digits
+  if (value.length > 12 && /[A-Z]/.test(value) && /[a-z]/.test(value)) return true; // mixed case long
+  return false;
+}
+
+// ─── URL path-segment parameter detection (E2) ─────────────────────────
+//
+// Detect "variable-looking" segments in a navigate step's URL — UUIDs,
+// numeric IDs — and surface them as `{{name}}` templates so the rendered
+// SKILL.md can be re-used across runs.
+
+const UUID_RE = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+const NUMERIC_ID_RE = /^\d{3,}$/;
+
+export interface UrlParam {
+  /** logical param name e.g. "order_id" */
+  name: string;
+  /** original segment value, kept as example */
+  example: string;
+}
+
+/**
+ * Parameterize variable-looking segments of a URL. Returns the templated URL
+ * (`https://x.com/orders/{{order_id}}`) plus the params it detected.
+ */
+export function parameterizeUrl(url: string, existingNames: Set<string>): {
+  templateUrl: string;
+  params: UrlParam[];
+} {
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    return { templateUrl: url, params: [] };
+  }
+  const segments = parsed.pathname.split('/');
+  const params: UrlParam[] = [];
+  let prevSegment = '';
+  for (let i = 0; i < segments.length; i++) {
+    const seg = segments[i];
+    if (!seg) {
+      prevSegment = seg;
+      continue;
+    }
+    if (UUID_RE.test(seg) || NUMERIC_ID_RE.test(seg)) {
+      // Use the preceding segment as the basis of the param name when it's a
+      // plausible noun: /orders/123 → order_id.
+      const base = prevSegment.replace(/[^a-z0-9]+/gi, '_').replace(/_+$/, '').toLowerCase();
+      let name = base ? `${base.replace(/s$/, '')}_id` : `id_${params.length + 1}`;
+      while (existingNames.has(name)) name = `${name}_${params.length + 1}`;
+      existingNames.add(name);
+      params.push({ name, example: seg });
+      segments[i] = `{{${name}}}`;
+    }
+    prevSegment = seg;
+  }
+  const templateUrl = `${parsed.origin}${segments.join('/')}${parsed.search}${parsed.hash}`;
+  return { templateUrl, params };
 }
 
 // ─── Skill construction ─────────────────────────────────────────────────
@@ -71,14 +177,38 @@ export interface BuildSkillInput {
 
 export function buildSkill(input: BuildSkillInput): Skill {
   const kept = input.drafts.filter((d) => !d.skipped);
-  const steps: SkillStep[] = kept.map((d, idx) => toSkillStep(d, idx, kept));
+  // Pre-scan: detect URL-segment params on navigate steps and rewrite their
+  // url field to use {{name}} placeholders. We collect those params alongside
+  // the fill-derived params so they all surface in the rendered SKILL.md.
+  const fillParams = collectParams(input.drafts);
+  const existingNames = new Set(fillParams.map((p) => p.name));
+  const urlParams: SkillParameter[] = [];
+  const urlTemplates = new Map<DraftStep, string>();
+  for (const d of kept) {
+    if (d.action !== 'navigate') continue;
+    const u = d.raw.navigateUrl ?? d.raw.url;
+    if (!u) continue;
+    const { templateUrl, params } = parameterizeUrl(u, existingNames);
+    if (params.length) {
+      urlTemplates.set(d, templateUrl);
+      for (const p of params) {
+        urlParams.push({
+          name: p.name,
+          type: 'string',
+          description: `URL parameter for ${p.name}`,
+          example: p.example,
+        });
+      }
+    }
+  }
+  const steps: SkillStep[] = kept.map((d, idx) => toSkillStep(d, idx, kept, urlTemplates));
   return {
     id: cryptoRandomId(),
     title: input.title.trim(),
     description: input.description.trim() || input.title.trim(),
     domain: hostnameOf(input.recording.url),
-    startUrl: input.recording.url,
-    parameters: collectParams(input.drafts),
+    startUrl: urlTemplates.get(kept[0]!) ?? input.recording.url,
+    parameters: [...fillParams, ...urlParams],
     steps,
     auth: input.authHint.required ? input.authHint : undefined,
     sourceRecordingId: input.recording.id,
@@ -90,22 +220,53 @@ export function buildSkill(input: BuildSkillInput): Skill {
 export function collectParams(drafts: DraftStep[]): SkillParameter[] {
   const seen = new Map<string, SkillParameter>();
   for (const d of drafts) {
-    if (d.skipped || !d.isParam) continue;
-    const name = sanitizeParamName(d.paramName);
-    if (!name) continue;
-    if (!seen.has(name)) {
-      seen.set(name, {
-        name,
-        type: 'string',
-        description: `Value for ${name}`,
-        example: d.value,
-      });
+    if (d.skipped) continue;
+    // Primary param tag.
+    if (d.isParam) {
+      const name = sanitizeParamName(d.paramName);
+      if (name && !seen.has(name)) {
+        seen.set(name, {
+          name,
+          type: 'string',
+          description: `Value for ${name}`,
+          example: d.value,
+        });
+      }
+    }
+    // Additional tokens embedded in a literal template (E1).
+    if (d.value) {
+      for (const tok of extractTemplateTokens(d.value)) {
+        const name = sanitizeParamName(tok);
+        if (name && !seen.has(name)) {
+          seen.set(name, {
+            name,
+            type: 'string',
+            description: `Value for ${name}`,
+          });
+        }
+      }
     }
   }
   return [...seen.values()];
 }
 
-function toSkillStep(d: DraftStep, _idx: number, kept: DraftStep[]): SkillStep {
+/** Pick `{{name}}` and `${name}` tokens out of a string. */
+export function extractTemplateTokens(s: string): string[] {
+  const out: string[] = [];
+  const re = /\{\{(\w+)\}\}|\$\{(\w+)\}/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(s)) !== null) {
+    out.push(m[1] ?? m[2]!);
+  }
+  return out;
+}
+
+function toSkillStep(
+  d: DraftStep,
+  _idx: number,
+  kept: DraftStep[],
+  urlTemplates: Map<DraftStep, string> = new Map(),
+): SkillStep {
   const next = kept[kept.indexOf(d) + 1];
   return {
     id: cryptoRandomId(),
@@ -113,17 +274,14 @@ function toSkillStep(d: DraftStep, _idx: number, kept: DraftStep[]): SkillStep {
     action: d.action,
     selectors: d.raw.selectors,
     fingerprint: d.raw.fingerprint,
-    url: d.raw.navigateUrl ?? d.raw.url,
+    url: urlTemplates.get(d) ?? (d.raw.navigateUrl ?? d.raw.url),
     valueTemplate:
-      d.action === 'fill'
+      d.action === 'fill' || d.action === 'copy' || d.action === 'paste'
         ? d.isParam
-          ? `\${${sanitizeParamName(d.paramName)}}`
-          : d.value
-        : d.action === 'copy' || d.action === 'paste'
-          ? d.isParam
-            ? `\${${sanitizeParamName(d.paramName)}}`
-            : d.value
-          : undefined,
+          ? `{{${sanitizeParamName(d.paramName)}}}`
+          : // Literal values may themselves contain template tokens — preserve.
+            d.value
+        : undefined,
     key: d.raw.key,
     modifiers: d.raw.modifiers,
     scrollX: d.raw.scrollX,

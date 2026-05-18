@@ -382,6 +382,7 @@ function describeTarget(step: SkillStep): string {
 }
 
 function renderValue(template: string): string {
+  // Normalise both `${name}` (legacy) and `{{name}}` (canonical) into `{{name}}`.
   return template.replace(/\$\{(\w+)\}/g, '{{$1}}');
 }
 
