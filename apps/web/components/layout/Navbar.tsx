@@ -96,7 +96,7 @@ const NavLinks = styled.nav`
 `;
 
 const NavLink = styled(Link)`
-  font-size: 14px;
+  font-size: var(--text-sm);
   font-weight: 500;
   color: var(--color-text);
   text-decoration: none;
@@ -197,7 +197,7 @@ const MobileCta = styled.div`
 const MobileLink = styled(Link)`
   display: block;
   padding: var(--space-3) 0;
-  font-size: 16px;
+  font-size: var(--text-base);
   font-weight: 500;
   color: var(--color-text);
   text-decoration: none;
