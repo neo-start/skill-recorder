@@ -123,7 +123,7 @@ const Ctas = styled.div`
 
 const Primary = styled(Button)`
   height: 52px;
-  padding: 0 var(--space-7);
+  padding: 0 var(--space-10);
   border-radius: 10px;
   font-size: var(--text-base);
   font-weight: 600;
