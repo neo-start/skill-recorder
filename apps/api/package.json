@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
+    "dev:cli": "tsx dev-server.ts",
     "deploy": "wrangler deploy",
     "typecheck": "tsc --noEmit",
     "lint": "echo no lint"
@@ -19,6 +20,8 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240620.0",
+    "@types/node": "^20.12.0",
+    "tsx": "^4.19.0",
     "typescript": "^5.5.3",
     "wrangler": "^3.78.0"
   }
