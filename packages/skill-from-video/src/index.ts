@@ -3,27 +3,21 @@ import { fetchYoutubeOembed, parseYoutubeId } from './oembed';
 import { fetchYoutubeTranscript } from './transcript';
 import { callDistill } from './distill';
 import { DistillError } from './errors';
-import { createAnthropicBackend } from './backend-anthropic';
-import { createClaudeCliBackend, type ClaudeCliBackendOptions } from './backend-claude-cli';
 import type { Backend } from './backend';
 import type { LlmSkill } from './schema';
 
 export { DistillError } from './errors';
 export type { DistillErrorCode } from './errors';
-export type { Backend } from './backend';
-export { createAnthropicBackend } from './backend-anthropic';
-export { createClaudeCliBackend } from './backend-claude-cli';
-
-export type BackendName = 'anthropic-sdk' | 'claude-cli';
+export type { Backend, RawBackendOptions, RawBackendResult, RawBackendUsage } from './backend';
+// Backends live on subpath exports (`./backend-anthropic`, `./backend-claude-cli`)
+// so callers like the Cloudflare Worker don't drag `node:child_process` into
+// their bundle.
 
 export interface DistillOptions {
   videoUrl: string;
-  /** Which backend to use. Default: claude-cli (subscription, free for the user). */
-  backend?: BackendName | Backend;
-  /** Required when backend === 'anthropic-sdk'. Ignored otherwise. */
-  apiKey?: string;
-  /** Options forwarded to the Claude CLI backend (e.g. bin path). */
-  claudeCli?: ClaudeCliBackendOptions;
+  /** Constructed backend — callers wire up either createAnthropicBackend()
+   *  (works in Workers) or createClaudeCliBackend() (local Node only). */
+  backend: Backend;
   /** Default: claude-sonnet-4-6. Model id passed through to the backend. */
   model?: string;
   /** Hard cap on transcript size; default 60_000. */
@@ -46,8 +40,7 @@ const DEFAULT_MAX = 60_000;
 
 export async function distillVideoToSkill(opts: DistillOptions): Promise<DistillResult> {
   if (!opts.videoUrl) throw new DistillError('config', 'videoUrl is required');
-
-  const backend = resolveBackend(opts);
+  if (!opts.backend) throw new DistillError('config', 'backend is required');
 
   const videoId = parseYoutubeId(opts.videoUrl);
   if (!videoId) {
@@ -68,7 +61,7 @@ export async function distillVideoToSkill(opts: DistillOptions): Promise<Distill
   }
 
   const { parsed, usage } = await callDistill({
-    backend,
+    backend: opts.backend,
     model: opts.model,
     signal: opts.signal,
     videoTitle: oembed.title,
@@ -103,19 +96,6 @@ export async function distillVideoToSkill(opts: DistillOptions): Promise<Distill
     outputTokens: usage.outputTokens,
     cacheHitTokens: usage.cacheHitTokens,
   };
-}
-
-function resolveBackend(opts: DistillOptions): Backend {
-  if (typeof opts.backend === 'object' && opts.backend !== null) return opts.backend;
-  const name: BackendName = (opts.backend as BackendName) ?? 'claude-cli';
-  if (name === 'anthropic-sdk') {
-    if (!opts.apiKey) throw new DistillError('config', 'apiKey is required for anthropic-sdk backend');
-    return createAnthropicBackend(opts.apiKey);
-  }
-  if (name === 'claude-cli') {
-    return createClaudeCliBackend(opts.claudeCli ?? {});
-  }
-  throw new DistillError('config', `unknown backend: ${String(name)}`);
 }
 
 interface WrapArgs {

@@ -1,0 +1,35 @@
+# Skill-distill API Worker. Wraps @skill-recorder/from-video behind a
+# rate-limited, result-cached HTTP endpoint. Marketing site (apps/web) is
+# `output: 'export'` static, so this lives in its own Worker rather than as
+# a Pages Function — see docs/video-skills-design.md §"为什么是独立 Worker".
+#
+# First-time setup:
+#   wrangler kv:namespace create RATELIMIT
+#   wrangler kv:namespace create CACHE
+#   (copy the returned ids into the kv_namespaces blocks below)
+#   wrangler secret put ANTHROPIC_API_KEY
+
+name = "skill-distill-api"
+main = "src/index.ts"
+compatibility_date = "2025-07-18"
+compatibility_flags = ["nodejs_compat"]
+
+# Lock down which extra origins are allowed to hit /distill. Update this list
+# when shipping new clients (CRX, dashboard, etc.). chrome-extension://* and
+# *.skill-recorder.dev are always allowed (see src/cors.ts).
+[vars]
+ALLOWED_ORIGINS_EXTRA = ""
+
+[[kv_namespaces]]
+binding = "RATELIMIT"
+id = "REPLACE_WITH_RATELIMIT_KV_ID"
+
+[[kv_namespaces]]
+binding = "CACHE"
+id = "REPLACE_WITH_CACHE_KV_ID"
+
+# Optional preview routes — uncomment after first deploy if you want previews
+# tied to wrangler.toml rather than Pages.
+# [[routes]]
+# pattern = "api.skill-recorder.dev/*"
+# custom_domain = true

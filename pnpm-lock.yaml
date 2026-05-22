@@ -21,6 +21,37 @@ importers:
         specifier: ^5.5.3
         version: 5.9.3
 
+  apps/api:
+    dependencies:
+      '@anthropic-ai/sdk':
+        specifier: ^0.98.0
+        version: 0.98.0(zod@3.25.76)
+      '@skill-recorder/from-video':
+        specifier: workspace:*
+        version: link:../../packages/skill-from-video
+      '@skill-recorder/types':
+        specifier: workspace:*
+        version: link:../../packages/skill-types
+      youtube-transcript:
+        specifier: ^1.2.1
+        version: 1.3.1
+      zod:
+        specifier: ^3.23.8
+        version: 3.25.76
+      zod-to-json-schema:
+        specifier: ^3.23.5
+        version: 3.25.2(zod@3.25.76)
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^4.20240620.0
+        version: 4.20260522.1
+      typescript:
+        specifier: ^5.5.3
+        version: 5.9.3
+      wrangler:
+        specifier: ^3.78.0
+        version: 3.114.17(@cloudflare/workers-types@4.20260522.1)
+
   apps/crx:
     dependencies:
       '@rrweb/types':
@@ -153,7 +184,7 @@ importers:
         version: 5.9.3
       wrangler:
         specifier: ^3.86.0
-        version: 3.114.17
+        version: 3.114.17(@cloudflare/workers-types@4.20260522.1)
 
   packages/skill-from-video:
     dependencies:
@@ -352,6 +383,9 @@ packages:
     engines: {node: '>=16'}
     cpu: [x64]
     os: [win32]
+
+  '@cloudflare/workers-types@4.20260522.1':
+    resolution: {integrity: sha512-UjKZprpYHAaBVipLfZA2GzTuWSTHyPXWRsaedwVEqyDe+VHwFi8RVtxGr1lceBDCwLDGRjlUwuwokX6O9GZY2A==}
 
   '@crxjs/vite-plugin@2.0.3':
     resolution: {integrity: sha512-OfAzERiwBlLg7u/+aRExJVYlxx95IaYOSEMJpMzXcKqWPNBMlA1ppwC2nelHTIvF5LWxn5CEp6zqlHjLH9QGtg==}
@@ -3914,6 +3948,8 @@ snapshots:
 
   '@cloudflare/workerd-windows-64@1.20250718.0':
     optional: true
+
+  '@cloudflare/workers-types@4.20260522.1': {}
 
   '@crxjs/vite-plugin@2.0.3':
     dependencies:
@@ -7599,7 +7635,7 @@ snapshots:
       '@cloudflare/workerd-linux-arm64': 1.20250718.0
       '@cloudflare/workerd-windows-64': 1.20250718.0
 
-  wrangler@3.114.17:
+  wrangler@3.114.17(@cloudflare/workers-types@4.20260522.1):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.3.4
       '@cloudflare/unenv-preset': 2.0.2(unenv@2.0.0-rc.14)(workerd@1.20250718.0)
@@ -7612,6 +7648,7 @@ snapshots:
       unenv: 2.0.0-rc.14
       workerd: 1.20250718.0
     optionalDependencies:
+      '@cloudflare/workers-types': 4.20260522.1
       fsevents: 2.3.3
       sharp: 0.33.5
     transitivePeerDependencies:

@@ -1,0 +1,25 @@
+{
+  "name": "@skill-recorder/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "lint": "echo no lint"
+  },
+  "dependencies": {
+    "@skill-recorder/from-video": "workspace:*",
+    "@skill-recorder/types": "workspace:*",
+    "@anthropic-ai/sdk": "^0.98.0",
+    "youtube-transcript": "^1.2.1",
+    "zod": "^3.23.8",
+    "zod-to-json-schema": "^3.23.5"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240620.0",
+    "typescript": "^5.5.3",
+    "wrangler": "^3.78.0"
+  }
+}

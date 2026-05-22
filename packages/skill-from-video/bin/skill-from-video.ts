@@ -10,6 +10,8 @@
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { distillVideoToSkill, DistillError } from '../src/index';
+import { createAnthropicBackend } from '../src/backend-anthropic';
+import { createClaudeCliBackend } from '../src/backend-claude-cli';
 import { renderSkillAsMarkdown } from '@skill-recorder/render';
 
 interface Args {
@@ -73,12 +75,14 @@ async function main(): Promise<void> {
 
   const outBase = stripExtension(args.out ?? './skill.SKILL.md');
 
+  const backend =
+    args.backend === 'anthropic-sdk' ? createAnthropicBackend(apiKey!) : createClaudeCliBackend();
+
   let result;
   try {
     result = await distillVideoToSkill({
       videoUrl: args.url,
-      backend: args.backend,
-      apiKey,
+      backend,
       model: args.model ?? undefined,
     });
   } catch (e) {
