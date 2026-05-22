@@ -7,6 +7,7 @@ import { RecordButton } from './components/RecordButton';
 import { RecordingList } from './components/RecordingList';
 import { ReplayProgress } from './components/ReplayProgress';
 import { SkillList } from './components/SkillList';
+import { VideoImportPanel } from './components/VideoImportPanel';
 import { colors } from './styles';
 
 const Layout = styled.div`
@@ -84,7 +85,7 @@ const Body = styled.div`
   overflow: auto;
 `;
 
-type TabKey = 'recordings' | 'skills';
+type TabKey = 'recordings' | 'skills' | 'video';
 
 export const App = observer(() => {
   const [tab, setTab] = useState<TabKey>('recordings');
@@ -111,9 +112,14 @@ export const App = observer(() => {
           Skills
           <Count>{skillsStore.skills.length}</Count>
         </Tab>
+        <Tab $active={tab === 'video'} onClick={() => setTab('video')}>
+          Video
+        </Tab>
       </Tabs>
       <Body>
-        {tab === 'recordings' ? <RecordingList store={recordingsStore} /> : <SkillList />}
+        {tab === 'recordings' && <RecordingList store={recordingsStore} />}
+        {tab === 'skills' && <SkillList />}
+        {tab === 'video' && <VideoImportPanel />}
       </Body>
     </Layout>
   );
