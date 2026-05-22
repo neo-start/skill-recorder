@@ -1,0 +1,74 @@
+{
+  "id": "skill_example_01",
+  "title": "Create a Reddit-style post",
+  "description": "Sign in and create a new post on Postmill.",
+  "domain": "reddit.com",
+  "startUrl": "https://reddit.com",
+  "parameters": [
+    {
+      "name": "subreddit",
+      "type": "string",
+      "description": "Target subreddit name (without r/)",
+      "example": "Pittsburgh"
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "description": "Post title"
+    }
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "intent": "Open the target subreddit",
+      "action": "navigate",
+      "url": "https://reddit.com/r/{{subreddit}}"
+    },
+    {
+      "id": "s2",
+      "intent": "Click the Submit link in the sidebar",
+      "action": "click",
+      "selectors": [
+        { "kind": "css", "value": "a[href*='/submit']", "score": 80 },
+        { "kind": "text", "value": "Submit", "score": 60 }
+      ],
+      "fingerprint": {
+        "tag": "a",
+        "role": "link",
+        "text": "Submit",
+        "attrs": { "href": "/submit" }
+      }
+    },
+    {
+      "id": "s3",
+      "intent": "Fill in the post title",
+      "action": "fill",
+      "selectors": [
+        { "kind": "id", "value": "#post-title", "score": 95 }
+      ],
+      "valueTemplate": "{{title}}",
+      "fingerprint": {
+        "tag": "input",
+        "role": "textbox",
+        "text": "",
+        "attrs": { "id": "post-title" }
+      }
+    },
+    {
+      "id": "s4",
+      "intent": "Submit the post",
+      "action": "submit",
+      "selectors": [
+        { "kind": "css", "value": "button[type='submit']", "score": 90 }
+      ]
+    }
+  ],
+  "auth": {
+    "required": true,
+    "reason": "Submitting requires a logged-in user",
+    "authDomains": ["reddit.com"]
+  },
+  "sourceRecordingId": "rec_example_01",
+  "createdAt": 1716200000000,
+  "updatedAt": 1716200000000
+}

@@ -219,7 +219,18 @@ export interface ReplayState {
 
 // ─── Skill (distilled, reusable) ───
 
-export type SkillActionType = 'navigate' | 'click' | 'fill' | 'press_key' | 'scroll' | 'submit' | 'drag' | 'copy' | 'paste' | 'switchTab';
+export type SkillActionType =
+  | 'navigate'
+  | 'click'
+  | 'fill'
+  | 'press_key'
+  | 'scroll'
+  | 'submit'
+  | 'drag'
+  | 'copy'
+  | 'paste'
+  | 'switchTab'
+  | 'guidance';
 
 export interface SkillParameter {
   name: string;
@@ -253,11 +264,38 @@ export interface SkillStep {
     fingerprint: ElementFingerprint;
   };
 
+  // ── guidance-only fields ──
+  /**
+   * For `guidance` steps: a checklist of judgment criteria — good signals,
+   * red flags, or things to verify on the current page. No selector / url.
+   */
+  criteria?: string[];
+  /**
+   * For `guidance` steps: free-text explanation (e.g. "filter by Top Rated
+   * Seller, sort by review count desc"). Rendered above the criteria list.
+   */
+  notes?: string;
+
   expectation?: {
     description: string;
     urlMatch?: string;
     elementVisible?: SelectorEntry[];
   };
+}
+
+/**
+ * Provenance for a Skill distilled from a YouTube video. Mutually exclusive
+ * with `sourceRecordingId` on `Skill` — a skill is either recorded or
+ * distilled, never both.
+ */
+export interface SkillVideoSource {
+  url: string;
+  videoId: string;
+  title: string;
+  channel?: string;
+  durationSec?: number;
+  /** ISO 8601 timestamp when the transcript was fetched. */
+  fetchedAt: string;
 }
 
 export interface SkillAuthHint {
@@ -271,11 +309,19 @@ export interface Skill {
   title: string;
   description: string;
   domain: string;
-  startUrl: string;
+  /**
+   * Optional: video-distilled skills may have no fixed starting URL (the
+   * guidance applies wherever the user happens to be). The recording path
+   * still always sets it.
+   */
+  startUrl?: string;
   parameters: SkillParameter[];
   steps: SkillStep[];
   auth?: SkillAuthHint;
-  sourceRecordingId: string;
+  /** Set when the Skill was distilled from an rrweb recording. */
+  sourceRecordingId?: string;
+  /** Set when the Skill was distilled from a YouTube video. */
+  sourceVideo?: SkillVideoSource;
   createdAt: number;
   updatedAt: number;
 }

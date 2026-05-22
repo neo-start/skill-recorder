@@ -1,0 +1,160 @@
+{
+  "id": "skill_video_Bx6BVxP8Uog_hire-a-freelancer-on-fiv",
+  "title": "Hire a freelancer on Fiverr",
+  "description": "End-to-end workflow for hiring a freelancer on Fiverr: scope the project, search and filter the marketplace, vet candidate profiles, message before ordering, place a detailed order, then review the delivery. Use when the user wants help finding and engaging a Fiverr freelancer for a specific task.",
+  "domain": "fiverr.com",
+  "startUrl": "https://www.fiverr.com/",
+  "parameters": [
+    {
+      "name": "project_keyword",
+      "type": "string",
+      "description": "The service category to search for on Fiverr (e.g. 'logo design', 'website design', 'video editing').",
+      "example": "logo design"
+    },
+    {
+      "name": "project_brief",
+      "type": "string",
+      "description": "Specific outcome the user wants, including style, tone, colors, audience, or other concrete preferences — not just the category.",
+      "example": "Modern, minimalist logo for an online coffee store, black + warm orange palette"
+    },
+    {
+      "name": "budget_usd",
+      "type": "string",
+      "description": "Maximum budget in USD for the gig. Higher budgets unlock more experienced sellers.",
+      "example": "150"
+    },
+    {
+      "name": "delivery_days",
+      "type": "string",
+      "description": "How many days the user can wait for delivery.",
+      "example": "7"
+    }
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "intent": "Pin down the brief before opening Fiverr",
+      "action": "guidance",
+      "notes": "Clarity up front prevents endless back-and-forth later. Write down the project, the concrete outcome, and the constraints before searching.",
+      "criteria": [
+        "State the deliverable in one sentence (e.g. 'a logo', 'a 60-second explainer video')",
+        "Describe the style, tone, colors, or references — not just the category",
+        "List the skills or specializations the freelancer must have",
+        "Set a budget range; remember a $5 gig and a premium gig attract very different sellers",
+        "Note any hard deadline so it can be used as a filter"
+      ]
+    },
+    {
+      "id": "s2",
+      "intent": "Open the Fiverr homepage to start the search",
+      "action": "navigate",
+      "url": "https://www.fiverr.com/"
+    },
+    {
+      "id": "s3",
+      "intent": "Type the project keyword into the top search bar",
+      "action": "fill",
+      "selectors": [],
+      "valueTemplate": "{{project_keyword}}"
+    },
+    {
+      "id": "s4",
+      "intent": "Submit the search to load the gig results page",
+      "action": "submit",
+      "selectors": []
+    },
+    {
+      "id": "s5",
+      "intent": "Narrow the results using the sidebar filters",
+      "action": "guidance",
+      "notes": "The filters on the search results page are where most of the signal comes from. Apply them in order from hardest constraint to softest.",
+      "criteria": [
+        "Set a budget range that matches the user's stated budget",
+        "Set delivery time to match the user's deadline (e.g. 24h, 3 days, 7 days)",
+        "Filter by seller level — top rated and level 2 are safer, but don't reflexively exclude new sellers who often offer strong value while building reputation",
+        "If communication will be heavy, filter by the freelancer's spoken languages",
+        "Scroll the results and short-list 3–5 gigs whose thumbnails and titles match the brief"
+      ]
+    },
+    {
+      "id": "s6",
+      "intent": "Vet each short-listed freelancer's profile in depth",
+      "action": "guidance",
+      "notes": "A Fiverr profile reveals a lot if you read it carefully. Open each short-listed seller and audit them against the same checklist.",
+      "criteria": [
+        "Read the bio for relevant specialization and a professional tone",
+        "Open the portfolio and confirm their style genuinely matches the brief, not just the category",
+        "Check the overall rating AND skim recent written reviews for recurring complaints (late delivery, poor communication, low quality)",
+        "Confirm they actually deliver the deliverable you need (file formats, source files, revisions)",
+        "Note any gig extras (extra revisions, faster delivery, commercial rights) and whether they're worth the upcharge"
+      ]
+    },
+    {
+      "id": "s7",
+      "intent": "Open the 'Contact me' / message option on a short-listed freelancer's profile before ordering",
+      "action": "click",
+      "selectors": []
+    },
+    {
+      "id": "s8",
+      "intent": "Send a vetting message before placing any order",
+      "action": "guidance",
+      "notes": "Always message first. The reply tells you whether they're the right fit and how communication will feel for the rest of the project.",
+      "criteria": [
+        "Introduce yourself in one line and describe the project concretely",
+        "State the budget and the desired delivery window explicitly",
+        "Ask them to confirm they can deliver that scope for that price in that timeframe",
+        "Ask one clarifying question (e.g. how many revisions, what files you'll receive)",
+        "Judge their reply on: speed, clarity, professionalism, and whether they ask smart follow-up questions",
+        "Treat slow, vague, or copy-paste replies as a red flag and move to the next short-listed seller"
+      ]
+    },
+    {
+      "id": "s9",
+      "intent": "Place the order with a thorough requirements brief",
+      "action": "guidance",
+      "notes": "After messaging confirms fit, order the standard package or accept a custom offer. The requirements box is your one shot to set the freelancer up for a clean first delivery.",
+      "criteria": [
+        "Pick the package (or custom offer) that matches what you agreed in chat",
+        "In the requirements, restate the deliverable, style, tone, audience, and any hard constraints",
+        "Attach reference images, brand assets, links, or example competitors",
+        "Specify file formats, dimensions, and any technical requirements",
+        "Confirm the agreed delivery date and number of revisions in writing"
+      ]
+    },
+    {
+      "id": "s10",
+      "intent": "Manage the project through Fiverr's messaging without micromanaging",
+      "action": "guidance",
+      "notes": "Stay involved enough to unblock the freelancer, but let them work. All communication and files should stay inside Fiverr for buyer protection.",
+      "criteria": [
+        "Check in periodically rather than every few hours",
+        "Answer the freelancer's questions promptly so you don't become the bottleneck",
+        "Give specific, constructive feedback rather than vague 'make it pop'",
+        "Keep all files, scope changes, and agreements inside Fiverr's chat — not email or DMs"
+      ]
+    },
+    {
+      "id": "s11",
+      "intent": "Review the delivery and either approve, request revisions, or leave an honest review",
+      "action": "guidance",
+      "notes": "Don't approve reflexively. Compare the delivery against the original requirements before clicking accept, and use the revision system if it's not right.",
+      "criteria": [
+        "Walk through the original requirements line by line and confirm each is met",
+        "If something is off, request revisions specifically and politely — most freelancers expect this",
+        "Only approve once you're genuinely satisfied; approval ends your leverage",
+        "Leave an honest, fair review — note concrete strengths and any concrete issues so future buyers (and the freelancer) benefit"
+      ]
+    }
+  ],
+  "sourceVideo": {
+    "url": "https://www.youtube.com/watch?v=Bx6BVxP8Uog",
+    "videoId": "Bx6BVxP8Uog",
+    "title": "Find the Best Freelancers on Fiverr: Easy Hiring Guide!",
+    "channel": "Paired Recruiting",
+    "durationSec": 418,
+    "fetchedAt": "2026-05-22T04:58:18.376Z"
+  },
+  "createdAt": 1779425898376,
+  "updatedAt": 1779425898376
+}

@@ -379,6 +379,10 @@ export function defaultIntent(a: ActionStep, action: SkillActionType): string {
     }
     case 'switchTab':
       return `Switch to tab #${(a.targetTabIndex ?? 0) + 1}`;
+    case 'guidance':
+      // Recording path never produces guidance steps — they only come from
+      // video-distilled skills, which never flow through this function.
+      return 'Apply checklist';
   }
 }
 

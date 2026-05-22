@@ -10,6 +10,7 @@ import type { SelectorEntry, Skill, SkillStep } from '@skill-recorder/types';
 export function renderSkillAsMarkdown(skill: Skill): string {
   const lines: string[] = [];
   const slug = slugify(skill.title);
+  const startUrl = skill.startUrl;
 
   lines.push('---');
   lines.push(`name: ${slug}`);
@@ -20,15 +21,23 @@ export function renderSkillAsMarkdown(skill: Skill): string {
 
   lines.push(`# ${skill.title}`);
   lines.push('');
+  if (skill.sourceVideo) {
+    const sv = skill.sourceVideo;
+    const channel = sv.channel ? ` by ${sv.channel}` : '';
+    lines.push(`Source: video — [${sv.title}](${sv.url})${channel}`);
+    lines.push('');
+    lines.push('> Distilled by AI from a public video transcript. Not human-verified.');
+    lines.push('');
+  }
   if (skill.description && skill.description !== skill.title) {
     lines.push(skill.description);
     lines.push('');
   }
-  lines.push(`Domain: \`${skill.domain || hostnameOf(skill.startUrl) || 'unknown'}\``);
+  lines.push(`Domain: \`${skill.domain || hostnameOf(startUrl ?? '') || 'unknown'}\``);
   lines.push('');
 
-  if (skill.auth?.required) {
-    lines.push(...renderAuthPrecondition(skill));
+  if (skill.auth?.required && startUrl) {
+    lines.push(...renderAuthPrecondition(skill, startUrl));
   }
 
   if (skill.parameters.length) {
@@ -69,13 +78,18 @@ export function renderSkillAsMarkdown(skill: Skill): string {
   lines.push(
     '- Steps marked with ⚠️ (dynamic list items) were recorded against a specific result. Choose an equivalent item from the current page rather than reproducing the recorded selector verbatim.',
   );
+  if (skill.steps.some((s) => s.action === 'guidance')) {
+    lines.push(
+      '- For steps without a concrete UI action, treat the checklist as criteria to apply against the current page — not as commands to execute.',
+    );
+  }
   lines.push('');
 
   return lines.join('\n');
 }
 
-function renderAuthPrecondition(skill: Skill): string[] {
-  const domain = skill.domain || hostnameOf(skill.startUrl) || 'site';
+function renderAuthPrecondition(skill: Skill, startUrl: string): string[] {
+  const domain = skill.domain || hostnameOf(startUrl) || 'site';
   const envVar = domainToEnvVar(domain);
   const out: string[] = [];
   out.push('## Precondition');
@@ -104,7 +118,7 @@ function renderAuthPrecondition(skill: Skill): string[] {
     bashBlock(
       [
         `browse env remote`,
-        `browse open ${skill.startUrl} --context-id "$${envVar}"`,
+        `browse open ${startUrl} --context-id "$${envVar}"`,
         `# do NOT pass --persist here; replay should not mutate your saved auth state`,
       ].join('\n'),
     ),
@@ -127,7 +141,7 @@ function renderAuthPrecondition(skill: Skill): string[] {
         `# 2. Open with --persist, sign in via the Browserbase live-view, then stop`,
         `export ${envVar}=ctx_xxx`,
         `browse env remote`,
-        `browse open ${skill.startUrl} --context-id "$${envVar}" --persist`,
+        `browse open ${startUrl} --context-id "$${envVar}" --persist`,
         `# (manually sign in in the live-view tab)`,
         `browse stop  # persists cookies + storage back to the context`,
       ].join('\n'),
@@ -289,6 +303,21 @@ function renderStepBody(step: SkillStep): string[] {
       ];
     }
 
+    case 'guidance': {
+      const out: string[] = [];
+      if (step.notes) {
+        out.push(step.notes);
+        out.push('');
+      }
+      if (step.criteria?.length) {
+        out.push('**Checklist:**');
+        out.push('');
+        for (const c of step.criteria) out.push(`- ${c}`);
+        out.push('');
+      }
+      return out;
+    }
+
     case 'drag': {
       const out: string[] = [];
       const fromTop = topSelector(step.dragFrom?.selectors);
@@ -348,7 +377,16 @@ function defaultIntent(step: SkillStep): string {
     }
     case 'switchTab':
       return 'Switch to newly-opened tab';
+    case 'guidance':
+      return step.notes
+        ? truncateOneLine(step.notes, 64)
+        : 'Apply the checklist below';
   }
+}
+
+function truncateOneLine(s: string, n: number): string {
+  const flat = s.replace(/\s+/g, ' ').trim();
+  return flat.length <= n ? flat : flat.slice(0, n - 1) + '…';
 }
 
 function topSelector(

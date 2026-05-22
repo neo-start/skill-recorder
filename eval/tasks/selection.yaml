@@ -1,0 +1,23 @@
+# 10 WebArena tasks for the MVP eval.
+#
+# Selection criteria (per docs/eval-plan.md Step 2):
+#   - L2-ish difficulty: multi-step, involves form fill / list filter / record creation
+#   - Cross 3-4 domains: shopping, reddit, gitlab, cms (skip pure map/wikipedia navigation)
+#   - Avoid one-shot navigation tasks (frontier baseline saturates → no headroom)
+#   - Each task must have either a published reference trace (path A) OR be
+#     reasonable to hand-author (path C). See README.md "Oracle strategy".
+#
+# Resolve the actual task ids by browsing the WebArena `config_files/test.raw.json`
+# manifest after docker is up. Replace these placeholders.
+
+# - id: webarena.shopping.cheapest-monitor
+#   domain: shopping
+#   oracle_source: reference   # one of: reference | authored
+#   notes: "Sort by price asc, pick top item, add to cart"
+#
+# - id: webarena.gitlab.assign-issue-to-self
+#   domain: gitlab
+#   oracle_source: authored
+#   notes: "Find an open issue in <repo>, assign to current user"
+#
+# - ...

@@ -1,0 +1,84 @@
+{
+  "id": "skill_fiverr_freelancer_01",
+  "title": "Find a high-quality freelancer on Fiverr",
+  "description": "Use a checklist of trust signals (badges, reviews, response time, red flags) to pick a freelancer on Fiverr instead of picking the cheapest result.",
+  "domain": "fiverr.com",
+  "parameters": [
+    {
+      "name": "query",
+      "type": "string",
+      "description": "What you want done (e.g. 'logo design for SaaS')",
+      "example": "logo design for SaaS"
+    },
+    {
+      "name": "budget_usd",
+      "type": "string",
+      "description": "Budget ceiling per gig, in USD",
+      "example": "200"
+    }
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "intent": "Open Fiverr search for the user's query",
+      "action": "navigate",
+      "url": "https://www.fiverr.com/search/gigs?query={{query}}"
+    },
+    {
+      "id": "s2",
+      "intent": "Apply trust filters before scanning results",
+      "action": "guidance",
+      "notes": "Tighten the candidate pool first — only then start judging individual sellers.",
+      "criteria": [
+        "Filter by 'Top Rated Seller' or 'Pro' badge",
+        "Sort by 'Best Selling' so reviews-per-gig is high",
+        "Set delivery time to ≤ the deadline you actually need",
+        "Cap budget at the {{budget_usd}} value the user provided"
+      ]
+    },
+    {
+      "id": "s3",
+      "intent": "Read each candidate's profile against trust signals",
+      "action": "guidance",
+      "notes": "On the gig page, scan for signals before reading the pitch.",
+      "criteria": [
+        "≥ 100 reviews with a ≥ 4.9 average — fewer = thin evidence",
+        "Response time under 1 hour suggests an active seller",
+        "Order completion ≥ 95%",
+        "Portfolio shows the same style/category as the request",
+        "Recent reviews (last 30 days) are positive and specific"
+      ]
+    },
+    {
+      "id": "s4",
+      "intent": "Watch for red flags in the seller's behavior",
+      "action": "guidance",
+      "notes": "These usually mean walk away — even if the price is right.",
+      "criteria": [
+        "Seller does not ask any clarifying questions in their pitch — they will deliver something generic",
+        "Reviews mention 'used a template' or 'didn't read brief'",
+        "Profile is < 6 months old with no Top Rated badge",
+        "Heavy upsell language ('contact me first for the real price')",
+        "All reviews are 5★ but suspiciously short (one-word praise)"
+      ]
+    },
+    {
+      "id": "s5",
+      "intent": "Open the strongest candidate's gig page to start the order",
+      "action": "click",
+      "selectors": [
+        { "kind": "css", "value": "[data-testid='gig-card-link']", "score": 80 }
+      ]
+    }
+  ],
+  "sourceVideo": {
+    "url": "https://www.youtube.com/watch?v=Bx6BVxP8Uog",
+    "videoId": "Bx6BVxP8Uog",
+    "title": "How to find best freelancers on Fiverr",
+    "channel": "Example Channel",
+    "durationSec": 612,
+    "fetchedAt": "2026-05-22T00:00:00.000Z"
+  },
+  "createdAt": 1716200000000,
+  "updatedAt": 1716200000000
+}
