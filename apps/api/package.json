@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev",
-    "dev:cli": "tsx dev-server.ts",
-    "deploy": "wrangler deploy",
-    "typecheck": "tsc --noEmit",
+    "dev": "tsx dev-server.ts",
+    "dev:worker": "wrangler dev --config _future/wrangler.toml",
+    "deploy:worker": "wrangler deploy --config _future/wrangler.toml",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p _future/tsconfig.json",
     "lint": "echo no lint"
   },
   "dependencies": {
