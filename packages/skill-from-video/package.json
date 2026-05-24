@@ -26,6 +26,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "echo no lint",
     "test": "vitest run",
+    "test:network": "RUN_NETWORK_TESTS=1 vitest run",
     "build": "esbuild bin/skill-from-video.ts --bundle --platform=node --format=esm --target=node20 --outfile=dist/cli.js --banner:js='#!/usr/bin/env node' --external:@anthropic-ai/sdk --external:youtube-transcript --external:zod --external:zod-to-json-schema && chmod +x dist/cli.js",
     "clean": "rm -rf dist"
   },
