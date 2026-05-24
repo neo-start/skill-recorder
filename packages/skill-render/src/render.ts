@@ -11,11 +11,18 @@ export function renderSkillAsMarkdown(skill: Skill): string {
   const lines: string[] = [];
   const slug = slugify(skill.title);
   const startUrl = skill.startUrl;
+  // A pure-guidance skill has no concrete UI actions — none of `navigate`,
+  // `click`, `fill`, `submit`, etc. Everything is judgment / checklists. For
+  // these we drop the `browse`-CLI scaffolding from the frontmatter, the
+  // domain badge, and the failure section, since none of it applies.
+  const hasProcedural = skill.steps.some((s) => s.action !== 'guidance');
+  const hasGuidance = skill.steps.some((s) => s.action === 'guidance');
+  const domainBadge = skill.domain || hostnameOf(startUrl ?? '');
 
   lines.push('---');
   lines.push(`name: ${slug}`);
   lines.push(`description: ${oneLine(skill.description || skill.title)}`);
-  lines.push('allowed-tools: Bash');
+  if (hasProcedural) lines.push('allowed-tools: Bash');
   lines.push('---');
   lines.push('');
 
@@ -33,8 +40,10 @@ export function renderSkillAsMarkdown(skill: Skill): string {
     lines.push(skill.description);
     lines.push('');
   }
-  lines.push(`Domain: \`${skill.domain || hostnameOf(startUrl ?? '') || 'unknown'}\``);
-  lines.push('');
+  if (domainBadge) {
+    lines.push(`Domain: \`${domainBadge}\``);
+    lines.push('');
+  }
 
   if (skill.auth?.required && startUrl) {
     lines.push(...renderAuthPrecondition(skill, startUrl));
@@ -66,21 +75,29 @@ export function renderSkillAsMarkdown(skill: Skill): string {
 
   lines.push('## On failure');
   lines.push('');
-  lines.push(
-    '- If a `browse` command misses (selector resolves to nothing), run `browse snapshot` and re-locate the target by aria-label, role, or visible text.',
-  );
-  lines.push(
-    '- Each step lists multiple selector hints; try them in order. If none match, fall back to the **element fingerprint** in the step description and search the snapshot text.',
-  );
-  lines.push(
-    '- If the page state diverges from the `Expected` line, do not blindly continue — re-snapshot, understand the new state, and adapt.',
-  );
-  lines.push(
-    '- Steps marked with ⚠️ (dynamic list items) were recorded against a specific result. Choose an equivalent item from the current page rather than reproducing the recorded selector verbatim.',
-  );
-  if (skill.steps.some((s) => s.action === 'guidance')) {
+  if (hasProcedural) {
     lines.push(
-      '- For steps without a concrete UI action, treat the checklist as criteria to apply against the current page — not as commands to execute.',
+      '- If a `browse` command misses (selector resolves to nothing), run `browse snapshot` and re-locate the target by aria-label, role, or visible text.',
+    );
+    lines.push(
+      '- Each step lists multiple selector hints; try them in order. If none match, fall back to the **element fingerprint** in the step description and search the snapshot text.',
+    );
+    lines.push(
+      '- If the page state diverges from the `Expected` line, do not blindly continue — re-snapshot, understand the new state, and adapt.',
+    );
+    lines.push(
+      '- Steps marked with ⚠️ (dynamic list items) were recorded against a specific result. Choose an equivalent item from the current page rather than reproducing the recorded selector verbatim.',
+    );
+    if (hasGuidance) {
+      lines.push(
+        '- For steps without a concrete UI action, treat the checklist as criteria to apply against the current page — not as commands to execute.',
+      );
+    }
+  } else {
+    // Pure-guidance skill: no UI commands, so the browse / selector advice
+    // doesn't apply. One line is enough.
+    lines.push(
+      "- These criteria are heuristics, not strict rules — if one doesn't cleanly apply to the situation, note what made it ambiguous rather than forcing a verdict.",
     );
   }
   lines.push('');
