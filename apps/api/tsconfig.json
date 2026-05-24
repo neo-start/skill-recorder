@@ -6,5 +6,5 @@
     "moduleResolution": "Bundler",
     "noEmit": true
   },
-  "include": ["dev-server.ts"]
+  "include": ["dev-server.ts", "distill-app.ts", "*.test.ts"]
 }

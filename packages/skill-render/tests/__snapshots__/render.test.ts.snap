@@ -1,0 +1,89 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`renderSkillAsMarkdown — determinism > matches a stable snapshot for the Fiverr fixture 1`] = `
+"---
+name: find-a-high-quality-freelancer-on-fiverr
+description: Use a checklist of trust signals (badges, reviews, response time, red flags) to pick a freelancer on Fiverr instead of picking the cheapest result.
+allowed-tools: Bash
+---
+
+# Find a high-quality freelancer on Fiverr
+
+Source: video — [How to find best freelancers on Fiverr](https://www.youtube.com/watch?v=Bx6BVxP8Uog) by Example Channel
+
+> Distilled by AI from a public video transcript. Not human-verified.
+
+Use a checklist of trust signals (badges, reviews, response time, red flags) to pick a freelancer on Fiverr instead of picking the cheapest result.
+
+Domain: \`fiverr.com\`
+
+## Parameters
+
+Ask the user for any of these not already provided:
+
+- \`query\` — What you want done (e.g. 'logo design for SaaS') (example: \`logo design for SaaS\`)
+- \`budget_usd\` — Budget ceiling per gig, in USD (example: \`200\`)
+
+## Steps
+
+### 1. Open Fiverr search for the user's query
+
+\`\`\`bash
+browse open 'https://www.fiverr.com/search/gigs?query={{query}}'
+\`\`\`
+
+### 2. Apply trust filters before scanning results
+
+Tighten the candidate pool first — only then start judging individual sellers.
+
+**Checklist:**
+
+- Filter by 'Top Rated Seller' or 'Pro' badge
+- Sort by 'Best Selling' so reviews-per-gig is high
+- Set delivery time to ≤ the deadline you actually need
+- Cap budget at the {{budget_usd}} value the user provided
+
+### 3. Read each candidate's profile against trust signals
+
+On the gig page, scan for signals before reading the pitch.
+
+**Checklist:**
+
+- ≥ 100 reviews with a ≥ 4.9 average — fewer = thin evidence
+- Response time under 1 hour suggests an active seller
+- Order completion ≥ 95%
+- Portfolio shows the same style/category as the request
+- Recent reviews (last 30 days) are positive and specific
+
+### 4. Watch for red flags in the seller's behavior
+
+These usually mean walk away — even if the price is right.
+
+**Checklist:**
+
+- Seller does not ask any clarifying questions in their pitch — they will deliver something generic
+- Reviews mention 'used a template' or 'didn't read brief'
+- Profile is < 6 months old with no Top Rated badge
+- Heavy upsell language ('contact me first for the real price')
+- All reviews are 5★ but suspiciously short (one-word praise)
+
+### 5. Open the strongest candidate's gig page to start the order
+
+\`\`\`bash
+# Locate the element in the page.
+browse snapshot
+# Click using the ref from the snapshot output (look for the element matching:
+#   selector: [data-testid='gig-card-link']
+# )
+browse click <ref-from-snapshot>
+\`\`\`
+
+## On failure
+
+- If a \`browse\` command misses (selector resolves to nothing), run \`browse snapshot\` and re-locate the target by aria-label, role, or visible text.
+- Each step lists multiple selector hints; try them in order. If none match, fall back to the **element fingerprint** in the step description and search the snapshot text.
+- If the page state diverges from the \`Expected\` line, do not blindly continue — re-snapshot, understand the new state, and adapt.
+- Steps marked with ⚠️ (dynamic list items) were recorded against a specific result. Choose an equivalent item from the current page rather than reproducing the recorded selector verbatim.
+- For steps without a concrete UI action, treat the checklist as criteria to apply against the current page — not as commands to execute.
+"
+`;

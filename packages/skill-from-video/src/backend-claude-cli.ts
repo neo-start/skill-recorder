@@ -9,6 +9,7 @@
 
 import { spawn } from 'node:child_process';
 import type { Backend, RawBackendOptions, RawBackendResult } from './backend';
+import { retryOnTransient } from './retry';
 
 interface ClaudePrintResult {
   type: string;
@@ -34,45 +35,22 @@ export interface ClaudeCliBackendOptions {
   maxTransientRetries?: number;
 }
 
-const TRANSIENT_API_STATUSES = new Set([429, 500, 502, 503, 504, 529]);
-
 export function createClaudeCliBackend(cfg: ClaudeCliBackendOptions = {}): Backend {
   const bin = cfg.bin ?? 'claude';
-  const maxRetries = cfg.maxTransientRetries ?? 3;
+  const maxAttempts = cfg.maxTransientRetries ?? 3;
 
   return {
     async call(opts: RawBackendOptions, retryNote?: string): Promise<RawBackendResult> {
-      let lastErr: unknown;
-      for (let attempt = 0; attempt < maxRetries; attempt++) {
-        try {
-          return await callOnce(bin, cfg, opts, retryNote);
-        } catch (e) {
-          lastErr = e;
-          if (!isTransient(e) || attempt === maxRetries - 1) throw e;
-          const waitMs = Math.min(60_000, 5_000 * Math.pow(2, attempt));
+      return retryOnTransient(() => callOnce(bin, cfg, opts, retryNote), {
+        maxAttempts,
+        onRetry: (attempt, total, _err, waitMs) => {
           process.stderr.write(
-            `[claude-cli backend] attempt ${attempt + 1}/${maxRetries} hit transient error; waiting ${waitMs}ms\n`,
+            `[claude-cli backend] attempt ${attempt + 1}/${total} hit transient error; waiting ${waitMs}ms\n`,
           );
-          await sleep(waitMs);
-        }
-      }
-      throw lastErr;
+        },
+      });
     },
   };
-}
-
-function isTransient(e: unknown): boolean {
-  const msg = (e as Error)?.message ?? '';
-  if (/api_status=(\d+)/.test(msg)) {
-    const m = msg.match(/api_status=(\d+)/);
-    if (m && TRANSIENT_API_STATUSES.has(Number(m[1]))) return true;
-  }
-  if (/Overloaded|529|503|504|ETIMEDOUT|ECONNRESET/i.test(msg)) return true;
-  return false;
-}
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((r) => setTimeout(r, ms));
 }
 
 async function callOnce(
@@ -178,7 +156,7 @@ async function callOnce(
   };
 }
 
-function stripFences(s: string): string {
+export function stripFences(s: string): string {
   const m = s.match(/^```(?:json)?\s*\n([\s\S]*?)\n```\s*$/);
   return m ? m[1]! : s.trim();
 }

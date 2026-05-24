@@ -8,7 +8,8 @@
     "dev:worker": "wrangler dev --config _future/wrangler.toml",
     "deploy:worker": "wrangler deploy --config _future/wrangler.toml",
     "typecheck": "tsc --noEmit && tsc --noEmit -p _future/tsconfig.json",
-    "lint": "echo no lint"
+    "lint": "echo no lint",
+    "test": "vitest run"
   },
   "dependencies": {
     "@skill-recorder/from-video": "workspace:*",
@@ -23,6 +24,7 @@
     "@types/node": "^20.12.0",
     "tsx": "^4.19.0",
     "typescript": "^5.5.3",
+    "vitest": "^2.1.0",
     "wrangler": "^3.78.0"
   }
 }

@@ -9,6 +9,7 @@
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint -- --fix",
     "typecheck": "turbo run typecheck",
+    "test": "turbo run test --filter=@skill-recorder/from-video --filter=@skill-recorder/render --filter=@skill-recorder/api",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,mdx,yml,yaml}\"",
     "clean": "turbo run clean && rm -rf node_modules"
   },

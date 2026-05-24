@@ -17,6 +17,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "lint": "echo no lint",
+    "test": "vitest run",
     "build": "esbuild bin/cli.ts --bundle --platform=node --format=esm --target=node20 --outfile=dist/cli.js --banner:js='#!/usr/bin/env node' && chmod +x dist/cli.js",
     "parity": "tsx tests/cli-parity.ts",
     "clean": "rm -rf dist"
@@ -27,6 +28,7 @@
   "devDependencies": {
     "esbuild": "^0.24.0",
     "tsx": "^4.19.0",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.3",
+    "vitest": "^2.1.0"
   }
 }
