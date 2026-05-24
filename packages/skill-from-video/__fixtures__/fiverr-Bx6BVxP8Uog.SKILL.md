@@ -1,16 +1,16 @@
 ---
-name: hire-a-freelancer-on-fiverr
-description: End-to-end workflow for hiring a freelancer on Fiverr: scope the project, search and filter the marketplace, vet candidate profiles, message before ordering, place a detailed order, then review the delivery. Use when the user wants help finding and engaging a Fiverr freelancer for a specific task.
+name: hire-a-quality-freelancer-on-fiverr
+description: Walk through Fiverr end-to-end to scope a project, filter sellers, vet profiles, message before ordering, and submit a clean brief. Use when the user wants to outsource a specific task (logo, article, website, video, etc.) on Fiverr and wants help picking the right person.
 allowed-tools: Bash
 ---
 
-# Hire a freelancer on Fiverr
+# Hire a quality freelancer on Fiverr
 
 Source: video — [Find the Best Freelancers on Fiverr: Easy Hiring Guide!](https://www.youtube.com/watch?v=Bx6BVxP8Uog) by Paired Recruiting
 
 > Distilled by AI from a public video transcript. Not human-verified.
 
-End-to-end workflow for hiring a freelancer on Fiverr: scope the project, search and filter the marketplace, vet candidate profiles, message before ordering, place a detailed order, then review the delivery. Use when the user wants help finding and engaging a Fiverr freelancer for a specific task.
+Walk through Fiverr end-to-end to scope a project, filter sellers, vet profiles, message before ordering, and submit a clean brief. Use when the user wants to outsource a specific task (logo, article, website, video, etc.) on Fiverr and wants help picking the right person.
 
 Domain: `fiverr.com`
 
@@ -18,123 +18,118 @@ Domain: `fiverr.com`
 
 Ask the user for any of these not already provided:
 
-- `project_keyword` — The service category to search for on Fiverr (e.g. 'logo design', 'website design', 'video editing'). (example: `logo design`)
-- `project_brief` — Specific outcome the user wants, including style, tone, colors, audience, or other concrete preferences — not just the category. (example: `Modern, minimalist logo for an online coffee store, black + warm orange palette`)
-- `budget_usd` — Maximum budget in USD for the gig. Higher budgets unlock more experienced sellers. (example: `150`)
-- `delivery_days` — How many days the user can wait for delivery. (example: `7`)
+- `project_type` — The thing being hired out, in search-friendly terms (e.g. 'logo design', 'website design', 'long-form article writing'). (example: `modern logo design`)
+- `project_brief` — Concrete details of the desired outcome: style, colors, tone, references, deliverable format, audience. (example: `Minimalist black-and-white logo for a coffee subscription brand; should feel modern and editorial; vector files required.`)
+- `budget` — Buyer's budget range for this gig in USD (or a single max). (example: `$50–$150`)
+- `deadline` — How fast the buyer needs the delivery (e.g. '48 hours', '1 week'). (example: `5 days`)
+- `language_preference` — Spoken language the freelancer must communicate in, if it matters. Leave blank to skip. (example: `English`)
 
 ## Steps
 
-### 1. Pin down the brief before opening Fiverr
+### 1. Pin down the brief before touching Fiverr
 
-Clarity up front prevents endless back-and-forth later. Write down the project, the concrete outcome, and the constraints before searching.
+Clarity up front prevents endless revision cycles. Translate the user's idea into a concrete spec a stranger could quote against.
 
 **Checklist:**
 
-- State the deliverable in one sentence (e.g. 'a logo', 'a 60-second explainer video')
-- Describe the style, tone, colors, or references — not just the category
-- List the skills or specializations the freelancer must have
-- Set a budget range; remember a $5 gig and a premium gig attract very different sellers
-- Note any hard deadline so it can be used as a filter
+- Name the specific deliverable (logo, 800-word blog post, 30-sec explainer, etc.), not a vague category
+- List the concrete outcome: style, tone, colors, references, file formats
+- Identify the skills/expertise the freelancer actually needs
+- Lock a budget range — budget gates which seller tier is realistic
+- Decide a hard deadline so delivery-time filters are meaningful
+- Flag any communication requirements (language, timezone overlap)
 
-### 2. Open the Fiverr homepage to start the search
+### 2. Open Fiverr to start the search
 
 ```bash
 browse open https://www.fiverr.com/
 ```
 
-### 3. Type the project keyword into the top search bar
+### 3. Search for the project category using the brief's keyword
 
 ```bash
 browse snapshot
-browse fill <selector-of-target> '{{project_keyword}}'
+browse fill <selector-of-target> '{{project_type}}'
 ```
 
-### 4. Submit the search to load the gig results page
-
-Submit the form (find the submit button via snapshot).
-```bash
-browse snapshot
-browse click <ref-of-submit-button>
-```
-
-### 5. Narrow the results using the sidebar filters
-
-The filters on the search results page are where most of the signal comes from. Apply them in order from hardest constraint to softest.
-
-**Checklist:**
-
-- Set a budget range that matches the user's stated budget
-- Set delivery time to match the user's deadline (e.g. 24h, 3 days, 7 days)
-- Filter by seller level — top rated and level 2 are safer, but don't reflexively exclude new sellers who often offer strong value while building reputation
-- If communication will be heavy, filter by the freelancer's spoken languages
-- Scroll the results and short-list 3–5 gigs whose thumbnails and titles match the brief
-
-### 6. Vet each short-listed freelancer's profile in depth
-
-A Fiverr profile reveals a lot if you read it carefully. Open each short-listed seller and audit them against the same checklist.
-
-**Checklist:**
-
-- Read the bio for relevant specialization and a professional tone
-- Open the portfolio and confirm their style genuinely matches the brief, not just the category
-- Check the overall rating AND skim recent written reviews for recurring complaints (late delivery, poor communication, low quality)
-- Confirm they actually deliver the deliverable you need (file formats, source files, revisions)
-- Note any gig extras (extra revisions, faster delivery, commercial rights) and whether they're worth the upcharge
-
-### 7. Open the 'Contact me' / message option on a short-listed freelancer's profile before ordering
+### 4. Submit the search
 
 ```bash
-browse snapshot
-browse click <ref-from-snapshot>
+browse press Enter
 ```
 
-### 8. Send a vetting message before placing any order
+### 5. Narrow the result list with Fiverr's side filters
 
-Always message first. The reply tells you whether they're the right fit and how communication will feel for the rest of the project.
-
-**Checklist:**
-
-- Introduce yourself in one line and describe the project concretely
-- State the budget and the desired delivery window explicitly
-- Ask them to confirm they can deliver that scope for that price in that timeframe
-- Ask one clarifying question (e.g. how many revisions, what files you'll receive)
-- Judge their reply on: speed, clarity, professionalism, and whether they ask smart follow-up questions
-- Treat slow, vague, or copy-paste replies as a red flag and move to the next short-listed seller
-
-### 9. Place the order with a thorough requirements brief
-
-After messaging confirms fit, order the standard package or accept a custom offer. The requirements box is your one shot to set the freelancer up for a clean first delivery.
+Filters are how you cut hundreds of gigs down to a shortlist that actually fits the brief. Apply them in this order so each filter cuts noise from the next.
 
 **Checklist:**
 
-- Pick the package (or custom offer) that matches what you agreed in chat
-- In the requirements, restate the deliverable, style, tone, audience, and any hard constraints
-- Attach reference images, brand assets, links, or example competitors
-- Specify file formats, dimensions, and any technical requirements
-- Confirm the agreed delivery date and number of revisions in writing
+- Set Budget to a band matching the project's budget — cheap gigs are fine for simple tasks but rarely 'top-notch'
+- Set Delivery time to match the deadline (e.g. 24h, up to 3 days, up to 7 days)
+- Filter by Seller Level: Top Rated and Level 2 for low-risk work; include New Sellers if you want value and are willing to vet harder
+- If communication matters, filter by the freelancer's spoken languages
+- Open promising listings in new tabs rather than judging from the search card alone
 
-### 10. Manage the project through Fiverr's messaging without micromanaging
+### 6. Vet each candidate's profile and gig in depth
 
-Stay involved enough to unblock the freelancer, but let them work. All communication and files should stay inside Fiverr for buyer protection.
-
-**Checklist:**
-
-- Check in periodically rather than every few hours
-- Answer the freelancer's questions promptly so you don't become the bottleneck
-- Give specific, constructive feedback rather than vague 'make it pop'
-- Keep all files, scope changes, and agreements inside Fiverr's chat — not email or DMs
-
-### 11. Review the delivery and either approve, request revisions, or leave an honest review
-
-Don't approve reflexively. Compare the delivery against the original requirements before clicking accept, and use the revision system if it's not right.
+A Fiverr profile reveals more than the gig card. Read it the way you'd read a résumé before an interview.
 
 **Checklist:**
 
-- Walk through the original requirements line by line and confirm each is met
-- If something is off, request revisions specifically and politely — most freelancers expect this
-- Only approve once you're genuinely satisfied; approval ends your leverage
-- Leave an honest, fair review — note concrete strengths and any concrete issues so future buyers (and the freelancer) benefit
+- Bio: does it claim relevant specialization, or is it generic 'I do everything'?
+- Portfolio: do past samples match the style/tone the user actually wants?
+- Reviews: read individual comments, not just the star average — look for praise about communication and on-time delivery
+- Watch for recurring complaints (slow replies, missed revisions, off-brief work) — those are dealbreakers
+- Check gig extras (extra revisions, faster delivery, source files) and whether they fit the deadline/budget
+- Shortlist 2–4 freelancers worth messaging; don't commit on profile alone
+
+### 7. Message each shortlisted freelancer before ordering
+
+The pre-order message both confirms fit and stress-tests communication. Use a short, specific opener that mirrors the brief and invites a yes/no.
+
+**Checklist:**
+
+- Introduce yourself in one line and describe the project in 2–3 sentences
+- Reference something specific from their portfolio so they know you actually looked
+- State budget and deadline explicitly, and ask 'is this something you can do?'
+- Judge the reply: polite, clear, professional, and asks smart follow-up questions = good signal
+- Slow, vague, or copy-paste replies = red flag, move to the next candidate
+- Use the thread to lock in revisions, file formats, and any edge cases before placing the order
+
+### 8. Place the order with a complete brief in the Requirements field
+
+Once you pick a freelancer, open their gig, choose the package (or use a custom offer if they sent one), and hit order. The Requirements step is your real brief — over-specify here, not later.
+
+**Checklist:**
+
+- Choose the package tier that includes everything you agreed on in messages (revisions, source files, delivery time)
+- In Requirements, paste the full brief: deliverable, style, colors/tone, references, target audience, file formats
+- Attach any reference images, brand assets, or examples directly in the order
+- Restate the deadline and any milestone check-ins
+- Confirm the price matches what was discussed before clicking confirm
+
+### 9. Stay involved during delivery without micromanaging
+
+Once the order is live, Fiverr tracks progress and routes all communication through the gig thread. Your job is to be reachable and decisive.
+
+**Checklist:**
+
+- Check in periodically but don't ping daily for no reason
+- Answer freelancer questions quickly — their clock keeps running while they wait
+- Give constructive, specific feedback on drafts rather than vague 'make it pop'
+- Keep all communication inside Fiverr's messaging (protects the order and review)
+
+### 10. Review the delivery, request revisions if needed, then leave an honest review
+
+Don't auto-approve. Compare the delivery against the original brief line by line. Fiverr's revision system and review system are the two levers you have left.
+
+**Checklist:**
+
+- Check delivery against every bullet in the original requirements
+- If something is off, request a revision with specific, actionable notes — most freelancers will fix it
+- Only approve once you're genuinely satisfied; approval closes the order
+- Leave an honest review: rate communication, quality, and on-time delivery separately
+- If issues weren't resolved, mention them constructively — this protects future buyers and gives the freelancer real feedback
 
 ## On failure
 

@@ -17,7 +17,7 @@ Rules:
 - \`description\`: one or two sentences saying what this skill achieves and when to use it.
 - \`domain\`: the specific site the video targets, or empty if domain-agnostic.
 - \`startUrl\`: include if the skill has a sensible starting page; omit otherwise.
-- \`parameters\`: inputs the agent should ask the user for (e.g. \`query\`, \`budget_usd\`). Omit if none.
+- \`parameters\`: per-run inputs the agent should ask the user for before doing anything. A value belongs here when two different users running this skill would plausibly plug in different values — e.g. their search query, their budget, the URL of the specific thing they want to act on, their target audience. Heuristic thresholds the narrator teaches as rules of thumb (price bands like "$15–$50", review-count floors like "≥ 100", response-time cutoffs) stay inside guidance \`criteria\` — they're the narrator's expertise, not the user's input. The test: "would the next user have a different opinion on this number?" If yes → parameter. If no → criterion. Omit \`parameters\` entirely when the skill has no genuine per-run inputs.
 - \`steps\`: 3–12 ordered steps. Prefer fewer high-signal steps over many shallow ones. Step \`id\`s should be \`s1\`, \`s2\`, … in order.
 - Do **not** copy specific prices, seller names, or example numbers from the video into rules — those are the narrator's anecdotes, not criteria.
 - If the transcript is genuinely too sparse to yield a useful skill, emit a Skill whose only step is a single guidance step explaining what's missing — never fabricate UI navigation that isn't grounded in the transcript.
