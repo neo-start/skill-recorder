@@ -34,6 +34,10 @@ class TrialResult:
     trace_path: str | None
     renderer_version: str | None
     error: str | None             # exception message if the trial crashed
+    # `runner` distinguishes rows produced by different drivers when results
+    # get pooled into one analysis. Default 'unknown' for back-compat with
+    # any pre-existing CSVs; runners set it explicitly ('agentlab', 'ccc').
+    runner: str = "unknown"
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

@@ -83,6 +83,7 @@ def run_single_trial(
             cost_usd=0.0, n_steps=0, trace_path=None,
             renderer_version=renderer_version(),
             error="dry-run",
+            runner="agentlab",
         )
 
     # Late imports — pulling in agentlab triggers a lot of side effects (model
@@ -90,8 +91,11 @@ def run_single_trial(
     from agentlab.experiments.loop import EnvArgs, ExpArgs
 
     agent_args = _build_agent_args_for_arm(arm, task_id, config)
+    # browsergym registers WebArena envs as `browsergym/webarena.<N>`; our
+    # selection.yaml uses the bare `webarena.<N>` form for readability.
+    env_task_name = task_id if task_id.startswith("browsergym/") else f"browsergym/{task_id}"
     env_args = EnvArgs(
-        task_name=task_id,
+        task_name=env_task_name,
         task_seed=seed,
         max_steps=config.max_steps,
         headless=True,
@@ -148,6 +152,7 @@ def run_single_trial(
         trace_path=str(exp_dir),
         renderer_version=renderer_version(),
         error=error,
+        runner="agentlab",
     )
 
 
@@ -239,6 +244,7 @@ def main() -> None:
                         cost_usd=0.0, n_steps=0, trace_path=None,
                         renderer_version=None,
                         error=f"{type(e).__name__}: {e}",
+                        runner="agentlab",
                     )
                 results.append(r)
 
