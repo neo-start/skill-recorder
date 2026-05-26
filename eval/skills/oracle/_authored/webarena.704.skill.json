@@ -1,0 +1,62 @@
+{
+  "id": "skill_oracle_webarena_704",
+  "title": "Generate Magento sales order report — Feb 2023",
+  "description": "Set the Magento Orders Report date filter to 2/1/23 — 2/28/23 (the 'last month' relative to today=3/15/2023). The evaluator inspects only the URL and the two date-input values — you do NOT need to click 'Show Report' for the task to count as complete.",
+  "domain": "localhost:7780",
+  "startUrl": "http://localhost:7780/admin/reports/report_sales/sales",
+  "parameters": [],
+  "steps": [
+    {
+      "id": "s1",
+      "intent": "Navigate directly to the Magento Orders Report page (do not go through Reports menu, the URL is direct)",
+      "action": "navigate",
+      "url": "http://localhost:7780/admin/reports/report_sales/sales",
+      "expectation": {
+        "description": "Page title contains 'Orders Report' and the URL ends with /reports/report_sales/sales"
+      }
+    },
+    {
+      "id": "s2",
+      "intent": "Fill the From date to 2/1/23 (Feb 1, 2023)",
+      "action": "fill",
+      "selectors": [
+        { "kind": "id", "value": "#sales_report_from", "score": 95 }
+      ],
+      "valueTemplate": "2/1/23",
+      "fingerprint": {
+        "tag": "input",
+        "role": "textbox",
+        "text": "",
+        "attrs": { "id": "sales_report_from" }
+      },
+      "expectation": {
+        "description": "The 'From' input now shows '2/1/23'. Verify by reading the field value back if uncertain."
+      }
+    },
+    {
+      "id": "s3",
+      "intent": "Fill the To date to 2/28/23 (Feb 28, 2023, last day of the month)",
+      "action": "fill",
+      "selectors": [
+        { "kind": "id", "value": "#sales_report_to", "score": 95 }
+      ],
+      "valueTemplate": "2/28/23",
+      "fingerprint": {
+        "tag": "input",
+        "role": "textbox",
+        "text": "",
+        "attrs": { "id": "sales_report_to" }
+      },
+      "expectation": {
+        "description": "The 'To' input shows '2/28/23'. DONE — do NOT click 'Show Report'; the evaluator only checks the field values."
+      }
+    }
+  ],
+  "auth": {
+    "required": true,
+    "reason": "Magento admin session (admin/admin1234) is required; the runner pre-authenticates the browser before invoking the agent."
+  },
+  "sourceRecordingId": "manual_authored_2026-05-25_for_eval_704",
+  "createdAt": 1779580000000,
+  "updatedAt": 1779580000000
+}
