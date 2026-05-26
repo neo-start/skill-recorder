@@ -1,23 +1,75 @@
-# 10 WebArena tasks for the MVP eval.
+# 10 WebArena tasks for the MVP eval — shopping_admin domain only.
 #
-# Selection criteria (per docs/eval-plan.md Step 2):
-#   - L2-ish difficulty: multi-step, involves form fill / list filter / record creation
-#   - Cross 3-4 domains: shopping, reddit, gitlab, cms (skip pure map/wikipedia navigation)
-#   - Avoid one-shot navigation tasks (frontier baseline saturates → no headroom)
-#   - Each task must have either a published reference trace (path A) OR be
-#     reasonable to hand-author (path C). See README.md "Oracle strategy".
+# Why these 10:
+#   - All shopping_admin (Magento back-office) per the disk-constrained MVP scope
+#   - All have a non-empty `program_html` evaluator → agent must mutate state,
+#     not just retrieve info. SKILL.md's value shows on multi-step workflows
+#     more than on single-page lookups.
+#   - Diverse template families: 22 templates exist in shopping_admin mutations,
+#     these 10 cover 6 distinct categories (catalog / orders / reviews / reports /
+#     marketing / one bulk-action variant).
+#   - Difficulty mix: 2 easy / 5 medium / 3 hard — see `difficulty` field.
 #
-# Resolve the actual task ids by browsing the WebArena `config_files/test.raw.json`
-# manifest after docker is up. Replace these placeholders.
+# id  = the gym env suffix; runner prepends `browsergym/` when calling EnvArgs.
+# oracle_source = `authored` until we confirm WebArena publishes reference
+#   trajectories per task. Setting it to `reference` once we have a real trace.
 
-# - id: webarena.shopping.cheapest-monitor
-#   domain: shopping
-#   oracle_source: reference   # one of: reference | authored
-#   notes: "Sort by price asc, pick top item, add to cart"
-#
-# - id: webarena.gitlab.assign-issue-to-self
-#   domain: gitlab
-#   oracle_source: authored
-#   notes: "Find an open issue in <repo>, assign to current user"
-#
-# - ...
+- id: webarena.453
+  category: catalog
+  difficulty: easy
+  intent: "Disable Teton pullover hoodie from the site, they are facing some quality issues."
+  oracle_source: authored
+
+- id: webarena.458
+  category: catalog
+  difficulty: medium
+  intent: "Reduce the price of this product by $5."
+  oracle_source: authored
+
+- id: webarena.470
+  category: orders
+  difficulty: easy
+  intent: "Cancel order 302."
+  oracle_source: authored
+
+- id: webarena.496
+  category: orders
+  difficulty: medium
+  intent: "Update order #299 with the Federal Express tracking number 8974568499."
+  oracle_source: authored
+
+- id: webarena.538
+  category: orders
+  difficulty: medium
+  intent: "Modify the address of order #299 to 456 Oak Avenue, Apartment 5B, New York, NY, 10001."
+  oracle_source: authored
+
+- id: webarena.771
+  category: reviews
+  difficulty: medium
+  intent: "Approve the positive reviews to display in our store."
+  oracle_source: authored
+
+- id: webarena.423
+  category: catalog
+  difficulty: hard
+  intent: "Mark all Hollister shirts on sale."
+  oracle_source: authored
+
+- id: webarena.704
+  category: reports
+  difficulty: medium
+  intent: "Today is 3/15/2023, generate a sales order report for last month."
+  oracle_source: authored
+
+- id: webarena.694
+  category: catalog
+  difficulty: hard
+  intent: "Add a simple product named Energy-Bulk Women Shirt with 50 in stock, available in size S and color blue, priced at $60."
+  oracle_source: authored
+
+- id: webarena.699
+  category: marketing
+  difficulty: hard
+  intent: "Draft a new marketing price rule for spring sale that offers a 20 percent discount site-wide for all customers."
+  oracle_source: authored

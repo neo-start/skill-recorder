@@ -2,22 +2,28 @@
 
 Quantitative evaluation of "Skill Recorder + one human demonstration" vs "cold agent" on a multi-task web automation benchmark.
 
-**Benchmark:** WebArena (5 self-hosted Docker containers, 812 tasks across Postmill/GitLab/Magento/CMS/OpenStreetMap). We pick 10 tasks for the MVP.
+**Benchmark:** WebArena, **MVP scope = `shopping_admin` (Magento back-office) only** (~180 of the 812 tasks). We pick 10 from this subset.
 
 > This sub-project replaces the original WorkArena plan (see `docs/eval-plan.md` §44-77 for the rationale). The architecture is unchanged; only **task selection** (Step 2) and **oracle synthesis** (Step 3) are WebArena-specific.
+
+### Why single-domain for MVP
+
+Real per-service tar sizes are an order of magnitude larger than the original WebArena README implied (shopping 62.9 GB, gitlab 72.4 GB, postmill 49.8 GB, shopping_admin 9.0 GB; full stack ≈ 390 GB on disk after `docker load`). Local disk constraints make single-service the only safe default. See `docs/webarena-setup.md` for the size table and how to opt the larger services in.
+
+The story narrows from "general web automation" to "Magento back-office workflows" — a legitimate niche (e-commerce ops, merchandisers spending the day in admin panels), but reviewers will ask "why one domain?" The answer is: physical disk, not benchmark scope.
 
 ## Status
 
 | Step | What | State |
 |---|---|---|
-| 1 | WebArena Docker setup | docs only — user runs `docker compose up` |
-| 2 | Pick 10 tasks | TODO — pending Docker up |
-| 3 | Oracle SKILL.md (A + C mixed) | scaffolded — needs WebArena up |
-| 4 | Human SKILL.md (10 recordings) | TODO — needs the CRX extension installed |
-| 5 | Agent wrapper | scaffolded |
-| 6 | Runner | scaffolded |
-| 7 | Reporter | scaffolded |
-| 8 | Validate (smoke + full 90 runs) | TODO |
+| 1 | WebArena Docker setup (`shopping_admin` only) | script ready — user runs `./docker/setup-webarena.sh up` (~9 GB download) |
+| 2 | Pick 10 tasks from `shopping_admin` subset | in progress — filtering WebArena's `test.raw.json` for Magento tasks |
+| 3 | Oracle SKILL.md (A + C mixed) | scaffolded — `trace_to_skill()` blocks on a real WebArena trace |
+| 4 | Human SKILL.md (10 recordings) | blocked on Step 1 + CRX install |
+| 5 | Agent wrapper | scaffolded + dry-run verified |
+| 6 | Runner | scaffolded + dry-run verified |
+| 7 | Reporter | scaffolded + dry-run verified |
+| 8 | Validate (smoke + full 90 runs) | blocked on Steps 1-4 |
 
 ## Quickstart (after WebArena is up)
 
