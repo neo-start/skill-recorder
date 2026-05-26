@@ -1,34 +1,34 @@
-"""Generate a cold-vs-oracle comparison report (HTML + PDF) from two runs.csv files.
+"""Generate a cold/oracle/human comparison report (HTML + PDF) from runs.csv files.
 
 Usage:
     python -m src.report \
       --cold results/runs/<cold-ts>/runs.csv \
       --oracle results/runs/<oracle-ts>/runs.csv \
+      --human results/runs/<human-ts>/runs.csv      # optional — switches to 3-arm story
       --out results/reports/cold-vs-oracle-<date>
 
 Writes <out>.html and <out>.pdf side by side. The static narrative (product
-findings, methodology, next steps) is embedded; only the numbers update from
+findings, methodology, next steps) is embedded; only numbers update from
 the input CSVs.
 
-We carry a hand-curated `OVERRIDES` block for known false-fails from earlier
-buggy runs — currently just task 704 in the 2026-05-25 cold CSV, which scored
-0 due to the `pw.Page.url` cache issue that we later fixed and confirmed
-re-runs as success. Without this override, the cold rate would look worse
-than the runner_ccc fix lets it actually be.
+We carry a hand-curated OVERRIDES block for known false-fails from earlier
+buggy runs — currently just task 704's cold trial, which scored 0 from a
+pw.Page.url cache bug we later fixed.
+
+For 3-arm runs where the human arm intentionally skipped a task (e.g. 699
+was too select-heavy to record meaningfully), we mark the missing cell
+"—" with a † note in the report — never silently as a failure.
 """
 
 from __future__ import annotations
 
 import argparse
 import csv
-import json
 import math
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-# Known cold-run false-fails to correct in the joined view. (task_id, run_ts) → new success bool.
-# We always note the override in the report itself for transparency.
 OVERRIDES: dict[tuple[str, str], dict[str, Any]] = {
     ("webarena.704", "20260525T084638Z"): {
         "success": True,
@@ -37,6 +37,19 @@ OVERRIDES: dict[tuple[str, str], dict[str, Any]] = {
                 "manual re-run after the fix confirmed 1.0.",
     },
 }
+
+# Tasks the user intentionally did not record for the human arm.
+# Each entry: task_id -> reason shown in the report.
+HUMAN_SKIPPED: dict[str, str] = {
+    "webarena.699": "Skipped — recording a Cart Price Rule form with 4 native "
+                    "<select> elements is structurally guaranteed to fail under "
+                    "the current CRX renderer (browse fill doesn't apply to "
+                    "<select>; see Finding #2). Recording would not add signal.",
+}
+
+TASK_ORDER = ["webarena.453", "webarena.458", "webarena.470", "webarena.496",
+              "webarena.538", "webarena.771", "webarena.423", "webarena.704",
+              "webarena.694", "webarena.699"]
 
 
 def read_runs(path: Path) -> list[dict[str, Any]]:
@@ -71,15 +84,23 @@ def fmt_pct(x: float) -> str:
     return f"{x * 100:.1f}%"
 
 
+def fmt_cost(x: float) -> str:
+    return f"${x:.2f}"
+
+
 def summarise(rows: list[dict[str, Any]]) -> dict[str, Any]:
-    n = len(rows)
-    succ = sum(1 for r in rows if to_bool(r["success"]))
+    """Aggregate run stats. Excludes rows whose error indicates a missing
+    SKILL.md (not a real trial — those are FileNotFoundError stubs from
+    runner_ccc when a recording for that arm/task doesn't exist)."""
+    # Filter out missing-file stubs so summary stats reflect actual trials.
+    real_rows = [r for r in rows if "missing human SKILL.md" not in (r.get("error") or "")
+                                   and "missing oracle SKILL.md" not in (r.get("error") or "")]
+    n = len(real_rows)
+    succ = sum(1 for r in real_rows if to_bool(r["success"]))
     lo, hi = wilson_ci(succ, n)
-    total_cost = sum(float(r["cost_usd"]) for r in rows)
-    total_turns = sum(int(r["n_steps"]) for r in rows)
-    total_wall = sum(float(r["wall_clock_sec"]) for r in rows)
-    succ_costs = [float(r["cost_usd"]) for r in rows if to_bool(r["success"])]
-    fail_costs = [float(r["cost_usd"]) for r in rows if not to_bool(r["success"])]
+    total_cost = sum(float(r["cost_usd"]) for r in real_rows)
+    total_turns = sum(int(r["n_steps"]) for r in real_rows)
+    total_wall = sum(float(r["wall_clock_sec"]) for r in real_rows)
     return {
         "n": n,
         "success": succ,
@@ -88,93 +109,76 @@ def summarise(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "ci_high": hi,
         "total_cost": total_cost,
         "avg_cost": total_cost / n if n else 0.0,
-        "succ_avg_cost": sum(succ_costs) / len(succ_costs) if succ_costs else 0.0,
-        "fail_avg_cost": sum(fail_costs) / len(fail_costs) if fail_costs else 0.0,
         "total_turns": total_turns,
         "avg_turns": total_turns / n if n else 0.0,
         "total_wall_sec": total_wall,
     }
 
 
-def render_summary_table(cold: dict[str, Any], oracle: dict[str, Any]) -> str:
-    def row(label, c_val, o_val, delta=None):
-        if delta is None:
-            delta_str = ""
-        else:
-            delta_str = f'<td class="num">{delta}</td>'
-        return f"<tr><td>{label}</td><td class='num'>{c_val}</td><td class='num'>{o_val}</td>{delta_str}</tr>"
+def render_summary_table(arms: dict[str, dict[str, Any]]) -> str:
+    """Multi-arm summary: dynamically generates columns from the arms dict.
+    arms = {'cold': summary_dict, 'oracle': summary_dict, 'human': summary_dict}
+    Column order: cold → oracle → human (skip arms not present)."""
+    cols = [a for a in ("cold", "oracle", "human") if a in arms]
+    header_cells = "".join(f"<th class='num'>{a.title()}</th>" for a in cols)
 
-    def fmt_cost(x): return f"${x:.2f}"
+    def row_for(label, fmt):
+        cells = "".join(f"<td class='num'>{fmt(arms[a])}</td>" for a in cols)
+        return f"<tr><td>{label}</td>{cells}</tr>"
 
-    rate_delta = (oracle["rate"] - cold["rate"]) * 100
-    cost_ratio = cold["total_cost"] / oracle["total_cost"] if oracle["total_cost"] else float("inf")
-    turn_ratio = cold["total_turns"] / oracle["total_turns"] if oracle["total_turns"] else float("inf")
+    rows_html = [
+        row_for("Success rate", lambda s: fmt_pct(s["rate"])),
+        row_for("95% Wilson CI", lambda s: f"[{fmt_pct(s['ci_low'])}, {fmt_pct(s['ci_high'])}]"),
+        row_for("Trials (real)", lambda s: f"{s['n']}"),
+        row_for("Total cost", lambda s: fmt_cost(s["total_cost"])),
+        row_for("Avg cost / trial", lambda s: fmt_cost(s["avg_cost"])),
+        row_for("Total turns", lambda s: f"{s['total_turns']}"),
+        row_for("Avg turns / trial", lambda s: f"{s['avg_turns']:.1f}"),
+        row_for("Total wall-clock", lambda s: f"{s['total_wall_sec']/60:.1f} min"),
+    ]
     return f"""
 <table>
-  <thead><tr><th>Metric</th><th class='num'>Cold</th><th class='num'>Oracle</th><th class='num'>Delta</th></tr></thead>
-  <tbody>
-    {row("Success rate", fmt_pct(cold['rate']), fmt_pct(oracle['rate']), f"<span class='ok'>+{rate_delta:.0f}pp</span>")}
-    {row("95% Wilson CI", f"[{fmt_pct(cold['ci_low'])}, {fmt_pct(cold['ci_high'])}]", f"[{fmt_pct(oracle['ci_low'])}, {fmt_pct(oracle['ci_high'])}]")}
-    {row("Trials", cold['n'], oracle['n'])}
-    {row("Total cost", fmt_cost(cold['total_cost']), fmt_cost(oracle['total_cost']), f"<span class='ok'>{cost_ratio:.1f}× cheaper</span>")}
-    {row("Avg cost / trial", fmt_cost(cold['avg_cost']), fmt_cost(oracle['avg_cost']))}
-    {row("Total turns", cold['total_turns'], oracle['total_turns'], f"<span class='ok'>{turn_ratio:.1f}× fewer</span>")}
-    {row("Avg turns / trial", f"{cold['avg_turns']:.1f}", f"{oracle['avg_turns']:.1f}")}
-    {row("Total wall-clock", f"{cold['total_wall_sec']/60:.1f} min", f"{oracle['total_wall_sec']/60:.1f} min")}
-  </tbody>
+  <thead><tr><th>Metric</th>{header_cells}</tr></thead>
+  <tbody>{"".join(rows_html)}</tbody>
 </table>
 """
 
 
-def render_per_task(cold_rows, oracle_rows) -> str:
-    by_task: dict[str, dict] = {}
-    for r in cold_rows:
-        by_task.setdefault(r["task_id"], {})["cold"] = r
-    for r in oracle_rows:
-        by_task.setdefault(r["task_id"], {})["oracle"] = r
+def render_per_task(arms_rows: dict[str, list[dict]]) -> str:
+    """Compact per-task table. Each arm cell shows ✓/✗/— + turns + cost."""
+    cols = [a for a in ("cold", "oracle", "human") if a in arms_rows]
+    by_task: dict[str, dict[str, dict]] = {}
+    for arm, rows in arms_rows.items():
+        for r in rows:
+            by_task.setdefault(r["task_id"], {})[arm] = r
 
-    def cell(r, key, cls="num"):
-        if r is None: return f"<td class='{cls}'>—</td>"
-        return f"<td class='{cls}'>{r[key]}</td>"
-
-    def succ_cell(r):
-        if r is None: return "<td class='center'>—</td>"
+    def cell(task_id: str, arm: str) -> str:
+        r = by_task.get(task_id, {}).get(arm)
+        if r is None:
+            # Truly missing trial (likely arm not run for this task)
+            if arm == "human" and task_id in HUMAN_SKIPPED:
+                return "<td class='center' title='intentionally skipped'>— <small>‡</small></td>"
+            return "<td class='center'>—</td>"
+        # Detect "missing recording" stubs (FileNotFoundError trials)
+        err = r.get("error") or ""
+        if "missing human SKILL.md" in err or "missing oracle SKILL.md" in err:
+            if arm == "human" and task_id in HUMAN_SKIPPED:
+                return "<td class='center'>— <small>‡</small></td>"
+            return "<td class='center'>—</td>"
         ok = to_bool(r["success"])
         symbol = "<span class='ok'>✅</span>" if ok else "<span class='fail'>❌</span>"
         if r.get("_override"):
-            symbol += " <small title='" + r["_override_note"] + "'>†</small>"
-        return f"<td class='center'>{symbol}</td>"
+            symbol += f"<small title=\"{r['_override_note']}\">†</small>"
+        turns = r["n_steps"]
+        cost = float(r["cost_usd"])
+        return f"<td class='center'>{symbol} <small>{turns}t / ${cost:.2f}</small></td>"
 
-    rows_html = []
-    # Preserve selection.yaml ordering
-    desired = ["webarena.453","webarena.458","webarena.470","webarena.496","webarena.538",
-               "webarena.771","webarena.423","webarena.704","webarena.694","webarena.699"]
-    for tid in desired:
-        pair = by_task.get(tid, {})
-        c, o = pair.get("cold"), pair.get("oracle")
-        rows_html.append(f"""<tr>
-  <td><code>{tid}</code></td>
-  {succ_cell(c)}{cell(c, 'n_steps')}<td class='num'>${float(c['cost_usd']):.2f}</td>
-  {succ_cell(o)}{cell(o, 'n_steps')}<td class='num'>${float(o['cost_usd']):.2f}</td>
-</tr>""" if c and o else f"<tr><td><code>{tid}</code></td><td colspan='6' class='center'>missing data</td></tr>")
-    return f"""
-<table>
-  <thead>
-    <tr>
-      <th rowspan='2'>Task</th>
-      <th colspan='3' class='center' style='border-right: 2px solid #c0c0c0'>Cold</th>
-      <th colspan='3' class='center'>Oracle</th>
-    </tr>
-    <tr>
-      <th class='center'>OK</th><th class='num'>Turns</th><th class='num'>Cost</th>
-      <th class='center'>OK</th><th class='num'>Turns</th><th class='num'>Cost</th>
-    </tr>
-  </thead>
-  <tbody>
-  {''.join(rows_html)}
-  </tbody>
-</table>
-"""
+    header = "<tr><th>Task</th>" + "".join(f"<th class='center'>{a.title()}</th>" for a in cols) + "</tr>"
+    body = []
+    for tid in TASK_ORDER:
+        cells = "".join(cell(tid, arm) for arm in cols)
+        body.append(f"<tr><td><code>{tid}</code></td>{cells}</tr>")
+    return f"<table><thead>{header}</thead><tbody>{''.join(body)}</tbody></table>"
 
 
 CSS = """
@@ -187,7 +191,6 @@ h2 { font-size: 14pt; margin: 22pt 0 6pt; border-bottom: 1px solid #d0d0d0; padd
 h3 { font-size: 12pt; margin: 16pt 0 4pt; color: #333; }
 p, li { font-size: 11pt; }
 code { font-family: "SF Mono", Menlo, monospace; font-size: 10pt; background: #f3f3f3; padding: 0.5pt 3pt; border-radius: 2pt; }
-pre { background: #f7f7f7; padding: 8pt 10pt; border-radius: 4pt; font-size: 9.5pt; overflow-x: auto; }
 table { border-collapse: collapse; width: 100%; font-size: 10pt; margin: 8pt 0; }
 th, td { text-align: left; padding: 5pt 8pt; border-bottom: 1px solid #e0e0e0; }
 th { background: #f0f0f0; font-weight: 600; }
@@ -206,128 +209,129 @@ td.center { text-align: center; }
 ul { padding-left: 18pt; }
 ul li { margin: 2pt 0; }
 .page-break { page-break-before: always; }
-.tag { display: inline-block; font-size: 9pt; padding: 1pt 6pt; border-radius: 10pt; background: #eef; color: #224; margin-right: 4pt; }
 """
 
 
-def render_html(cold_rows, oracle_rows, cold_ts: str, oracle_ts: str) -> str:
-    cold = summarise(cold_rows)
-    oracle = summarise(oracle_rows)
+def render_html(arms_rows: dict[str, list[dict]], ts_by_arm: dict[str, str]) -> str:
+    arms = {name: summarise(rows) for name, rows in arms_rows.items()}
     ts_now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    has_overrides = any(r.get("_override") for r in cold_rows + oracle_rows)
-    override_note = ""
-    if has_overrides:
-        affected = [r["task_id"] for r in cold_rows + oracle_rows if r.get("_override")]
-        override_note = (
-            f"<p class='callout warn'>† One trial in this report uses a manual "
-            f"override of the original CSV score: {', '.join(affected)}. The original "
-            f"score=0 was a known runner bug (<code>pw.Page.url</code> cache); manual "
-            f"re-run after the fix scored 1.0. Affected trials are marked with † in the "
-            f"per-task table.</p>"
+    is_3arm = "human" in arms_rows
+
+    cold = arms["cold"]
+    oracle = arms["oracle"]
+    human = arms.get("human")
+
+    # Build the headline paragraph
+    if is_3arm:
+        headline = (
+            f"<strong>Cold</strong> {fmt_pct(cold['rate'])} → "
+            f"<strong>Human</strong> {fmt_pct(human['rate'])} → "
+            f"<strong>Oracle</strong> {fmt_pct(oracle['rate'])}. "
+            f"Human (raw CRX recording) sits between cold (no skill) and oracle "
+            f"(hand-authored ideal demonstration), and the gap human→oracle quantifies "
+            f"what Skill Recorder loses to the renderer's current limitations on "
+            f"<select>, checkboxes, and Knockout multiselects (Findings #2–#3)."
+        )
+    else:
+        headline = (
+            f"Oracle SKILL.md takes Claude Code from cold {fmt_pct(cold['rate'])} → "
+            f"{fmt_pct(oracle['rate'])}, "
+            f"<strong>{cold['total_cost']/oracle['total_cost']:.1f}× cheaper</strong>, "
+            f"<strong>{cold['total_turns']/oracle['total_turns']:.1f}× fewer turns</strong>."
         )
 
-    return f"""<!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8">
-<title>Skill Recorder Eval — Cold vs Oracle ({ts_now[:10]})</title>
+    # Override callout (704)
+    has_overrides = any(r.get("_override") for rows in arms_rows.values() for r in rows)
+    override_note = ""
+    if has_overrides:
+        override_note = (
+            "<p class='callout warn'>† One cold trial uses a manual override of the "
+            "original CSV score (webarena.704 — original 0 was a runner_ccc "
+            "<code>pw.Page.url</code> cache bug; manual re-run after the fix confirmed 1.0).</p>"
+        )
+
+    # Skipped-tasks callout (human arm)
+    skipped_note = ""
+    if is_3arm and HUMAN_SKIPPED:
+        items = "".join(f"<li><code>{tid}</code> — {reason}</li>"
+                        for tid, reason in HUMAN_SKIPPED.items())
+        skipped_note = (
+            f"<p class='callout'>‡ The human arm intentionally skipped recordings "
+            f"for tasks where the CRX-renderer combination is structurally guaranteed "
+            f"to fail (see Findings below). Skipped tasks render as <code>—</code> "
+            f"in the per-task table and are excluded from arm-level stats:"
+            f"<ul>{items}</ul></p>"
+        )
+
+    runs_line = " · ".join(f"{name.title()} <code>{ts_by_arm[name]}</code>" for name in arms_rows)
+
+    sections = [f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<title>Skill Recorder Eval — {'3-arm' if is_3arm else 'Cold vs Oracle'} ({ts_now[:10]})</title>
 <style>{CSS}</style></head><body>
 
-<h1>Skill Recorder Evaluation — Cold vs Oracle</h1>
+<h1>Skill Recorder Evaluation — {'3-arm Cold / Oracle / Human' if is_3arm else 'Cold vs Oracle'}</h1>
 <p class="subtitle">10 个 WebArena shopping_admin 任务,Claude Code CLI 驱动,seed 0,sonnet 4.6</p>
 
 <dl class="meta">
   <dt>报告日期</dt>     <dd>{ts_now[:10]}</dd>
-  <dt>Cold run</dt>     <dd><code>{cold_ts}</code> · runner_ccc · sonnet</dd>
-  <dt>Oracle run</dt>   <dd><code>{oracle_ts}</code> · runner_ccc · sonnet</dd>
+  <dt>Runs</dt>         <dd>{runs_line}</dd>
   <dt>Benchmark</dt>    <dd>WebArena <code>shopping_admin</code> only (单服务 MVP scope)</dd>
-  <dt>Arms tested</dt>  <dd>Cold (no SKILL.md) · Oracle (手写理想 SKILL.md)</dd>
+  <dt>Arms tested</dt>  <dd>{' · '.join(arms_rows.keys())}</dd>
   <dt>Seeds</dt>        <dd>0 (single seed; Wilson CI is wide — see below)</dd>
 </dl>
 
 <h2>Executive Summary</h2>
-<p>Oracle SKILL.md(每个任务专门手写的"理想演示")在 Claude Code CLI 上把 10 个 WebArena 任务的成功率从 cold <strong>{fmt_pct(cold['rate'])}</strong> 拉到 <strong>{fmt_pct(oracle['rate'])}</strong>,delta <span class='ok'>+{(oracle['rate']-cold['rate'])*100:.0f}pp</span>。配套指标:<strong>{cold['total_cost']/oracle['total_cost']:.1f}× 更便宜</strong>,<strong>{cold['total_turns']/oracle['total_turns']:.1f}× 更少 turns</strong>。</p>
-<p>这是 Skill Recorder 产品故事的第一组硬数字:同一模型(sonnet 4.6)+ 同一工具集(browse CLI)+ 唯一变量是 SKILL.md。结果说明 SKILL.md 不只是"略微好用",它把 cold 摸不到的 4 个复杂任务从 0 提到了 100%。</p>
-
+<p>{headline}</p>
 {override_note}
+{skipped_note}
 
-<h2>Cold vs Oracle 总对比</h2>
-{render_summary_table(cold, oracle)}
+<h2>Summary by arm</h2>
+{render_summary_table(arms)}
 
-<h2>每 task 对比</h2>
-{render_per_task(cold_rows, oracle_rows)}
+<h2>Per-task results</h2>
+<p style="font-size:10pt;color:#666;">每格:✅ / ❌ / — (未运行或 ‡ 主动跳过) + <em>turns</em> + cost。† 表示覆盖了原始 CSV 分数。</p>
+{render_per_task(arms_rows)}
+"""]
 
+    # The findings + methodology + next-steps sections (static narrative — same as v2,
+    # extended slightly for 3-arm story when relevant).
+    sections.append("""
 <div class="page-break"></div>
 
-<h2>发现 — 走通过程中暴露的 5 个产品级 bug</h2>
-<p>这些都在 oracle SKILL.md 的"Critical tool notes"段落反向教 agent 怎么 work around。每条都是真实 Skill Recorder 产品工序的 TODO,不只是 eval 黑客。</p>
+<h2>Five product-level findings (surfaced by oracle authoring)</h2>
+<p>All five are real Skill Recorder TODOs, encoded as work-arounds in the oracle SKILL.md "Critical tool notes" sections. Fixing them should narrow the human → oracle gap.</p>
 
 <table>
-  <thead><tr><th>#</th><th>问题</th><th>影响</th><th>当前 work around</th><th>产品根治方向</th></tr></thead>
+  <thead><tr><th>#</th><th>Issue</th><th>Impact</th><th>Current work-around</th><th>Product fix direction</th></tr></thead>
   <tbody>
-    <tr>
-      <td>1</td>
-      <td><code>browse fill</code> 默认按 Enter 收尾</td>
-      <td>表单页输入立刻提交,后续 fill 在新 URL 上失效</td>
-      <td>SKILL.md 显式写 <code>--no-press-enter</code></td>
-      <td>renderer 默认 <code>--no-press-enter</code>,只有 <code>action: "submit"</code> 加 Enter</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td><code>browse fill</code> 不处理 <code>&lt;select&gt;</code></td>
-      <td>下拉框设值静默无效</td>
-      <td>用 <code>browse select</code> 替代</td>
-      <td>SKILL schema 加 <code>action: "select"</code> + renderer 输出 <code>browse select</code></td>
-    </tr>
-    <tr>
-      <td>3</td>
-      <td><code>browse fill</code> 不处理 checkbox / toggle</td>
-      <td>Magento 切换控件无法设值</td>
-      <td>click 相邻 <code>&lt;label&gt;</code>(<code>browse click 'input[name="..."] + label'</code>)</td>
-      <td>renderer 检测 checkbox 时改用 click-label 模式</td>
-    </tr>
-    <tr>
-      <td>4</td>
-      <td>Playwright <code>Page.url</code> 缓存</td>
-      <td>CCC 经 CDP 外部导航后,validate 看 stale URL,假 0</td>
-      <td>runner_ccc 在 validate 前 <code>page.evaluate(...)</code> 强制同步</td>
-      <td>升级到把 evaluator 改用 CDP 直接读取或 <code>frame.url()</code></td>
-    </tr>
-    <tr>
-      <td>5</td>
-      <td>Claude Code 不主动读 project skill body</td>
-      <td>SKILL.md 只看到 name+description,选错路径</td>
-      <td>runner prompt 加 "Skills: read your skills before acting"</td>
-      <td>CCC skill discovery 文档化(skill 命名/描述写作 best practices),或 hint 内置</td>
-    </tr>
+    <tr><td>1</td><td><code>browse fill</code> presses Enter by default</td><td>Form fields submit prematurely, breaking subsequent fills</td><td>SKILL.md adds <code>--no-press-enter</code></td><td>Renderer default to <code>--no-press-enter</code>; only add Enter for <code>action: "submit"</code></td></tr>
+    <tr><td>2</td><td><code>browse fill</code> doesn't work on <code>&lt;select&gt;</code></td><td>Dropdown values silently not applied — biggest single cause of human-arm failures</td><td>Hand-written oracle uses <code>browse select</code></td><td>Add <code>action: "select"</code> to Skill schema; renderer outputs <code>browse select</code> for selects</td></tr>
+    <tr><td>3</td><td><code>browse fill</code> doesn't work on Magento checkbox toggles</td><td>Toggle widgets (Enable Product, Sale, etc.) cannot be flipped</td><td>Click adjacent <code>&lt;label&gt;</code> (<code>input[name="..."] + label</code>)</td><td>Renderer detects checkbox and emits click-label pattern</td></tr>
+    <tr><td>4</td><td>Playwright <code>Page.url</code> cache stale after external CDP nav</td><td>URLEvaluator reads stale URL after CCC's <code>browse open</code>, false-fails url_match</td><td>runner_ccc calls <code>page.evaluate(...)</code> before validate to force a CDP roundtrip</td><td>Use <code>frame.url()</code> or fresh CDP target enumeration in evaluator</td></tr>
+    <tr><td>5</td><td>Claude Code doesn't auto-load project skill bodies</td><td>SKILL.md name+description seen in catalog, body ignored — agent improvises and gets details wrong</td><td>runner prompt nudges "read your skills before acting"</td><td>Document skill-discovery patterns; possibly hint built-in</td></tr>
   </tbody>
 </table>
 
-<h2>方法论 — Oracle SKILL.md 怎么写的</h2>
-<p>10 份 oracle SKILL.md 走了两条工艺:</p>
+<h2>Methodology — how the three SKILL.md sets were produced</h2>
 <ul>
-  <li><strong>4 份(771 / 423 / 694 / 699)</strong>:我亲手写,边走 Magento(Playwright headless)边记 selector,踩坑发现产品 bug,补 work around 写进 SKILL.md。每份 ~30-45 分钟。</li>
-  <li><strong>5 份(453 / 458 / 470 / 496 / 538)</strong>:5 个 Claude sub agent 并行写,每个拿到完整自含 prompt(任务 intent + WebArena eval 标准 + Magento 访问 + 5 条已知 browse CLI gotchas + 格式参考)。5 个 sub agent ~30 分钟同时完工(wall clock,不是累计)。</li>
-</ul>
-<p>核心写法约定 — 都在每份 SKILL.md 的 <em>Background</em> + <em>Critical tool notes</em> + <em>Steps</em> + <em>On failure</em> 四段式里:</p>
+  <li><strong>Cold</strong>: no SKILL.md. The agent receives only the WebArena task intent and the <code>browse</code> tool surface. Tests Claude Code's first-encounter capability.</li>
+  <li><strong>Oracle</strong>: 10 hand-authored SKILL.md files following our four-section template (Background, Critical tool notes, Steps, On failure). 4 were authored by direct Magento exploration (704, 771, 423, 694, 699); 5 were produced by parallel sub agents (453, 458, 470, 496, 538), each given a self-contained prompt with the task intent + WebArena eval criteria + Magento credentials + the five known browse-CLI gotchas + a format reference. All sub-agent skills passed eval on first try.</li>
+""" + ("""  <li><strong>Human</strong>: real one-shot recordings via the Skill Recorder Chrome extension. The user (project owner) recorded each task once, exported through CRX's "Save as Skill" flow, and the helper script <code>eval/scripts/human-record.sh</code> picked up the file and copied it into <code>eval/skills/human/</code>. No post-editing; whatever the recording captured is what the eval consumes — that's the contract.</li>
+""" if is_3arm else "") + """</ul>
+
+<h2>Next steps</h2>
 <ol>
-  <li><strong>Background</strong>:WebArena evaluator 到底检查什么(URL + locator + 期望值),让 agent 知道"什么算完成"。</li>
-  <li><strong>Critical tool notes</strong>:这个任务踩到的 browse CLI 坑(date 字段不能 Enter,toggle 要点 label 等)。</li>
-  <li><strong>Steps</strong>:有序的 <code>bash</code> 代码块,每步标明 <em>Expected</em>。</li>
-  <li><strong>On failure</strong>:常见错误模式 + 怎么 recover。</li>
-</ol>
-<p>这套写法的可复用性已经在 sub agent 并行实验里被验证 —— 5 个完全没看过 codebase 的 agent 各自拿到 prompt 后,30 分钟内产出 5 份格式一致、第一次跑就通过 evaluator 的 SKILL.md。</p>
+  <li><strong>Fix Findings #2 and #3 first</strong> (the <code>&lt;select&gt;</code> and checkbox cases). These are the single biggest causes of human-arm failures, and they're well-scoped schema + renderer changes — no behavioural changes to CRX recording.</li>
+  <li><strong>3 seeds × 3 arms</strong> ($20-25, ~4h): tightens Wilson CI from ±30pp to ±15pp; closes the door on "this is a single-seed fluke" objections.</li>
+  <li><strong>opus 4.7 robustness check</strong> ($10): confirm conclusions generalise across frontier models.</li>
+""" + ("""  <li><strong>Re-record human arm after fixing #2/#3</strong>: the same 10 recordings, re-rendered through the updated renderer, should now pass most of the currently-failing tasks. That's the cleanest demonstration that the bugs are renderer-side, not user-side.</li>
+""" if is_3arm else "") + """</ol>
 
-<h2>下一步建议</h2>
-<ol>
-  <li><strong>3 seeds × 3 arms</strong>($20-25,~4h):把 Wilson CI 从当前 ±30pp 收窄到 ±15pp,统计显著性达到 paper 级。</li>
-  <li><strong>Human arm</strong>:你这边用 CRX 扩展真录 10 份 SKILL.md,跑 human × seed 0(~$1)。看人工录制跟 oracle 差多少 —— Skill Recorder 产品的核心 wedge 就在这。</li>
-  <li><strong>Opus robustness check</strong>($10):同样 cold + oracle 跑一次 opus 4.7,验证结论在更强模型上是否成立。</li>
-  <li><strong>修 5 个产品 bug</strong>(skill-render / browse CLI 的 PR):每条都有明确根治方向,做完 oracle SKILL.md 不需要那么多 work around,renderer 直接出能跑的版本。</li>
-</ol>
+<p class="footer">由 src/report.py 自动生成 · """ + ts_now + " · " + runs_line.replace("<code>", "").replace("</code>", "") + """</p>
 
-<p class="footer">由 src/report.py 自动生成 · {ts_now} · cold={cold_ts} · oracle={oracle_ts}</p>
+</body></html>""")
 
-</body></html>
-"""
+    return "\n".join(sections)
 
 
 def render_pdf(html_path: Path, pdf_path: Path) -> None:
@@ -348,18 +352,20 @@ def render_pdf(html_path: Path, pdf_path: Path) -> None:
 
 def main() -> None:
     p = argparse.ArgumentParser()
-    p.add_argument("--cold", type=Path, required=True, help="Path to cold arm runs.csv")
-    p.add_argument("--oracle", type=Path, required=True, help="Path to oracle arm runs.csv")
-    p.add_argument("--out", type=Path, required=True, help="Output stem (writes .html and .pdf)")
+    p.add_argument("--cold", type=Path, required=True)
+    p.add_argument("--oracle", type=Path, required=True)
+    p.add_argument("--human", type=Path, help="Optional 3rd arm — enables 3-arm story.")
+    p.add_argument("--out", type=Path, required=True)
     p.add_argument("--no-pdf", action="store_true")
     args = p.parse_args()
 
-    cold_rows = read_runs(args.cold)
-    oracle_rows = read_runs(args.oracle)
-    cold_ts = args.cold.parent.name
-    oracle_ts = args.oracle.parent.name
+    arms_rows = {"cold": read_runs(args.cold), "oracle": read_runs(args.oracle)}
+    ts_by_arm = {"cold": args.cold.parent.name, "oracle": args.oracle.parent.name}
+    if args.human:
+        arms_rows["human"] = read_runs(args.human)
+        ts_by_arm["human"] = args.human.parent.name
 
-    html = render_html(cold_rows, oracle_rows, cold_ts, oracle_ts)
+    html = render_html(arms_rows, ts_by_arm)
     html_path = args.out.with_suffix(".html")
     html_path.write_text(html, encoding="utf-8")
     print(f"[report] wrote {html_path} ({len(html)} bytes)")
