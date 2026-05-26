@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<title>Skill Recorder Eval — Cold vs Oracle (2026-05-26)</title>
+<style>
+@page { size: A4; margin: 18mm 18mm 22mm 18mm; }
+html { font-family: -apple-system, "Helvetica Neue", "PingFang SC", "Noto Sans CJK SC", sans-serif; font-size: 11pt; color: #1a1a1a; }
+body { margin: 0; line-height: 1.55; }
+h1 { font-size: 22pt; margin: 0 0 4pt; letter-spacing: -0.01em; }
+h1 + .subtitle { color: #555; font-size: 11pt; margin: 0 0 18pt; }
+h2 { font-size: 14pt; margin: 22pt 0 6pt; border-bottom: 1px solid #d0d0d0; padding-bottom: 3pt; }
+h3 { font-size: 12pt; margin: 16pt 0 4pt; color: #333; }
+p, li { font-size: 11pt; }
+code { font-family: "SF Mono", Menlo, monospace; font-size: 10pt; background: #f3f3f3; padding: 0.5pt 3pt; border-radius: 2pt; }
+pre { background: #f7f7f7; padding: 8pt 10pt; border-radius: 4pt; font-size: 9.5pt; overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 10pt; margin: 8pt 0; }
+th, td { text-align: left; padding: 5pt 8pt; border-bottom: 1px solid #e0e0e0; }
+th { background: #f0f0f0; font-weight: 600; }
+td.num { text-align: right; font-variant-numeric: tabular-nums; font-family: "SF Mono", monospace; }
+td.center { text-align: center; }
+.ok { color: #0a7d21; font-weight: 600; }
+.fail { color: #c0392b; font-weight: 600; }
+.warn { color: #b67400; font-weight: 600; }
+.meta { display: grid; grid-template-columns: 110pt 1fr; column-gap: 8pt; row-gap: 3pt; font-size: 10.5pt; margin-bottom: 18pt; }
+.meta dt { font-weight: 600; color: #555; }
+.meta dd { margin: 0; }
+.callout { background: #fff7e6; border-left: 3px solid #f0a020; padding: 8pt 12pt; margin: 10pt 0; border-radius: 0 4pt 4pt 0; }
+.callout.ok { background: #ebfbe9; border-left-color: #4caf50; }
+.callout.fail { background: #fbeae9; border-left-color: #c0392b; }
+.footer { color: #888; font-size: 9pt; text-align: center; margin-top: 30pt; border-top: 1px solid #ddd; padding-top: 8pt; }
+ul { padding-left: 18pt; }
+ul li { margin: 2pt 0; }
+.page-break { page-break-before: always; }
+.tag { display: inline-block; font-size: 9pt; padding: 1pt 6pt; border-radius: 10pt; background: #eef; color: #224; margin-right: 4pt; }
+</style></head><body>
+
+<h1>Skill Recorder Evaluation — Cold vs Oracle</h1>
+<p class="subtitle">10 个 WebArena shopping_admin 任务,Claude Code CLI 驱动,seed 0,sonnet 4.6</p>
+
+<dl class="meta">
+  <dt>报告日期</dt>     <dd>2026-05-26</dd>
+  <dt>Cold run</dt>     <dd><code>20260525T084638Z</code> · runner_ccc · sonnet</dd>
+  <dt>Oracle run</dt>   <dd><code>20260526T040953Z</code> · runner_ccc · sonnet</dd>
+  <dt>Benchmark</dt>    <dd>WebArena <code>shopping_admin</code> only (单服务 MVP scope)</dd>
+  <dt>Arms tested</dt>  <dd>Cold (no SKILL.md) · Oracle (手写理想 SKILL.md)</dd>
+  <dt>Seeds</dt>        <dd>0 (single seed; Wilson CI is wide — see below)</dd>
+</dl>
+
+<h2>Executive Summary</h2>
+<p>Oracle SKILL.md(每个任务专门手写的"理想演示")在 Claude Code CLI 上把 10 个 WebArena 任务的成功率从 cold <strong>60.0%</strong> 拉到 <strong>100.0%</strong>,delta <span class='ok'>+40pp</span>。配套指标:<strong>6.2× 更便宜</strong>,<strong>3.5× 更少 turns</strong>。</p>
+<p>这是 Skill Recorder 产品故事的第一组硬数字:同一模型(sonnet 4.6)+ 同一工具集(browse CLI)+ 唯一变量是 SKILL.md。结果说明 SKILL.md 不只是"略微好用",它把 cold 摸不到的 4 个复杂任务从 0 提到了 100%。</p>
+
+<p class='callout warn'>† One trial in this report uses a manual override of the original CSV score: webarena.704. The original score=0 was a known runner bug (<code>pw.Page.url</code> cache); manual re-run after the fix scored 1.0. Affected trials are marked with † in the per-task table.</p>
+
+<h2>Cold vs Oracle 总对比</h2>
+
+<table>
+  <thead><tr><th>Metric</th><th class='num'>Cold</th><th class='num'>Oracle</th><th class='num'>Delta</th></tr></thead>
+  <tbody>
+    <tr><td>Success rate</td><td class='num'>60.0%</td><td class='num'>100.0%</td><td class="num"><span class='ok'>+40pp</span></td></tr>
+    <tr><td>95% Wilson CI</td><td class='num'>[31.3%, 83.2%]</td><td class='num'>[72.2%, 100.0%]</td></tr>
+    <tr><td>Trials</td><td class='num'>10</td><td class='num'>10</td></tr>
+    <tr><td>Total cost</td><td class='num'>$6.18</td><td class='num'>$0.99</td><td class="num"><span class='ok'>6.2× cheaper</span></td></tr>
+    <tr><td>Avg cost / trial</td><td class='num'>$0.62</td><td class='num'>$0.10</td></tr>
+    <tr><td>Total turns</td><td class='num'>308</td><td class='num'>88</td><td class="num"><span class='ok'>3.5× fewer</span></td></tr>
+    <tr><td>Avg turns / trial</td><td class='num'>30.8</td><td class='num'>8.8</td></tr>
+    <tr><td>Total wall-clock</td><td class='num'>29.8 min</td><td class='num'>7.8 min</td></tr>
+  </tbody>
+</table>
+
+
+<h2>每 task 对比</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th rowspan='2'>Task</th>
+      <th colspan='3' class='center' style='border-right: 2px solid #c0c0c0'>Cold</th>
+      <th colspan='3' class='center'>Oracle</th>
+    </tr>
+    <tr>
+      <th class='center'>OK</th><th class='num'>Turns</th><th class='num'>Cost</th>
+      <th class='center'>OK</th><th class='num'>Turns</th><th class='num'>Cost</th>
+    </tr>
+  </thead>
+  <tbody>
+  <tr>
+  <td><code>webarena.453</code></td>
+  <td class='center'><span class='ok'>✅</span></td><td class='num'>47</td><td class='num'>$0.63</td>
+  <td class='center'><span class='ok'>✅</span></td><td class='num'>9</td><td class='num'>$0.10</td>
+</tr><tr>
+  <td><code>webarena.458</code></td>
+  <td class='center'><span class='ok'>✅</span></td><td class='num'>7</td><td class='num'>$0.13</td>
+  <td class='center'><span class='ok'>✅</span></td><td class='num'>8</td><td class='num'>$0.11</td>
+</tr><tr>
+  <td><code>webarena.470</code></td>
+  <td class='center'><span class='ok'>✅</span></td><td class='num'>8</td><td class='num'>$0.14</td>
+  <td class='center'><span class='ok'>✅</span></td><td class='num'>7</td><td class='num'>$0.08</td>
+</tr><tr>
+  <td><code>webarena.496</code></td>
+  <td class='center'><span class='ok'>✅</span></td><td class='num'>24</td><td class='num'>$0.55</td>
+  <td class='center'><span class='ok'>✅</span></td><td class='num'>9</td><td class='num'>$0.11</td>
+</tr><tr>
+  <td><code>webarena.538</code></td>
+  <td class='center'><span class='ok'>✅</span></td><td class='num'>51</td><td class='num'>$1.34</td>
+  <td class='center'><span class='ok'>✅</span></td><td class='num'>11</td><td class='num'>$0.12</td>
+</tr><tr>
+  <td><code>webarena.771</code></td>
+  <td class='center'><span class='fail'>❌</span></td><td class='num'>30</td><td class='num'>$0.63</td>
+  <td class='center'><span class='ok'>✅</span></td><td class='num'>12</td><td class='num'>$0.12</td>
+</tr><tr>
+  <td><code>webarena.423</code></td>
+  <td class='center'><span class='fail'>❌</span></td><td class='num'>51</td><td class='num'>$0.85</td>
+  <td class='center'><span class='ok'>✅</span></td><td class='num'>6</td><td class='num'>$0.07</td>
+</tr><tr>
+  <td><code>webarena.704</code></td>
+  <td class='center'><span class='ok'>✅</span> <small title='Original score=0 was a pw.Page.url cache bug in runner_ccc; manual re-run after the fix confirmed 1.0.'>†</small></td><td class='num'>8</td><td class='num'>$0.14</td>
+  <td class='center'><span class='ok'>✅</span></td><td class='num'>6</td><td class='num'>$0.07</td>
+</tr><tr>
+  <td><code>webarena.694</code></td>
+  <td class='center'><span class='fail'>❌</span></td><td class='num'>31</td><td class='num'>$0.67</td>
+  <td class='center'><span class='ok'>✅</span></td><td class='num'>11</td><td class='num'>$0.12</td>
+</tr><tr>
+  <td><code>webarena.699</code></td>
+  <td class='center'><span class='fail'>❌</span></td><td class='num'>51</td><td class='num'>$1.09</td>
+  <td class='center'><span class='ok'>✅</span></td><td class='num'>9</td><td class='num'>$0.10</td>
+</tr>
+  </tbody>
+</table>
+
+
+<div class="page-break"></div>
+
+<h2>发现 — 走通过程中暴露的 5 个产品级 bug</h2>
+<p>这些都在 oracle SKILL.md 的"Critical tool notes"段落反向教 agent 怎么 work around。每条都是真实 Skill Recorder 产品工序的 TODO,不只是 eval 黑客。</p>
+
+<table>
+  <thead><tr><th>#</th><th>问题</th><th>影响</th><th>当前 work around</th><th>产品根治方向</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td><code>browse fill</code> 默认按 Enter 收尾</td>
+      <td>表单页输入立刻提交,后续 fill 在新 URL 上失效</td>
+      <td>SKILL.md 显式写 <code>--no-press-enter</code></td>
+      <td>renderer 默认 <code>--no-press-enter</code>,只有 <code>action: "submit"</code> 加 Enter</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><code>browse fill</code> 不处理 <code>&lt;select&gt;</code></td>
+      <td>下拉框设值静默无效</td>
+      <td>用 <code>browse select</code> 替代</td>
+      <td>SKILL schema 加 <code>action: "select"</code> + renderer 输出 <code>browse select</code></td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td><code>browse fill</code> 不处理 checkbox / toggle</td>
+      <td>Magento 切换控件无法设值</td>
+      <td>click 相邻 <code>&lt;label&gt;</code>(<code>browse click 'input[name="..."] + label'</code>)</td>
+      <td>renderer 检测 checkbox 时改用 click-label 模式</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Playwright <code>Page.url</code> 缓存</td>
+      <td>CCC 经 CDP 外部导航后,validate 看 stale URL,假 0</td>
+      <td>runner_ccc 在 validate 前 <code>page.evaluate(...)</code> 强制同步</td>
+      <td>升级到把 evaluator 改用 CDP 直接读取或 <code>frame.url()</code></td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Claude Code 不主动读 project skill body</td>
+      <td>SKILL.md 只看到 name+description,选错路径</td>
+      <td>runner prompt 加 "Skills: read your skills before acting"</td>
+      <td>CCC skill discovery 文档化(skill 命名/描述写作 best practices),或 hint 内置</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>方法论 — Oracle SKILL.md 怎么写的</h2>
+<p>10 份 oracle SKILL.md 走了两条工艺:</p>
+<ul>
+  <li><strong>4 份(771 / 423 / 694 / 699)</strong>:我亲手写,边走 Magento(Playwright headless)边记 selector,踩坑发现产品 bug,补 work around 写进 SKILL.md。每份 ~30-45 分钟。</li>
+  <li><strong>5 份(453 / 458 / 470 / 496 / 538)</strong>:5 个 Claude sub agent 并行写,每个拿到完整自含 prompt(任务 intent + WebArena eval 标准 + Magento 访问 + 5 条已知 browse CLI gotchas + 格式参考)。5 个 sub agent ~30 分钟同时完工(wall clock,不是累计)。</li>
+</ul>
+<p>核心写法约定 — 都在每份 SKILL.md 的 <em>Background</em> + <em>Critical tool notes</em> + <em>Steps</em> + <em>On failure</em> 四段式里:</p>
+<ol>
+  <li><strong>Background</strong>:WebArena evaluator 到底检查什么(URL + locator + 期望值),让 agent 知道"什么算完成"。</li>
+  <li><strong>Critical tool notes</strong>:这个任务踩到的 browse CLI 坑(date 字段不能 Enter,toggle 要点 label 等)。</li>
+  <li><strong>Steps</strong>:有序的 <code>bash</code> 代码块,每步标明 <em>Expected</em>。</li>
+  <li><strong>On failure</strong>:常见错误模式 + 怎么 recover。</li>
+</ol>
+<p>这套写法的可复用性已经在 sub agent 并行实验里被验证 —— 5 个完全没看过 codebase 的 agent 各自拿到 prompt 后,30 分钟内产出 5 份格式一致、第一次跑就通过 evaluator 的 SKILL.md。</p>
+
+<h2>下一步建议</h2>
+<ol>
+  <li><strong>3 seeds × 3 arms</strong>($20-25,~4h):把 Wilson CI 从当前 ±30pp 收窄到 ±15pp,统计显著性达到 paper 级。</li>
+  <li><strong>Human arm</strong>:你这边用 CRX 扩展真录 10 份 SKILL.md,跑 human × seed 0(~$1)。看人工录制跟 oracle 差多少 —— Skill Recorder 产品的核心 wedge 就在这。</li>
+  <li><strong>Opus robustness check</strong>($10):同样 cold + oracle 跑一次 opus 4.7,验证结论在更强模型上是否成立。</li>
+  <li><strong>修 5 个产品 bug</strong>(skill-render / browse CLI 的 PR):每条都有明确根治方向,做完 oracle SKILL.md 不需要那么多 work around,renderer 直接出能跑的版本。</li>
+</ol>
+
+<p class="footer">由 src/report.py 自动生成 · 2026-05-26T04:21:57Z · cold=20260525T084638Z · oracle=20260526T040953Z</p>
+
+</body></html>

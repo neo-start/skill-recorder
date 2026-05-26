@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Skill Recorder Eval — Cold Baseline Report (2026-05-25)</title>
+<style>
+  @page { size: A4; margin: 18mm 18mm 22mm 18mm; }
+  html { font-family: -apple-system, "Helvetica Neue", "PingFang SC", "Noto Sans CJK SC", sans-serif; font-size: 11pt; color: #1a1a1a; }
+  body { margin: 0; line-height: 1.55; }
+  h1 { font-size: 22pt; margin: 0 0 4pt; letter-spacing: -0.01em; }
+  h1 + .subtitle { color: #555; font-size: 11pt; margin: 0 0 18pt; }
+  h2 { font-size: 14pt; margin: 22pt 0 6pt; border-bottom: 1px solid #d0d0d0; padding-bottom: 3pt; }
+  h3 { font-size: 12pt; margin: 16pt 0 4pt; color: #333; }
+  p, li { font-size: 11pt; }
+  code { font-family: "SF Mono", Menlo, monospace; font-size: 10pt; background: #f3f3f3; padding: 0.5pt 3pt; border-radius: 2pt; }
+  pre { background: #f7f7f7; padding: 8pt 10pt; border-radius: 4pt; font-size: 9.5pt; overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 10pt; margin: 8pt 0; }
+  th, td { text-align: left; padding: 5pt 8pt; border-bottom: 1px solid #e0e0e0; }
+  th { background: #f0f0f0; font-weight: 600; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; font-family: "SF Mono", monospace; }
+  td.center { text-align: center; }
+  .ok { color: #0a7d21; font-weight: 600; }
+  .fail { color: #c0392b; font-weight: 600; }
+  .warn { color: #b67400; font-weight: 600; }
+  .meta { display: grid; grid-template-columns: 100pt 1fr; column-gap: 8pt; row-gap: 3pt; font-size: 10.5pt; margin-bottom: 18pt; }
+  .meta dt { font-weight: 600; color: #555; }
+  .meta dd { margin: 0; }
+  .callout { background: #fff7e6; border-left: 3px solid #f0a020; padding: 8pt 12pt; margin: 10pt 0; border-radius: 0 4pt 4pt 0; }
+  .callout.ok { background: #ebfbe9; border-left-color: #4caf50; }
+  .callout.fail { background: #fbeae9; border-left-color: #c0392b; }
+  .bars { display: grid; grid-template-columns: 130pt 1fr 50pt; gap: 4pt 8pt; font-size: 10pt; align-items: center; }
+  .bars .label { font-family: "SF Mono", monospace; font-size: 9.5pt; }
+  .bars .bar { background: #4a7fb8; height: 10pt; border-radius: 2pt; }
+  .bars .bar.fail { background: #c0392b; }
+  .footer { color: #888; font-size: 9pt; text-align: center; margin-top: 30pt; border-top: 1px solid #ddd; padding-top: 8pt; }
+  ul { padding-left: 18pt; }
+  ul li { margin: 2pt 0; }
+  .page-break { page-break-before: always; }
+</style>
+</head>
+<body>
+
+<h1>Skill Recorder Evaluation — Cold Baseline 第一轮</h1>
+<p class="subtitle">在 WebArena shopping_admin 上用 Claude Code CLI 跑 10 个任务 / 单 seed / 无 SKILL.md</p>
+
+<dl class="meta">
+  <dt>报告日期</dt>      <dd>2026-05-25</dd>
+  <dt>运行 ID</dt>       <dd><code>20260525T084638Z</code></dd>
+  <dt>Runner</dt>        <dd><code>src/runner_ccc.py</code> (CCC 路径,非 AgentLab+API)</dd>
+  <dt>Backbone</dt>      <dd>Claude Code CLI,<code>--model sonnet</code> (claude-sonnet-4-6)</dd>
+  <dt>Benchmark</dt>     <dd>WebArena — shopping_admin (Magento 后台) 单服务</dd>
+  <dt>任务数</dt>        <dd>10(来自 <code>eval/tasks/selection.yaml</code>)</dd>
+  <dt>Arms / Seeds</dt>  <dd>仅 cold arm,seed=0(1 个 seed,作为 baseline 第一轮)</dd>
+</dl>
+
+<h2>Executive Summary</h2>
+<p>裸 Claude Code(无录制 SKILL.md)在 10 个 WebArena shopping_admin 任务上的成功率为 <strong>5/10 = 50%</strong>,wall-clock 总 30 分钟,subscription 用量约 <strong>$6.18</strong>(若按 sonnet-4-6 API 公开定价计)。这个数字</p>
+<ul>
+  <li><strong>超过事先设计的 sanity 上限 30%</strong> — 说明任务集对 frontier 模型偏简单,Skill Recorder 演示价值的 delta 被压缩;</li>
+  <li>失败集中在 <strong>5 个状态变更复杂或需要多步验证</strong> 的任务,是 Oracle / Human arm 杠杆最大的样本;</li>
+  <li>暴露了 cold arm 的典型病:CCC 在没演示引导时倾向于<strong>提前自报 DONE</strong>(704 任务 8 turns 就 DONE,实际报表压根没生成)。</li>
+</ul>
+
+<h2>方法学</h2>
+<h3>3-arm 设计(本轮只跑了第 1 arm)</h3>
+<table>
+  <thead><tr><th>Arm</th><th>含义</th><th>本轮跑了?</th></tr></thead>
+  <tbody>
+    <tr><td>Cold</td><td>无 SKILL.md,纯 Claude Code + browse 工具</td><td class="ok center">✓</td></tr>
+    <tr><td>Oracle</td><td>手写 / 论文 trace 蒸馏出的"理论上限"演示</td><td class="center">未跑</td></tr>
+    <tr><td>Human</td><td>用 Skill Recorder 扩展真录一份的演示</td><td class="center">未跑</td></tr>
+  </tbody>
+</table>
+
+<h3>Runner 链路</h3>
+<pre>Playwright 起 Chromium (--remote-debugging-port=9222)
+    ↓
+browsergym/webarena GenericWebArenaTask.setup(page)  → 登录 admin/admin1234 + 导航 start_url
+    ↓
+browse env local 9222  → browse daemon 接到同一个 Chrome
+    ↓
+claude -p --output-format json --model sonnet --max-turns 50 --max-budget-usd 1.5 …
+    ↓
+CCC 用 Bash → browse snapshot/click/fill 跑完任务,exit
+    ↓
+GenericWebArenaTask.validate(page, [])  → WebArena program_html evaluator
+    ↓
+TrialResult → runs.csv</pre>
+<p>每个 trial 之间,<code>./docker/setup-webarena.sh reset shopping_admin</code> 把 Magento DB 退回 fixture 初态,防止前一 trial 的 mutation 污染评分。</p>
+
+<h2>结果总表</h2>
+<table>
+  <thead>
+    <tr>
+      <th>任务</th>
+      <th>难度</th>
+      <th>评估方式</th>
+      <th class="num">Turns</th>
+      <th class="num">Wall (s)</th>
+      <th class="num">Cost ($)</th>
+      <th>CCC 自报</th>
+      <th>Evaluator</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>webarena.453 &mdash; Disable Teton Pullover Hoodie</td><td>easy</td><td>program_html</td><td class="num">47</td><td class="num">202</td><td class="num">0.633</td><td class="center"><span class="ok">✓</span></td><td class="center"><span class="ok">✅ 1.0</span></td></tr>
+    <tr><td>webarena.458 &mdash; Reduce price of this product by $5</td><td>medium</td><td>program_html</td><td class="num">7</td><td class="num">61</td><td class="num">0.129</td><td class="center"><span class="ok">✓</span></td><td class="center"><span class="ok">✅ 1.0</span></td></tr>
+    <tr><td>webarena.470 &mdash; Cancel order 302</td><td>easy</td><td>program_html</td><td class="num">8</td><td class="num">47</td><td class="num">0.144</td><td class="center"><span class="ok">✓</span></td><td class="center"><span class="ok">✅ 1.0</span></td></tr>
+    <tr><td>webarena.496 &mdash; Update order #299 FedEx tracking number</td><td>medium</td><td>program_html</td><td class="num">24</td><td class="num">134</td><td class="num">0.546</td><td class="center"><span class="ok">✓</span></td><td class="center"><span class="ok">✅ 1.0</span></td></tr>
+    <tr><td>webarena.538 &mdash; Modify address of order #299</td><td>medium</td><td>program_html</td><td class="num">51</td><td class="num">273</td><td class="num">1.344</td><td class="center"><span class="warn">⚠ max-turns</span></td><td class="center"><span class="ok">✅ 1.0</span></td></tr>
+    <tr><td>webarena.771 &mdash; Approve positive reviews</td><td>medium</td><td>program_html</td><td class="num">30</td><td class="num">209</td><td class="num">0.625</td><td class="center"><span class="ok">✓</span></td><td class="center"><span class="fail">❌ 0.0</span></td></tr>
+    <tr><td>webarena.423 &mdash; Mark all Hollister shirts on sale</td><td>hard</td><td>program_html</td><td class="num">51</td><td class="num">307</td><td class="num">0.854</td><td class="center"><span class="warn">⚠ max-turns</span></td><td class="center"><span class="fail">❌ 0.0</span></td></tr>
+    <tr><td>webarena.704 &mdash; Generate sales order report (last month)</td><td>medium</td><td>url_match + program_html</td><td class="num">8</td><td class="num">53</td><td class="num">0.137</td><td class="center"><span class="ok">✓</span></td><td class="center"><span class="fail">❌ 0.0</span></td></tr>
+    <tr><td>webarena.694 &mdash; Create simple product "Energy-Bulk Women Shirt"</td><td>hard</td><td>url_match + program_html</td><td class="num">31</td><td class="num">182</td><td class="num">0.671</td><td class="center"><span class="ok">✓</span></td><td class="center"><span class="fail">❌ 0.0</span></td></tr>
+    <tr><td>webarena.699 &mdash; Draft 20% spring-sale price rule</td><td>hard</td><td>url_match + program_html</td><td class="num">51</td><td class="num">318</td><td class="num">1.091</td><td class="center"><span class="warn">⚠ max-turns</span></td><td class="center"><span class="fail">❌ 0.0</span></td></tr>
+    <tr style="font-weight:600;background:#f7f7f7;">
+      <td colspan="3">合计 10 trials</td>
+      <td class="num">308</td><td class="num">1785</td><td class="num">6.184</td>
+      <td class="center">8/10 self-OK</td>
+      <td class="center"><span class="ok">5/10 = 50%</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Turns 分布(柱状)</h3>
+<div class="bars">
+  <span class="label">453 easy</span><div class="bar" style="width: 94%"></div><span class="num">47</span>
+  <span class="label">458 medium</span><div class="bar" style="width: 14%"></div><span class="num">7</span>
+  <span class="label">470 easy</span><div class="bar" style="width: 16%"></div><span class="num">8</span>
+  <span class="label">496 medium</span><div class="bar" style="width: 48%"></div><span class="num">24</span>
+  <span class="label">538 medium</span><div class="bar fail" style="width: 100%"></div><span class="num">51</span>
+  <span class="label">771 medium</span><div class="bar fail" style="width: 60%"></div><span class="num">30</span>
+  <span class="label">423 hard</span><div class="bar fail" style="width: 100%"></div><span class="num">51</span>
+  <span class="label">704 medium</span><div class="bar fail" style="width: 16%"></div><span class="num">8</span>
+  <span class="label">694 hard</span><div class="bar fail" style="width: 62%"></div><span class="num">31</span>
+  <span class="label">699 hard</span><div class="bar fail" style="width: 100%"></div><span class="num">51</span>
+</div>
+<p style="font-size:9.5pt;color:#666;margin-top:4pt;">蓝色 = evaluator 评成功;红色 = 失败。<code>max-turns 50</code> 上限对应满格柱状(51 因 turn 计数器从 0 起,实际 50 turns 用尽)。</p>
+
+<div class="page-break"></div>
+
+<h2>关键发现</h2>
+
+<div class="callout">
+  <strong>1. Cold 50% &gt; 设计 sanity 上限 30%。</strong>
+  <p style="margin:4pt 0 0;">按 <code>docs/design-followups.md §2</code> 的诊断手册,cold &gt; 30% 意味着任务集对 frontier 模型(此处是 Claude Sonnet 4.6)偏简单,Skill Recorder 演示价值的最大可能 delta 被压缩。可行的处置:把 <em>453 / 458 / 470</em> 这三个 cold 顺利通过的任务从 selection 里换掉,改成 WebArena 中其它 22 个 shopping_admin mutation template 里更难的样本,重跑 cold 让基线落回 [5%, 30%] 区间。</p>
+</div>
+
+<div class="callout fail">
+  <strong>2. 704 是教科书级的 "agent 假阳性 DONE"。</strong>
+  <p style="margin:4pt 0 0;">任务"今天是 3/15/2023,生成上月销售订单报表"。CCC 只用 <strong>8 turns</strong> 就回 "DONE",但 evaluator 检查 URL+page 状态时报 <span class="fail">0.0</span> — 它根本没真正进入 Reports → Sales → 选择日期范围 → 点 "Show Report" 的链路,就基于看到的页面"以为做完了"。<strong>这是 cold arm 在多步骤、隐式校验型任务上的典型病</strong>,SKILL.md 引导下应该被消除 — 如果 oracle / human arm 在 704 上能拉到 1.0,这就是 Skill Recorder 产品的硬核卖点。</p>
+</div>
+
+<div class="callout ok">
+  <strong>3. 538 是"做完了但没说 DONE 被砍"的边界。</strong>
+  <p style="margin:4pt 0 0;">任务"改 order #299 的 shipping address"。CCC <code>is_error=True</code>(撞 <code>--max-turns 50</code> 被砍),但 evaluator 报 <span class="ok">1.0</span> — DB 里地址确实改对了。说明 CCC <strong>完成了 mutation 但没及时报 DONE</strong>。如果把 max-turns 调到 60-80,这个任务在 cold arm 也是"自然成功",cold 真实成功率可能更高(6/10)。这对 baseline 数字稳定性是个警示。</p>
+</div>
+
+<h3>失败案例聚类</h3>
+<p>5 个失败任务可按瓶颈类型分组:</p>
+<table>
+  <thead><tr><th>瓶颈类型</th><th>例子</th><th>SKILL.md 应有的帮助</th></tr></thead>
+  <tbody>
+    <tr><td>多步验证</td><td>704 (报表生成)、771 (审核流)</td><td>明确告诉 agent "show report" 按钮在哪、什么状态算"approved"</td></tr>
+    <tr><td>多 section 表单</td><td>694 (Create product)、699 (Price rule)</td><td>列清楚必填字段顺序、避免漏 SKU / from-to 日期</td></tr>
+    <tr><td>Bulk 操作</td><td>423 (Mark all on sale)</td><td>展示 filter → 全选 → bulk-edit 的"三段式"</td></tr>
+  </tbody>
+</table>
+
+<h2>成本 / 时间</h2>
+<table>
+  <thead><tr><th></th><th class="num">值</th><th class="num">单位</th></tr></thead>
+  <tbody>
+    <tr><td>Wall clock 总耗时</td><td class="num">1785</td><td class="num">秒(≈ 30 分钟)</td></tr>
+    <tr><td>其中 docker reset 开销</td><td class="num">~250</td><td class="num">秒(10 × 25s)</td></tr>
+    <tr><td>每 trial 平均 wall-clock</td><td class="num">179</td><td class="num">秒</td></tr>
+    <tr><td>每 trial 平均 turns</td><td class="num">30.8</td><td class="num">轮</td></tr>
+    <tr><td>每 trial 平均 cost</td><td class="num">$0.62</td><td class="num">(sonnet)</td></tr>
+    <tr><td>本轮总 cost</td><td class="num">$6.18</td><td class="num"></td></tr>
+    <tr><td>推算 90 trial(3 arm × 3 seed)</td><td class="num">~$55</td><td class="num">(若 oracle/human 与 cold 同量级)</td></tr>
+  </tbody>
+</table>
+
+<h2>下一步建议</h2>
+<p>三条候选路径,按落地难度排序:</p>
+<ol>
+  <li><strong>B 路径:先写 oracle 看 delta。</strong> 对 5 个 cold 失败任务(771/423/704/694/699)各手写一份 SKILL.md(估 3-4 小时人工 + $2-3 跑成本),只跑 oracle × 5 trial。如果 oracle 能拿到 4-5/5(80-100%),Skill Recorder 故事就有数字支撑。<strong>推荐先做这条。</strong></li>
+  <li><strong>A 路径:收紧任务集再跑 cold。</strong> 把 453/458/470 换成更难的 task,让 cold 落回 10-30%,headroom 拉满,但要重跑一次 cold($6)。</li>
+  <li><strong>C 路径:直接跑全 90 trial。</strong> 加 oracle/human + 3 seeds,$40-50 + 6h。等 oracle delta 验证后再上。</li>
+</ol>
+
+<p>另一个不需要决策的小修:把 <code>--max-turns</code> 从 50 提到 70,538 这类"做完了没及时报告"的边界会消失,baseline 数字更稳。代价:每 trial 上限多 ~20 turns,极端情况下成本上限 +40%,实际平均提升预计 &lt;10%。</p>
+
+<h2>附录:原始 CSV 链接</h2>
+<p>所有 trial 的完整 row 数据:<br>
+<code>eval/results/runs/20260525T084638Z/runs.csv</code></p>
+<p>每个 trial 的 CCC 原始 JSON 输出(含 model usage / per-turn tokens / 完整 result 字符串):<br>
+<code>/var/folders/.../ccc-trial-&lt;task&gt;-cold-seed0-&lt;hash&gt;/claude-output.json</code><br>
+(workdir 在 macOS tempdir 下,trial 结束后保留供 debug)</p>
+
+<p class="footer">由 Skill Recorder eval 自动生成 · 2026-05-25 · runs.csv hash: 20260525T084638Z</p>
+
+</body>
+</html>
