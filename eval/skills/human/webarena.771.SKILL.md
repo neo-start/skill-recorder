@@ -16,132 +16,162 @@ Domain: `localhost:7780`
 browse open http://localhost:7780/admin/admin/dashboard/
 ```
 
+**Expected:** "Marketing" becomes interactable
+
+### 2. Click "Marketing"
+
+Target: text "Marketing", role link, tag <a>
+```bash
+# Locate the element in the page.
+browse snapshot
+# Click using the ref from the snapshot output (look for the element matching:
+#   selector: link:Marketing
+# )
+browse click <ref-from-snapshot>
+```
+Selector hints: `text: Marketing`, `css: #menu-magento-backend-marketing > a`, `xpath: /html/body/body[1]/div[2]/nav[1]/ul[1]/li[5]/a[1]`
+
+**Expected:** "All Reviews" becomes interactable
+
+### 3. Click "All Reviews"
+
+Target: text "All Reviews", role link, tag <a>
+```bash
+# Locate the element in the page.
+browse snapshot
+# Click using the ref from the snapshot output (look for the element matching:
+#   selector: link:All Reviews
+# )
+browse click <ref-from-snapshot>
+```
+Selector hints: `text: All Reviews`, `css: ul > li.column:nth-of-type(2) > ul > li.item-marketing-user-content.parent:nth-of-type(2) > div.submenu > ul > li.level-2:nth-of-type(1) > a`, `xpath: /html/body/body[1]/div[2]/nav[1]/ul[1]/li[5]/div[1]/ul[1]/li[2]/ul[1]/li[2]/div[1]/ul[1]/li[1]/a[1]`
+
 **Expected:** URL becomes localhost:7780/admin/review/product/index/
 
-### 2. Navigate to http://localhost:7780/admin/review/product/index/
+### 4. Click ApprovedPendingNot Approved in the row containing "AnyYesNo undefinedundefinedrequire(["jquery", "mage/calendar"
 
 ```bash
-browse open http://localhost:7780/admin/review/product/index/
+# Click select in the row containing "AnyYesNo undefinedundefinedrequire([jquery, mage/calendar":
+browse click 'xpath://tr[contains(normalize-space(.), "AnyYesNo undefinedundefinedrequire([jquery, mage/calendar")]//select'
 ```
 
 **Expected:** "ApprovedPendingNot Approved" becomes interactable
 
-### 3. Click "ApprovedPendingNot Approved"
+### 5. Fill "ApprovedPendingNot Approved" in the row containing "AnyYesNo undefinedundefinedrequire(["jquery", "mage/calendar"
 
-Target: text "ApprovedPendingNot Approved", role combobox, tag <select>
 ```bash
-# Locate the element in the page.
-browse snapshot
-# Click using the ref from the snapshot output (look for the element matching:
-#   selector: #reviewGrid_filter_status
-# )
-browse click <ref-from-snapshot>
+# Fill select in the row containing "AnyYesNo undefinedundefinedrequire([jquery, mage/calendar":
+browse fill 'xpath://tr[contains(normalize-space(.), "AnyYesNo undefinedundefinedrequire([jquery, mage/calendar")]//select' 2
 ```
-Selector hints: `css: #reviewGrid_filter_status`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[1]/div[2]/table[1]/thead[1]/tr[2]/td[4]/select[1]`
 
 **Expected:** "ApprovedPendingNot Approved" becomes interactable
 
-### 4. Fill "ApprovedPendingNot Approved"
+### 6. Click ApprovedPendingNot Approved in the row containing "AnyYesNo undefinedundefinedrequire(["jquery", "mage/calendar"
 
-Target: text "ApprovedPendingNot Approved", role combobox, tag <select>
 ```bash
-browse fill #reviewGrid_filter_status 2
+# Click select in the row containing "AnyYesNo undefinedundefinedrequire([jquery, mage/calendar":
+browse click 'xpath://tr[contains(normalize-space(.), "AnyYesNo undefinedundefinedrequire([jquery, mage/calendar")]//select'
 ```
-Selector hints: `css: #reviewGrid_filter_status`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[1]/div[2]/table[1]/thead[1]/tr[2]/td[4]/select[1]`
 
-**Expected:** "ApprovedPendingNot Approved" becomes interactable
+**Expected:** "Search" becomes interactable
 
-### 5. Click "ApprovedPendingNot Approved"
+### 7. Click "Search"
 
-Target: text "ApprovedPendingNot Approved", role combobox, tag <select>
-```bash
-# Locate the element in the page.
-browse snapshot
-# Click using the ref from the snapshot output (look for the element matching:
-#   selector: #reviewGrid_filter_status
-# )
-browse click <ref-from-snapshot>
-```
-Selector hints: `css: #reviewGrid_filter_status`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[1]/div[2]/table[1]/thead[1]/tr[2]/td[4]/select[1]`
-
-**Expected:** "#id_771" becomes interactable
-
-### 6. Click checkbox
-
-Target: role checkbox, tag <input>
+Target: text "Search", role button, tag <button>
 ```bash
 # Locate the element in the page.
 browse snapshot
 # Click using the ref from the snapshot output (look for the element matching:
-#   selector: #id_771
+#   selector: #id_NhPbu10kFpPijdVk28CY9Zrde5vT17Dl
 # )
 browse click <ref-from-snapshot>
 ```
-Selector hints: `css: #id_771`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[1]/div[2]/table[1]/tbody[1]/tr[2]/td[1]/label[1]/input[1]`
+Selector hints: `aria: button:Search`, `text: Search`, `css: #id_NhPbu10kFpPijdVk28CY9Zrde5vT17Dl`
 
-**Expected:** "#id_771" becomes interactable
+**Expected:** URL becomes localhost:7780/admin/review/product/index/filter/Y3JlYXRlZF9hdCU1QmxvY2FsZ…
 
-### 7. Fill input
+### 8. Click checkbox in the row containing "352 Apr 24, 2023, 2:53:49 PM Pending Good but not perfect cu"
 
-Target: role checkbox, tag <input>
 ```bash
-browse fill #id_771 on
+# Click input[type="checkbox"] in the row containing "352 Apr 24, 2023, 2:53:49 PM Pending Good but not perfect cu":
+browse click 'xpath://tr[contains(normalize-space(.), "352 Apr 24, 2023, 2:53:49 PM Pending Good but not perfect cu")]//input[type="checkbox"]'
 ```
-Selector hints: `css: #id_771`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[1]/div[2]/table[1]/tbody[1]/tr[2]/td[1]/label[1]/input[1]`
 
-**Expected:** "#id_328" becomes interactable
+**Expected:** "#id_977" becomes interactable
 
-### 8. Click checkbox
+### 9. Fill "input" in the row containing "352 Apr 24, 2023, 2:53:49 PM Pending Good but not perfect cu"
 
-Target: role checkbox, tag <input>
 ```bash
-# Locate the element in the page.
-browse snapshot
-# Click using the ref from the snapshot output (look for the element matching:
-#   selector: #id_328
-# )
-browse click <ref-from-snapshot>
+# Fill input[type="checkbox"] in the row containing "352 Apr 24, 2023, 2:53:49 PM Pending Good but not perfect cu":
+browse fill 'xpath://tr[contains(normalize-space(.), "352 Apr 24, 2023, 2:53:49 PM Pending Good but not perfect cu")]//input[type="checkbox"]' on
 ```
-Selector hints: `css: #id_328`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[1]/div[2]/table[1]/tbody[1]/tr[4]/td[1]/label[1]/input[1]`
 
-**Expected:** "#id_328" becomes interactable
+**Expected:** "#reviewGrid_table > tbody > tr._clickable.on-mouse" becomes interactable
 
-### 9. Fill input
+### 10. Click label in the row containing "349 Apr 24, 2023, 2:44:16 PM Pending OKish seam miller I hav"
 
-Target: role checkbox, tag <input>
 ```bash
-browse fill #id_328 on
+# Click label in the row containing "349 Apr 24, 2023, 2:44:16 PM Pending OKish seam miller I hav":
+browse click 'xpath://tr[contains(normalize-space(.), "349 Apr 24, 2023, 2:44:16 PM Pending OKish seam miller I hav")]//label'
 ```
-Selector hints: `css: #id_328`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[1]/div[2]/table[1]/tbody[1]/tr[4]/td[1]/label[1]/input[1]`
 
-**Expected:** "#id_573" becomes interactable
+**Expected:** "#id_619" becomes interactable
 
-### 10. Click checkbox
+### 11. Click checkbox in the row containing "349 Apr 24, 2023, 2:44:16 PM Pending OKish seam miller I hav"
 
-Target: role checkbox, tag <input>
 ```bash
-# Locate the element in the page.
-browse snapshot
-# Click using the ref from the snapshot output (look for the element matching:
-#   selector: #id_573
-# )
-browse click <ref-from-snapshot>
+# Click input[type="checkbox"] in the row containing "349 Apr 24, 2023, 2:44:16 PM Pending OKish seam miller I hav":
+browse click 'xpath://tr[contains(normalize-space(.), "349 Apr 24, 2023, 2:44:16 PM Pending OKish seam miller I hav")]//input[type="checkbox"]'
 ```
-Selector hints: `css: #id_573`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[1]/div[2]/table[1]/tbody[1]/tr[5]/td[1]/label[1]/input[1]`
 
-**Expected:** "#id_573" becomes interactable
+**Expected:** "#id_619" becomes interactable
 
-### 11. Fill input
+### 12. Fill "input" in the row containing "349 Apr 24, 2023, 2:44:16 PM Pending OKish seam miller I hav"
 
-Target: role checkbox, tag <input>
 ```bash
-browse fill #id_573 on
+# Fill input[type="checkbox"] in the row containing "349 Apr 24, 2023, 2:44:16 PM Pending OKish seam miller I hav":
+browse fill 'xpath://tr[contains(normalize-space(.), "349 Apr 24, 2023, 2:44:16 PM Pending OKish seam miller I hav")]//input[type="checkbox"]' off
 ```
-Selector hints: `css: #id_573`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[1]/div[2]/table[1]/tbody[1]/tr[5]/td[1]/label[1]/input[1]`
+
+**Expected:** "#id_619" becomes interactable
+
+### 13. Click checkbox in the row containing "349 Apr 24, 2023, 2:44:16 PM Pending OKish seam miller I hav"
+
+```bash
+# Click input[type="checkbox"] in the row containing "349 Apr 24, 2023, 2:44:16 PM Pending OKish seam miller I hav":
+browse click 'xpath://tr[contains(normalize-space(.), "349 Apr 24, 2023, 2:44:16 PM Pending OKish seam miller I hav")]//input[type="checkbox"]'
+```
+
+**Expected:** "#id_619" becomes interactable
+
+### 14. Fill "input" in the row containing "349 Apr 24, 2023, 2:44:16 PM Pending OKish seam miller I hav"
+
+```bash
+# Fill input[type="checkbox"] in the row containing "349 Apr 24, 2023, 2:44:16 PM Pending OKish seam miller I hav":
+browse fill 'xpath://tr[contains(normalize-space(.), "349 Apr 24, 2023, 2:44:16 PM Pending OKish seam miller I hav")]//input[type="checkbox"]' on
+```
+
+**Expected:** "#id_38" becomes interactable
+
+### 15. Click checkbox in the row containing "347 Apr 24, 2023, 2:42:23 PM Pending Quite good Jane Smith I"
+
+```bash
+# Click input[type="checkbox"] in the row containing "347 Apr 24, 2023, 2:42:23 PM Pending Quite good Jane Smith I":
+browse click 'xpath://tr[contains(normalize-space(.), "347 Apr 24, 2023, 2:42:23 PM Pending Quite good Jane Smith I")]//input[type="checkbox"]'
+```
+
+**Expected:** "#id_38" becomes interactable
+
+### 16. Fill "input" in the row containing "347 Apr 24, 2023, 2:42:23 PM Pending Quite good Jane Smith I"
+
+```bash
+# Fill input[type="checkbox"] in the row containing "347 Apr 24, 2023, 2:42:23 PM Pending Quite good Jane Smith I":
+browse fill 'xpath://tr[contains(normalize-space(.), "347 Apr 24, 2023, 2:42:23 PM Pending Quite good Jane Smith I")]//input[type="checkbox"]' on
+```
 
 **Expected:** "Actions Delete Update Status" becomes interactable
 
-### 12. Click "Actions Delete Update Status"
+### 17. Click "Actions Delete Update Status"
 
 Target: text "Actions Delete Update Status", role combobox, tag <select>
 ```bash
@@ -156,17 +186,15 @@ Selector hints: `css: #reviewGrid_massaction-select`, `xpath: /html/body/body[1]
 
 **Expected:** "Actions Delete Update Status" becomes interactable
 
-### 13. Fill "Actions Delete Update Status"
+### 18. Fill "Actions Delete Update Status"
 
-Target: text "Actions Delete Update Status", role combobox, tag <select>
 ```bash
-browse fill #reviewGrid_massaction-select update_status
+browse select #reviewGrid_massaction-select update_status
 ```
-Selector hints: `css: #reviewGrid_massaction-select`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/form[1]/div[1]/select[1]`
 
 **Expected:** "Actions Delete Update Status" becomes interactable
 
-### 14. Click "Actions Delete Update Status"
+### 19. Click "Actions Delete Update Status"
 
 Target: text "Actions Delete Update Status", role combobox, tag <select>
 ```bash
@@ -181,7 +209,7 @@ Selector hints: `css: #reviewGrid_massaction-select`, `xpath: /html/body/body[1]
 
 **Expected:** "Approved Pending Not Approved" becomes interactable
 
-### 15. Click "Approved Pending Not Approved"
+### 20. Click "Approved Pending Not Approved"
 
 Target: text "Approved Pending Not Approved", role combobox, tag <select>
 ```bash
@@ -196,17 +224,15 @@ Selector hints: `aria: combobox:Status`, `css: #status`, `xpath: /html/body/body
 
 **Expected:** "Approved Pending Not Approved" becomes interactable
 
-### 16. Fill "Approved Pending Not Approved"
+### 21. Fill "Approved Pending Not Approved"
 
-Target: text "Approved Pending Not Approved", role combobox, tag <select>
 ```bash
-browse fill #status 1
+browse select #status 1
 ```
-Selector hints: `aria: combobox:Status`, `css: #status`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/form[1]/div[1]/span[2]/div[1]/span[1]/select[1]`
 
 **Expected:** "Approved Pending Not Approved" becomes interactable
 
-### 17. Click "Approved Pending Not Approved"
+### 22. Click "Approved Pending Not Approved"
 
 Target: text "Approved Pending Not Approved", role combobox, tag <select>
 ```bash
@@ -221,18 +247,18 @@ Selector hints: `aria: combobox:Status`, `css: #status`, `xpath: /html/body/body
 
 **Expected:** "Submit" becomes interactable
 
-### 18. Click "Submit"
+### 23. Click "Submit"
 
 Target: text "Submit", role button, tag <button>
 ```bash
 # Locate the element in the page.
 browse snapshot
 # Click using the ref from the snapshot output (look for the element matching:
-#   selector: #id_E3OOlsz0mFeUSwxwTkzEfQ5GhONYXZXk
+#   selector: #id_67reN8Ohpw3PdD03IVFizJgwxvSgr2u0
 # )
 browse click <ref-from-snapshot>
 ```
-Selector hints: `aria: button:Submit`, `text: Submit`, `css: #id_E3OOlsz0mFeUSwxwTkzEfQ5GhONYXZXk`
+Selector hints: `aria: button:Submit`, `text: Submit`, `css: #id_67reN8Ohpw3PdD03IVFizJgwxvSgr2u0`
 
 ## On failure
 
