@@ -35,6 +35,34 @@ The whole point of this arm is to measure what the Skill Recorder product actual
 
 > Note: if you catch yourself thinking "this isn't a fair recording, let me try again", stop. That instinct is exactly the bias we're guarding against.
 
+## Writing skill descriptions for discovery
+
+Claude Code lists every available skill's `name` + `description` in its
+catalog but doesn't auto-load the SKILL.md body until it decides the skill
+is relevant. So the description you type into the Save dialog is the single
+biggest lever for whether your skill gets used.
+
+**Bad** (current default when you leave it blank):
+> `Dashboard / Magento Admin`
+
+**Good**:
+> `When the task involves approving Magento product reviews in bulk, READ
+> this skill's full body — it has the exact filter dropdown sequence, the
+> row-text-anchored selectors, and the "Update Status" mass action steps.`
+
+Patterns that nudge discovery:
+- Open with **"When the task involves X"** — gives Claude Code a concrete
+  trigger condition
+- Mention specific **verbs and domain keywords** the user might type
+  ("approve", "bulk-edit", "Magento", "product price")
+- Tell Claude Code **to read the body** explicitly — e.g. "READ this
+  skill's full body for exact selectors"
+- Mention any **gotchas** the body covers ("includes the random-id row
+  workaround"), so the description hints at unique value
+
+Skip the description field at your peril — a blank one falls back to the
+page title, which is almost never specific enough for discovery.
+
 ## Per-task workflow
 
 For each of the 10 tasks:

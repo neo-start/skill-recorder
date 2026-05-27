@@ -27,6 +27,13 @@ export interface DraftStep {
   isParam: boolean;
   paramName: string;
   value: string;
+  /**
+   * Only meaningful for `action === 'fill'`. true → the change was immediately
+   * followed by an Enter on the same target, so the rendered step should
+   * preserve submit semantics. false/undefined → mid-form fill; renderer emits
+   * `browse fill --no-press-enter ...` so we don't prematurely submit.
+   */
+  pressEnter?: boolean;
 }
 
 // ─── Draft construction ─────────────────────────────────────────────────
@@ -51,6 +58,8 @@ export function buildDrafts(actions: ActionStep[]): DraftStep[] {
         paramName = suggestParamNameForFill(a, fillIdx++);
       }
     }
+    const pressEnter =
+      action === 'fill' ? changeWasFollowedByEnter(a, idx, actions) : undefined;
     return {
       raw: a,
       action,
@@ -59,8 +68,44 @@ export function buildDrafts(actions: ActionStep[]): DraftStep[] {
       isParam,
       paramName,
       value: a.value ?? '',
+      pressEnter,
     };
   });
+}
+
+/**
+ * For a 'change' action, returns true if it is followed by a keyDown('Enter')
+ * on the same target before any other meaningful event. Used to decide whether
+ * the resulting fill SkillStep should carry pressEnter: true (preserves submit
+ * semantics) or false (default — emits `browse fill --no-press-enter ...` so
+ * mid-form fills don't prematurely submit).
+ */
+export function changeWasFollowedByEnter(
+  a: ActionStep,
+  idx: number,
+  all: ActionStep[],
+): boolean {
+  if (a.type !== 'change') return false;
+  for (let i = idx + 1; i < all.length; i++) {
+    const next = all[i];
+    if (next.type === 'keyUp') continue; // skip keyUp noise
+    if (next.type === 'keyDown' && next.key === 'Enter' && sameTarget(a, next)) {
+      return true;
+    }
+    // Any other event between change and Enter breaks the link.
+    if (
+      next.type === 'change' ||
+      next.type === 'click' ||
+      next.type === 'submit' ||
+      next.type === 'navigate'
+    ) {
+      return false;
+    }
+    if (next.type === 'keyDown' && next.key !== 'Enter') {
+      return false;
+    }
+  }
+  return false;
 }
 
 /**
@@ -293,6 +338,7 @@ function toSkillStep(
       ? { selectors: d.raw.dragTo.selectors, fingerprint: d.raw.dragTo.fingerprint }
       : undefined,
     rowContext: d.raw.rowContext,
+    pressEnter: d.action === 'fill' ? d.pressEnter ?? false : undefined,
     expectation: deriveExpectation(d, next),
   };
 }

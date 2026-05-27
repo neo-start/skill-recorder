@@ -365,7 +365,7 @@ export function SaveAsSkillDialog({ recording, onClose }: Props) {
             <Textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="What does this skill accomplish? Used as the AI-facing description."
+              placeholder="When should an agent use this skill? Include concrete triggers — e.g. 'When the task involves Magento product editing, READ the full body for exact selectors and gotchas.' Specific verbs and domain keywords make Claude Code more likely to consult the body, not just the catalog blurb."
             />
           </FieldGroup>
 
