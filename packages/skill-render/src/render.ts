@@ -199,7 +199,11 @@ function tryRowContextBlock(
   if (!step.rowContext) return null;
   const rowMatch = step.rowContext.rowText.slice(0, 60).replace(/"/g, '');
   const cell = step.rowContext.cellLocator;
-  const xpath = `xpath://tr[contains(., "${rowMatch}")]//${cell}`;
+  // `normalize-space(.)` collapses DOM whitespace before matching so the
+  // recorded rowText (whitespace-normalised at capture time) matches the
+  // live DOM regardless of indentation/newlines in the source HTML.
+  // Without this, Magento's pretty-printed grid rows fail to match.
+  const xpath = `xpath://tr[contains(normalize-space(.), "${rowMatch}")]//${cell}`;
   if (verb === 'click') {
     return [
       bashBlock(
