@@ -1,0 +1,40 @@
+{
+  "id": "skill_grid_row_test",
+  "title": "Grid-row click fixture",
+  "description": "Exercises rowContext: click target inside a <tr> whose id is random per page-load.",
+  "domain": "example.com",
+  "startUrl": "https://example.com/admin/reviews",
+  "parameters": [],
+  "steps": [
+    {
+      "id": "s1",
+      "intent": "Click checkbox in the row containing 'Quite good Jane Smith Pending'",
+      "action": "click",
+      "selectors": [
+        { "kind": "id", "value": "#id_771", "score": 80 }
+      ],
+      "fingerprint": {
+        "tag": "input",
+        "role": "checkbox",
+        "text": "",
+        "attrs": { "type": "checkbox" }
+      },
+      "rowContext": {
+        "rowSelectors": [
+          { "kind": "xpath", "value": "//tr[3]", "score": 30 }
+        ],
+        "rowFingerprint": {
+          "tag": "tr",
+          "role": "row",
+          "text": "Quite good Jane Smith Pending I recently purchased the Olivia 1/4 Zip Light Jacket",
+          "attrs": {}
+        },
+        "rowText": "Quite good Jane Smith Pending I recently purchased the Olivia 1/4 Zip Light Jacket",
+        "cellLocator": "input[type=\"checkbox\"]"
+      }
+    }
+  ],
+  "sourceRecordingId": "rec_grid_row_test",
+  "createdAt": 1779580000000,
+  "updatedAt": 1779580000000
+}

@@ -9,7 +9,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { renderSkillAsMarkdown } from '../src/index';
 import type { Skill } from '@skill-recorder/types';
 
-const VERSION = '0.1.2';
+const VERSION = '0.1.3';
 
 type SchemaIssue = { path: string; message: string };
 

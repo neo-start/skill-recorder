@@ -192,12 +192,52 @@ function looksLikeDynamicListItem(step: SkillStep): boolean {
   return false;
 }
 
+function tryRowContextBlock(
+  step: SkillStep,
+  verb: 'click' | 'fill' | 'select',
+): string[] | null {
+  if (!step.rowContext) return null;
+  const rowMatch = step.rowContext.rowText.slice(0, 60).replace(/"/g, '');
+  const cell = step.rowContext.cellLocator;
+  const xpath = `xpath://tr[contains(., "${rowMatch}")]//${cell}`;
+  if (verb === 'click') {
+    return [
+      bashBlock(
+        `# Click ${cell} in the row containing "${rowMatch}":\n` +
+          `browse click ${quote(xpath)}`,
+      ),
+      '',
+    ];
+  }
+  if (verb === 'fill') {
+    const value = renderValue(step.valueTemplate ?? '');
+    return [
+      bashBlock(
+        `# Fill ${cell} in the row containing "${rowMatch}":\n` +
+          `browse fill ${quote(xpath)} ${quote(value)}`,
+      ),
+      '',
+    ];
+  }
+  // verb === 'select'
+  const value = renderValue(step.valueTemplate ?? '');
+  return [
+    bashBlock(
+      `# Select ${cell} in the row containing "${rowMatch}":\n` +
+        `browse select ${quote(xpath)} ${quote(value)}`,
+    ),
+    '',
+  ];
+}
+
 function renderStepBody(step: SkillStep): string[] {
   switch (step.action) {
     case 'navigate':
       return [bashBlock(`browse open ${quote(step.url ?? '')}`), ''];
 
     case 'click': {
+      const rowBlock = tryRowContextBlock(step, 'click');
+      if (rowBlock) return rowBlock;
       const top = topSelector(step.selectors);
       const hints = otherSelectorHints(step.selectors);
       const desc = describeTarget(step);
@@ -234,6 +274,8 @@ function renderStepBody(step: SkillStep): string[] {
     }
 
     case 'fill': {
+      const rowBlock = tryRowContextBlock(step, 'fill');
+      if (rowBlock) return rowBlock;
       // FALLBACK: older recordings (and the CRX recorder until its own fix
       // lands) mark <select> change-events as action='fill'. If the captured
       // fingerprint identifies the target as a select, emit `browse select`
@@ -270,6 +312,8 @@ function renderStepBody(step: SkillStep): string[] {
     }
 
     case 'select': {
+      const rowBlock = tryRowContextBlock(step, 'select');
+      if (rowBlock) return rowBlock;
       const top = topSelector(step.selectors, /* cssOnly */ true);
       const hints = otherSelectorHints(step.selectors);
       const desc = describeTarget(step);
@@ -400,10 +444,30 @@ function defaultIntent(step: SkillStep): string {
   switch (step.action) {
     case 'navigate':
       return `Navigate to ${step.url ?? ''}`;
-    case 'click':
+    case 'click': {
+      if (step.rowContext) {
+        const label = step.fingerprint?.text || step.fingerprint?.role || step.fingerprint?.tag || 'element';
+        const rowSnippet = step.rowContext.rowText.slice(0, 60);
+        return `Click ${label} in the row containing "${rowSnippet}"`;
+      }
       return `Click ${step.fingerprint?.text || topSelector(step.selectors)?.value || 'element'}`;
-    case 'fill':
+    }
+    case 'fill': {
+      if (step.rowContext) {
+        const label = step.fingerprint?.text || step.fingerprint?.role || step.fingerprint?.tag || 'field';
+        const rowSnippet = step.rowContext.rowText.slice(0, 60);
+        return `Fill ${label} in the row containing "${rowSnippet}" with ${step.valueTemplate}`;
+      }
       return `Fill ${step.fingerprint?.text || step.fingerprint?.tag || 'field'} with ${step.valueTemplate}`;
+    }
+    case 'select': {
+      if (step.rowContext) {
+        const label = step.fingerprint?.text || step.fingerprint?.role || step.fingerprint?.tag || 'field';
+        const rowSnippet = step.rowContext.rowText.slice(0, 60);
+        return `Select ${label} in the row containing "${rowSnippet}" with ${step.valueTemplate}`;
+      }
+      return `Select ${step.fingerprint?.text || step.fingerprint?.tag || 'field'} with ${step.valueTemplate}`;
+    }
     case 'press_key':
       return `Press ${formatChord(step.key ?? '', step.modifiers)}`;
     case 'scroll':

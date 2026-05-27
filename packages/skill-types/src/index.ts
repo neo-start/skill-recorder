@@ -152,6 +152,19 @@ export interface ActionStep {
     optionText: string;
     optionValue?: string;
   };
+
+  /**
+   * Captured when the click/fill/select target was inside a <tr> or
+   * [role="row"]. Lets the renderer output row-text-matched XPath instead
+   * of relying on the target's per-render id (Knockout/Magento generate
+   * fresh ids every page load; recorded ids won't resolve at replay).
+   */
+  rowContext?: {
+    rowSelectors: SelectorEntry[];     // for the <tr> / [role="row"] ancestor
+    rowFingerprint: ElementFingerprint;
+    rowText: string;                   // first ~120 chars of outerText (normalised whitespace)
+    cellLocator: string;               // relative CSS inside the row, e.g. 'input[type="checkbox"]'
+  };
 }
 
 // ─── Replay session ───
@@ -263,6 +276,19 @@ export interface SkillStep {
   dragTo?: {
     selectors: SelectorEntry[];
     fingerprint: ElementFingerprint;
+  };
+
+  /**
+   * Captured when the click/fill/select target was inside a <tr> or
+   * [role="row"]. Lets the renderer output row-text-matched XPath instead
+   * of relying on the target's per-render id (Knockout/Magento generate
+   * fresh ids every page load; recorded ids won't resolve at replay).
+   */
+  rowContext?: {
+    rowSelectors: SelectorEntry[];     // for the <tr> / [role="row"] ancestor
+    rowFingerprint: ElementFingerprint;
+    rowText: string;                   // first ~120 chars of outerText (normalised whitespace)
+    cellLocator: string;               // relative CSS inside the row, e.g. 'input[type="checkbox"]'
   };
 
   // ── guidance-only fields ──
