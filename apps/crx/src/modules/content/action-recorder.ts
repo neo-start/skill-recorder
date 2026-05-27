@@ -118,7 +118,62 @@ function onClick(ev: MouseEvent): void {
     offsetX: Math.round(ev.clientX - rect.left),
     offsetY: Math.round(ev.clientY - rect.top),
     comboboxContext: detectComboboxContext(raw) ?? undefined,
+    rowContext: detectRowContext(target) ?? undefined,
   });
+}
+
+/**
+ * If the click/change landed inside a <tr> or [role="row"], return the row's
+ * identity (selectors + fingerprint + visible text) plus a relative locator
+ * for the clicked cell. Lets the renderer emit `xpath://tr[contains(., "…")]`
+ * commands that survive per-render id churn (Magento/Knockout regenerate
+ * `#id_…` on every page load — recorded ids don't resolve at replay).
+ */
+function detectRowContext(target: Element): ActionStep['rowContext'] | null {
+  let cur: Element | null = target.parentElement;
+  let row: Element | null = null;
+  for (let i = 0; i < 8 && cur; i++) {
+    if (cur.tagName === 'TR' || cur.getAttribute('role') === 'row') {
+      row = cur;
+      break;
+    }
+    cur = cur.parentElement;
+  }
+  if (!row) return null;
+  if (target === row) return null;
+  return {
+    rowSelectors: generateSelectors(row),
+    rowFingerprint: fingerprint(row),
+    rowText: (row.textContent ?? '').replace(/\s+/g, ' ').trim().slice(0, 120),
+    cellLocator: minimalCellLocator(target),
+  };
+}
+
+/**
+ * Build the smallest selector that distinguishes `target` within its row.
+ * Strategy: checkbox/radio inputs → input[type="…"]; button/anchor with text
+ * or action-keyword href → text/href-attribute matcher; otherwise just the
+ * tag name (rows usually contain one of each actionable element type).
+ */
+function minimalCellLocator(target: Element): string {
+  const tag = target.tagName.toLowerCase();
+  if (tag === 'input') {
+    const t = (target as HTMLInputElement).type;
+    if (t === 'checkbox' || t === 'radio') return `input[type="${t}"]`;
+  }
+  if (tag === 'button') {
+    const text = (target.textContent ?? '').trim();
+    if (text && text.length <= 40) {
+      const escaped = text.replace(/"/g, '\\"');
+      return `button:has-text("${escaped}")`;
+    }
+  }
+  if (tag === 'a') {
+    const href = (target as HTMLAnchorElement).getAttribute('href') ?? '';
+    const keyword = ['edit', 'delete', 'view', 'remove', 'duplicate'].find((k) => href.includes(k));
+    if (keyword) return `a[href*="${keyword}"]`;
+  }
+  return tag;
 }
 
 /**
@@ -238,6 +293,7 @@ function onChange(ev: Event): void {
         lastModified: f.lastModified,
       })),
       value: files.map((f) => f.name).join(', '),
+      rowContext: detectRowContext(target) ?? undefined,
     });
     return;
   }
@@ -256,6 +312,7 @@ function onChange(ev: Event): void {
         fingerprint: fingerprint(target),
         value: target.checked ? 'on' : 'off',
         inputType: target.type,
+        rowContext: detectRowContext(target) ?? undefined,
       });
     }
     return;
@@ -269,6 +326,7 @@ function onChange(ev: Event): void {
       fingerprint: fingerprint(target),
       value: target.value,
       inputType: 'select',
+      rowContext: detectRowContext(target) ?? undefined,
     });
   }
 }
@@ -480,6 +538,7 @@ function flushCe(el: HTMLElement): void {
       value: sensitive ? '***' : el.value,
       inputType: el.type,
       masked: sensitive || undefined,
+      rowContext: detectRowContext(el) ?? undefined,
     });
     return;
   }
@@ -492,6 +551,7 @@ function flushCe(el: HTMLElement): void {
       fingerprint: fingerprint(el),
       value: el.value,
       inputType: 'textarea',
+      rowContext: detectRowContext(el) ?? undefined,
     });
     return;
   }
@@ -503,6 +563,7 @@ function flushCe(el: HTMLElement): void {
     fingerprint: fingerprint(el),
     value: el.innerText ?? '',
     inputType: 'contenteditable',
+    rowContext: detectRowContext(el) ?? undefined,
   });
 }
 

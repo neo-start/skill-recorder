@@ -292,6 +292,7 @@ function toSkillStep(
     dragTo: d.raw.dragTo
       ? { selectors: d.raw.dragTo.selectors, fingerprint: d.raw.dragTo.fingerprint }
       : undefined,
+    rowContext: d.raw.rowContext,
     expectation: deriveExpectation(d, next),
   };
 }
@@ -354,10 +355,20 @@ export function defaultIntent(a: ActionStep, action: SkillActionType): string {
     case 'click': {
       const label = aria || (text && text !== a.fingerprint?.tag ? text : '');
       const role = a.fingerprint?.role || a.fingerprint?.tag || 'element';
+      if (a.rowContext) {
+        const target = label || role;
+        const rowSnippet = a.rowContext.rowText.slice(0, 60);
+        return `Click ${target} in the row containing "${rowSnippet}"`;
+      }
       return label ? `Click "${label}"` : `Click ${role}`;
     }
     case 'fill': {
       const label = aria || (text && text !== a.fingerprint?.tag ? text : '');
+      const fieldLabel = label || a.fingerprint?.tag || 'field';
+      if (a.rowContext) {
+        const rowSnippet = a.rowContext.rowText.slice(0, 60);
+        return `Fill "${fieldLabel}" in the row containing "${rowSnippet}"`;
+      }
       return label ? `Fill "${label}"` : `Fill ${a.fingerprint?.tag ?? 'field'}`;
     }
     case 'press_key':
