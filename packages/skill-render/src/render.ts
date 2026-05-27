@@ -234,6 +234,18 @@ function renderStepBody(step: SkillStep): string[] {
     }
 
     case 'fill': {
+      // FALLBACK: older recordings (and the CRX recorder until its own fix
+      // lands) mark <select> change-events as action='fill'. If the captured
+      // fingerprint identifies the target as a select, emit `browse select`
+      // — `browse fill` is a no-op on native <select> elements.
+      if (step.fingerprint?.tag?.toLowerCase() === 'select') {
+        const top = topSelector(step.selectors, /* cssOnly */ true);
+        const value = renderValue(step.valueTemplate ?? '');
+        if (top) {
+          return [bashBlock(`browse select ${quote(top.value)} ${quote(value)}`), ''];
+        }
+        return [bashBlock(`browse snapshot\nbrowse select <selector-of-target> ${quote(value)}`), ''];
+      }
       const top = topSelector(step.selectors, /* cssOnly */ true);
       const hints = otherSelectorHints(step.selectors);
       const desc = describeTarget(step);
@@ -251,6 +263,23 @@ function renderStepBody(step: SkillStep): string[] {
         out.push(bashBlock(`browse fill ${quote(top.value)} ${quote(value)}`));
       } else {
         out.push(bashBlock(`browse snapshot\nbrowse fill <selector-of-target> ${quote(value)}`));
+      }
+      if (hints.length) out.push(`Selector hints: ${hints.map((h) => `\`${h}\``).join(', ')}`);
+      out.push('');
+      return out;
+    }
+
+    case 'select': {
+      const top = topSelector(step.selectors, /* cssOnly */ true);
+      const hints = otherSelectorHints(step.selectors);
+      const desc = describeTarget(step);
+      const value = renderValue(step.valueTemplate ?? '');
+      const out: string[] = [];
+      if (desc) out.push(`Target: ${desc}`);
+      if (top) {
+        out.push(bashBlock(`browse select ${quote(top.value)} ${quote(value)}`));
+      } else {
+        out.push(bashBlock(`browse snapshot\nbrowse select <selector-of-target> ${quote(value)}`));
       }
       if (hints.length) out.push(`Selector hints: ${hints.map((h) => `\`${h}\``).join(', ')}`);
       out.push('');

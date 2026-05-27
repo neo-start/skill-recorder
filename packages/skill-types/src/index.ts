@@ -223,6 +223,7 @@ export type SkillActionType =
   | 'navigate'
   | 'click'
   | 'fill'
+  | 'select'
   | 'press_key'
   | 'scroll'
   | 'submit'

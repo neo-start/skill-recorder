@@ -1,0 +1,43 @@
+{
+  "id": "skill_select_test",
+  "title": "Select-element rendering fixture",
+  "description": "Exercises action='select' and the fill->select fingerprint fallback.",
+  "domain": "example.com",
+  "startUrl": "https://example.com/admin",
+  "parameters": [],
+  "steps": [
+    {
+      "id": "s1",
+      "intent": "Set Status to Approved",
+      "action": "select",
+      "selectors": [
+        { "kind": "css", "value": "select[name=\"status_id\"]", "score": 95 }
+      ],
+      "valueTemplate": "Approved",
+      "fingerprint": {
+        "tag": "select",
+        "role": "combobox",
+        "text": "",
+        "attrs": { "name": "status_id" }
+      }
+    },
+    {
+      "id": "s2",
+      "intent": "Set Color to Blue (recorded as fill, falls back to select via fingerprint)",
+      "action": "fill",
+      "selectors": [
+        { "kind": "css", "value": "select[name=\"product[color]\"]", "score": 90 }
+      ],
+      "valueTemplate": "Blue",
+      "fingerprint": {
+        "tag": "select",
+        "role": "combobox",
+        "text": "",
+        "attrs": { "name": "product[color]" }
+      }
+    }
+  ],
+  "sourceRecordingId": "rec_select_test",
+  "createdAt": 1779580000000,
+  "updatedAt": 1779580000000
+}
