@@ -215,10 +215,11 @@ function tryRowContextBlock(
   }
   if (verb === 'fill') {
     const value = renderValue(step.valueTemplate ?? '');
+    const enterFlag = step.pressEnter ? '' : ' --no-press-enter';
     return [
       bashBlock(
         `# Fill ${cell} in the row containing "${rowMatch}":\n` +
-          `browse fill ${quote(xpath)} ${quote(value)}`,
+          `browse fill${enterFlag} ${quote(xpath)} ${quote(value)}`,
       ),
       '',
     ];
@@ -306,9 +307,11 @@ function renderStepBody(step: SkillStep): string[] {
           out.push(bashBlock(`browse snapshot\nbrowse upload <ref-of-file-input> ${quote(value)}`));
         }
       } else if (top) {
-        out.push(bashBlock(`browse fill ${quote(top.value)} ${quote(value)}`));
+        const enterFlag = step.pressEnter ? '' : ' --no-press-enter';
+        out.push(bashBlock(`browse fill${enterFlag} ${quote(top.value)} ${quote(value)}`));
       } else {
-        out.push(bashBlock(`browse snapshot\nbrowse fill <selector-of-target> ${quote(value)}`));
+        const enterFlag = step.pressEnter ? '' : ' --no-press-enter';
+        out.push(bashBlock(`browse snapshot\nbrowse fill${enterFlag} <selector-of-target> ${quote(value)}`));
       }
       if (hints.length) out.push(`Selector hints: ${hints.map((h) => `\`${h}\``).join(', ')}`);
       out.push('');

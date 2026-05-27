@@ -1,0 +1,35 @@
+{
+  "id": "skill_press_enter_01",
+  "title": "Search the catalog",
+  "description": "Single-input search where pressing Enter is the intended submit.",
+  "domain": "example.com",
+  "startUrl": "https://example.com",
+  "parameters": [
+    {
+      "name": "query",
+      "type": "string",
+      "description": "Search query"
+    }
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "intent": "Type the query into the search box and submit with Enter",
+      "action": "fill",
+      "selectors": [
+        { "kind": "id", "value": "#search", "score": 95 }
+      ],
+      "valueTemplate": "{{query}}",
+      "pressEnter": true,
+      "fingerprint": {
+        "tag": "input",
+        "role": "searchbox",
+        "text": "",
+        "attrs": { "id": "search", "type": "search" }
+      }
+    }
+  ],
+  "sourceRecordingId": "rec_press_enter_01",
+  "createdAt": 1716200000000,
+  "updatedAt": 1716200000000
+}

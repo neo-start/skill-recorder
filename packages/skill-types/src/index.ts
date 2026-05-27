@@ -263,6 +263,14 @@ export interface SkillStep {
 
   url?: string;
   valueTemplate?: string;
+  /**
+   * Only meaningful for action='fill'. true → renderer emits the CLI's
+   * default Enter-pressing behaviour (used for search boxes / single-input
+   * forms where Enter == submit). Missing or false → renderer emits
+   * `browse fill --no-press-enter ...`, which is the safe default for
+   * multi-field forms — pressing Enter mid-fill prematurely submits.
+   */
+  pressEnter?: boolean;
   key?: string;
   modifiers?: { meta?: boolean; ctrl?: boolean; shift?: boolean; alt?: boolean };
   scrollX?: number;
