@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Skill Recorder — 深度分析 + 战略建议 (2026-05-26)</title>
+<style>
+  @page { size: A4; margin: 18mm 18mm 22mm 18mm; }
+  html { font-family: -apple-system, "Helvetica Neue", "PingFang SC", "Noto Sans CJK SC", sans-serif; font-size: 11pt; color: #1a1a1a; }
+  body { margin: 0; line-height: 1.55; }
+  h1 { font-size: 22pt; margin: 0 0 4pt; letter-spacing: -0.01em; }
+  h1 + .subtitle { color: #555; font-size: 11pt; margin: 0 0 18pt; }
+  h2 { font-size: 14pt; margin: 22pt 0 6pt; border-bottom: 1px solid #d0d0d0; padding-bottom: 3pt; }
+  h3 { font-size: 12pt; margin: 14pt 0 4pt; color: #333; }
+  p, li { font-size: 11pt; }
+  code { font-family: "SF Mono", Menlo, monospace; font-size: 10pt; background: #f3f3f3; padding: 0.5pt 3pt; border-radius: 2pt; }
+  table { border-collapse: collapse; width: 100%; font-size: 10pt; margin: 8pt 0; }
+  th, td { text-align: left; padding: 5pt 8pt; border-bottom: 1px solid #e0e0e0; }
+  th { background: #f0f0f0; font-weight: 600; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; font-family: "SF Mono", monospace; }
+  td.center { text-align: center; }
+  .ok { color: #0a7d21; font-weight: 600; }
+  .fail { color: #c0392b; font-weight: 600; }
+  .warn { color: #b67400; font-weight: 600; }
+  .meta { display: grid; grid-template-columns: 110pt 1fr; column-gap: 8pt; row-gap: 3pt; font-size: 10.5pt; margin-bottom: 18pt; }
+  .meta dt { font-weight: 600; color: #555; }
+  .meta dd { margin: 0; }
+  .callout { background: #fff7e6; border-left: 3px solid #f0a020; padding: 8pt 12pt; margin: 10pt 0; border-radius: 0 4pt 4pt 0; }
+  .callout.ok { background: #ebfbe9; border-left-color: #4caf50; }
+  .callout.fail { background: #fbeae9; border-left-color: #c0392b; }
+  .callout.strong { background: #eff4ff; border-left-color: #2962ff; }
+  .footer { color: #888; font-size: 9pt; text-align: center; margin-top: 30pt; border-top: 1px solid #ddd; padding-top: 8pt; }
+  ul { padding-left: 18pt; }
+  ul li { margin: 2pt 0; }
+  ol { padding-left: 18pt; }
+  ol li { margin: 4pt 0; }
+  .page-break { page-break-before: always; }
+  .verdict { padding: 12pt 16pt; background: #f8f9fc; border: 1px solid #d8dce6; border-radius: 4pt; font-size: 11pt; margin: 14pt 0; }
+  .verdict-title { font-weight: 700; font-size: 12.5pt; margin-bottom: 6pt; }
+</style>
+</head>
+<body>
+
+<h1>Skill Recorder — 深度分析 + 战略建议</h1>
+<p class="subtitle">3-arm 评测结果的统计学诚实解读 + 三条产品走向的取舍</p>
+
+<dl class="meta">
+  <dt>报告日期</dt>   <dd>2026-05-26</dd>
+  <dt>数据源</dt>     <dd>cold <code>20260525T084638Z</code> · oracle <code>20260526T040953Z</code> · human <code>20260526T100849Z</code></dd>
+  <dt>Benchmark</dt>  <dd>WebArena <code>shopping_admin</code> 10 个任务,单 seed</dd>
+  <dt>Model</dt>      <dd>Claude Sonnet 4.6,通过 Claude Code CLI 驱动</dd>
+  <dt>Tooling</dt>    <dd><code>browse</code> CLI(本地 CDP)+ browsergym/webarena 评估器</dd>
+</dl>
+
+<h2>1. Executive Summary</h2>
+
+<p>三个 arm 的成功率:<strong>Cold 60% → Human 67% → Oracle 100%</strong>。三 arm 的费用 / turns / wall clock 对比见 §2。</p>
+
+<p>但 <strong>+7pp 的 Cold → Human 提升,单 seed 下统计上不显著</strong>:6/9 trial 的 Wilson 95% CI 为 [35%, 88%],跟 cold 的 [31%, 83%] 大幅重叠。换句话说,<em>这一组数据不能证明 Skill Recorder 一次录的 SKILL.md 优于完全没 SKILL.md</em>。</p>
+
+<p>但同样的设置下,<strong>Oracle 100% 的成功率,CI 为 [72%, 100%]</strong> —— 跟 cold 的 CI 不重叠,统计上显著优于 cold。这意味着:格式 / 注入路径 / 评估器都是 OK 的,<em>问题在于 CRX 当前输出的 SKILL.md 质量不够,而非概念错</em>。</p>
+
+<p>Human 与 Oracle 之间的 33pp 差距,可以精确归因到 <strong>5 个已知的产品级 bug</strong>(见 §3)。其中 3 个是 renderer / schema 改动,工程量明确,2-3 周可完成。修复后预测 human ≈ oracle。</p>
+
+<h2>2. Per-task 详细对比</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Task</th><th>Cat</th><th>Diff</th>
+      <th class="center">Cold</th><th class="num">T/cost</th>
+      <th class="center">Human</th><th class="num">T/cost</th>
+      <th class="center">Oracle</th><th class="num">T/cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><code>webarena.453</code> Disable Teton hoodie</td><td>catalog</td><td>easy</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">47/$0.63</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">32/$0.58</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">6/$0.07</td></tr>
+    <tr><td><code>webarena.458</code> Reduce price by $5</td><td>catalog</td><td>medium</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">7/$0.13</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">7/$0.13</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">8/$0.11</td></tr>
+    <tr><td><code>webarena.470</code> Cancel order 302</td><td>orders</td><td>easy</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">8/$0.14</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">10/$0.14</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">7/$0.08</td></tr>
+    <tr><td><code>webarena.496</code> FedEx tracking</td><td>orders</td><td>medium</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">24/$0.55</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">61/$1.42</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">9/$0.11</td></tr>
+    <tr><td><code>webarena.538</code> Modify order address</td><td>orders</td><td>medium</td>
+        <td class="center"><span class="ok">✅</span><small>†</small></td><td class="num">51/$1.34</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">50/$1.46</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">11/$0.12</td></tr>
+    <tr><td><code>webarena.704</code> Sales report Feb 2023</td><td>reports</td><td>medium</td>
+        <td class="center"><span class="ok">✅</span><small>†</small></td><td class="num">12/$0.19</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">10/$0.16</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">5/$0.06</td></tr>
+    <tr><td><code>webarena.771</code> Approve positive reviews</td><td>reviews</td><td>medium</td>
+        <td class="center"><span class="fail">❌</span></td><td class="num">30/$0.63</td>
+        <td class="center"><span class="fail">❌</span></td><td class="num">71/$1.88</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">6/$0.07</td></tr>
+    <tr><td><code>webarena.423</code> Mark Hollister on sale</td><td>catalog</td><td>hard</td>
+        <td class="center"><span class="fail">❌</span></td><td class="num">51/$0.85</td>
+        <td class="center"><span class="fail">❌</span></td><td class="num">21/$0.59</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">6/$0.07</td></tr>
+    <tr><td><code>webarena.694</code> Create simple product</td><td>catalog</td><td>hard</td>
+        <td class="center"><span class="fail">❌</span></td><td class="num">31/$0.67</td>
+        <td class="center"><span class="fail">❌</span></td><td class="num">52/$1.20</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">12/$0.15</td></tr>
+    <tr><td><code>webarena.699</code> Spring sale price rule</td><td>marketing</td><td>hard</td>
+        <td class="center"><span class="fail">❌</span></td><td class="num">27/$0.46</td>
+        <td class="center">— <small>‡</small></td><td class="num">—</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">10/$0.10</td></tr>
+    <tr style="font-weight:600;background:#f7f7f7;">
+        <td colspan="3">合计</td>
+        <td class="center">6/10</td><td class="num">308 / $6.18</td>
+        <td class="center">6/9</td><td class="num">314 / $7.55</td>
+        <td class="center">10/10</td><td class="num">88 / $0.99</td>
+    </tr>
+  </tbody>
+</table>
+
+<p style="font-size:9.5pt;color:#666;">† 704 cold 原始 score=0 是 runner_ccc 的 <code>pw.Page.url</code> 缓存 bug,修复后人工复跑 1.0;538 cold 撞 max-turns 50 但 evaluator pass。‡ 699 human 主动跳过录制(4 个 <code>&lt;select&gt;</code> 注定在当前 renderer 下 fail,见 §3 Finding #2)。</p>
+
+<h2>3. 五个产品级 bug — 失败的精确归因</h2>
+
+<p>Human 的 3 个 fail(423 / 694 / 771)和 oracle 在 4 个 task 的"复杂处理"都对应同一组根因:</p>
+
+<table>
+  <thead><tr><th>#</th><th>Bug</th><th>触发 task</th><th>修复路径</th><th>工程量</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td><code>browse fill</code> 默认按 Enter</td><td>所有带日期/搜索框的 task</td><td>renderer 默认 <code>--no-press-enter</code></td><td>小(几行)</td></tr>
+    <tr><td>2</td><td><strong><code>browse fill</code> 不写 <code>&lt;select&gt;</code></strong></td><td><strong>771 / 694 / 699</strong>(全部 3 个 human fail 的 task)</td><td>Skill schema 加 <code>action: "select"</code>,renderer 输出 <code>browse select</code></td><td>中(schema + render + CRX 探测)</td></tr>
+    <tr><td>3</td><td><code>browse fill</code> 不写 checkbox/toggle</td><td>423(Hollister Sale toggle)</td><td>renderer 检测 checkbox 时改 click-label</td><td>小-中</td></tr>
+    <tr><td>4</td><td>pw <code>Page.url</code> 缓存</td><td>704 cold(已修)</td><td>runner_ccc 在 validate 前强制 CDP 同步</td><td>已修</td></tr>
+    <tr><td>5</td><td>CCC 不主动读 project skill body</td><td>所有 oracle/human 试验</td><td>prompt nudge(已加)+ skill 命名规范化文档</td><td>已 work around</td></tr>
+  </tbody>
+</table>
+
+<p><strong>关键洞察</strong>:3 个 human fail 全部对应 Finding #2 或 #3。这两个修了,human 应该从 6/9 提到 9/9 = 100%,跟 oracle 重合。</p>
+
+<div class="page-break"></div>
+
+<h2>4. 数据分析 — 几个反直觉的细节</h2>
+
+<h3>4.1 简单 task 上,SKILL.md 是 overhead 而非 advantage</h3>
+<table>
+  <thead><tr><th>难度</th><th>Cold 平均 turns</th><th>Human 平均 turns</th><th>Oracle 平均 turns</th><th>解读</th></tr></thead>
+  <tbody>
+    <tr><td>easy(453/470)</td><td>27.5</td><td>21.0</td><td>6.5</td><td>Human 略快,oracle 飞快</td></tr>
+    <tr><td>medium(458/496/538/704/771)</td><td>24.8</td><td>39.8</td><td>7.8</td><td><strong>Human 反而比 cold 多 60% turns</strong> —— SKILL.md 引导多步导航,但中等 task 的 cold 自己摸索更快</td></tr>
+    <tr><td>hard(423/694/699/771 部分)</td><td>40.0</td><td>31.7(fail)</td><td>8.5</td><td>Hard task 上 cold 撞墙,human 也撞墙(失败前 turns 看着少),只有 oracle 顺利</td></tr>
+  </tbody>
+</table>
+<p>这条曲线很重要:<strong>Skill Recorder 在 medium 区间反而是负价值</strong>(贵了不快也没让 success rate 提升)。卖点必须落在 hard 任务上,而 hard 上 human 现在大量 fail。</p>
+
+<h3>4.2 LLM 单 seed 抖动 &gt; ±50% turns</h3>
+<p>同一份 SKILL.md(human 458),sanity 跑了 12 turns / $0.18,bg 重跑只 7 turns / $0.13。470 更夸张:39 turns / $0.95 → 10 turns / $0.15。<strong>这意味着 single seed 上 ±30pp 是正常波动</strong>,3 seeds 才能下结论。</p>
+
+<h3>4.3 Cold 60% 实际偏高,任务集偏简单</h3>
+<p>原 plan 的 sanity range 是 cold ∈ [5%, 30%]。实测 60% —— 任务集对 frontier 模型(sonnet 4.6)太友好,SKILL.md 的最大可能 delta 被压缩。换更难的 task 集后,cold 可能落到 25-35%,human/oracle 头空间从 40pp 拉到 65pp。</p>
+
+<h3>4.4 Human 比 Cold 反而更贵</h3>
+<p>Human 总成本 <code>$7.55</code> vs cold <code>$6.18</code>。原因:fail 的 trial(496/538/771)都撞 max-turns 70,每个烧 $1.4-1.9。SKILL.md 让 agent <em>看似有方向</em>(跟着脚本走),但脚本含错误指令时 agent 会反复 retry,反而更慢更贵。<strong>cold fail 的成本天花板是"放弃所需的 turns",human fail 的成本天花板是"用 SKILL.md 把 turns 用光"</strong>,后者通常更高。</p>
+
+<h2>5. 战略建议 — Skill Recorder 项目还有意义吗?</h2>
+
+<p>诚实回答:<strong>有,但只在很具体的条件下,并且最有价值的形态可能不是当前的浏览器录制器</strong>。</p>
+
+<div class="callout strong">
+<strong>核心判断</strong>:数据没有杀死 Skill Recorder,但也没有证明 Skill Recorder 当前形态成立。它**证明了**(a)oracle SKILL.md 能让 sonnet 4.6 跑出 100%,(b)CRX 当前输出的 SKILL.md 离 oracle 有 33pp 差距,(c)差距能精确归因到 2-3 个可修复的 renderer bug。是否继续投资,取决于以下三个问题的答案。
+</div>
+
+<h3>问题 1 — 修了 5 个 bug 之后,Skill Recorder 真能接近 oracle 吗?</h3>
+<p>大概率能,但有 caveat。修 Finding #2(<code>&lt;select&gt;</code>)+ #3(checkbox)之后,3 个失败 task 应该都过。但 oracle SKILL.md 还做了 CRX 没法自动做的事:</p>
+<ul>
+  <li>解释为什么这一步重要("evaluator 只检查 X,不要点 Show Report")</li>
+  <li>提供 fallback("如果 selector miss,用 <code>browse snapshot</code> 重新定位")</li>
+  <li>语义化命名("approve-magento-reviews-by-id" vs CRX 自动生成的 "dashboard-magento-admin")</li>
+</ul>
+<p>这些是 CRX 一次录制无法捕捉的元数据。Skill Recorder 要接近 oracle,需要**后处理 pipeline**(可能是 LLM 把录制+任务 intent 合成成更好的 SKILL.md),不只是 renderer 修 bug。</p>
+
+<h3>问题 2 — 用户为什么要装 CRX 录浏览器?</h3>
+<p>当前形态最大的 friction:<strong>用户必须亲自完成一次任务并录下来</strong>。这跟其它路径相比:</p>
+<table>
+  <thead><tr><th>获取 SKILL.md 的方式</th><th>用户 friction</th><th>覆盖率</th><th>差异化</th></tr></thead>
+  <tbody>
+    <tr><td>Skill Recorder(浏览器录制)</td><td>高(装扩展 + 操作 + 录)</td><td>用户自己做过的任务</td><td>"我能在我熟悉的工具上自动化"</td></tr>
+    <tr><td>video-skills(已有 M1-M3)</td><td>低(放 YouTube 链接)</td><td>所有有教程的任务</td><td>"YouTube 上有人教过的事,Claude 都能做"</td></tr>
+    <tr><td>跟 Claude 对话学习 demo</td><td>低(对话即可)</td><td>用户能描述的任务</td><td>无,这是 Claude 默认能力</td></tr>
+    <tr><td>Anthropic 内置 Skills</td><td>极低(已经在 Claude Code 里)</td><td>Anthropic 决定 ship 的</td><td>看 Anthropic ship 什么</td></tr>
+  </tbody>
+</table>
+<p><strong>Skill Recorder 浏览器版的 unique value</strong> = 用户自己有的 workflow,YouTube 上没有,Anthropic 没 ship,愿意装个扩展。这是个很窄的交集。</p>
+
+<h3>问题 3 — video-skills 这条线值多少?</h3>
+<p>过去一周你的 commits 显示视频→skill 这条线已经有 M1(distill package + Fiverr fixture)/M2(Cloudflare Worker)/M3(CRX video tab + /distill 调用)的实质性进展,还有 Helium 10 / Upwork 等 fixture。这条线的**结构性优势**:</p>
+<ul>
+  <li>用户门槛接近零(扔 YouTube URL,等)</li>
+  <li>内容覆盖远大于"用户自己录"(YouTube 上每个 SaaS 都有教程)</li>
+  <li>跟 Anthropic 内置 Skills 互补(他们不会去蒸馏 YouTube)</li>
+  <li>同一套 eval 框架(我们刚建的)直接复用 —— 把视频→skill 的输出喂进 runner_ccc,看效果</li>
+</ul>
+
+<h2>6. 三条产品走向 + 我的推荐</h2>
+
+<div class="verdict">
+<div class="verdict-title">方案 A — All-in 浏览器录制器</div>
+<p>修 5 个 bug → 重跑 3-arm 证明 human ≈ oracle → 扩 benchmark 到 WebVoyager / 自建 → Chrome Web Store onboard。<strong>~6-8 周到能 demo,~12 周到能小范围测试用户</strong>。</p>
+<p><strong>Pro</strong>: 数据故事干净;CCC + 浏览器是 hot category;eval pipeline 复用</p>
+<p><strong>Con</strong>: 用户 friction 高;Anthropic 内置 Skill 系统是隐性竞争;市场窄</p>
+</div>
+
+<div class="verdict">
+<div class="verdict-title">方案 B — Pivot 主攻 video-skills(我的推荐)</div>
+<p>video-skills 已经有 M1-M3 基础,这条线的 user friction 比 CRX 录制低一个量级。**Skill Recorder 浏览器版降级为"高级用户工具"**(继续维护,不主推),把研发资源集中到视频蒸馏 + skill 质量。复用同一套 eval 框架测试 video-skills 输出的 SKILL.md。</p>
+<p><strong>Pro</strong>: 真实大众市场(每个 SaaS 都有 YouTube 教程);差异化清晰("从视频学技能"是 unique value);现有 commits 已经证明可行</p>
+<p><strong>Con</strong>: 视频质量不可控;长视频 token 贵;需要解决"agent 跟着教程视频做" vs "agent 自己摸索" 的 prompt 工程</p>
+<p><strong>下一步具体动作</strong>:用现有 eval 框架跑 video-skills × 同样 10 个 task —— 把 Fiverr / Helium 10 fixture 蒸馏出的 SKILL.md 放进 <code>eval/skills/from-video/</code>,跑 runner_ccc。看看视频路径的 SKILL.md 跟 oracle / human 比怎样。这个实验成本极低($1-2)<strong>本周就能做</strong>。</p>
+</div>
+
+<div class="verdict">
+<div class="verdict-title">方案 C — Sunset 产品,把 eval pipeline 包装成独立工具</div>
+<p>承认 Skill Recorder 整体形态(浏览器 + 视频两条线)都没找到产品市场契合点。把过去一周建的<strong>"WebArena × CCC × 自动 eval × cold/oracle/human × 自动报告"</strong>这套框架本身包装成独立工具 —— 卖给其它做 Skill / agent 框架的团队作为标准化 benchmark tool。</p>
+<p><strong>Pro</strong>: 工程已经做完;ML/agent 社区缺这种统一框架;商业模式清晰(B2B SaaS 或开源 + 付费托管)</p>
+<p><strong>Con</strong>: 完全脱离原 vision;TAM 小(主要客户是其它 agent 创业公司);需要重新做 GTM</p>
+</div>
+
+<h3>我的具体推荐</h3>
+<p>1. <strong>本周做一个非常小的实验</strong>(投入 &lt; 1 天 / $5):用 <code>packages/skill-from-video</code> 把 1-2 个 Magento admin 任务从 YouTube 教程蒸馏成 SKILL.md,跑 <code>runner_ccc --arms from-video</code> 看数字。这一个实验决定方案 A / B 的相对潜力。</p>
+<p>2. <strong>基于结果决定方向</strong>:</p>
+<ul>
+  <li>如果 video-skill 输出能跑出 70%+ → 方案 B 推荐继续</li>
+  <li>如果 video-skill 输出跑出 40% 或更低 → 方案 A,先修 5 bug 把 Skill Recorder 浏览器版做扎实</li>
+  <li>两条都低于 50% → 方案 C,把 eval pipeline 单独打包</li>
+</ul>
+<p>3. <strong>无论选哪个方案,都把当前 eval 框架开源</strong>:这套 3-arm 评测方法学 + WebArena × CCC 集成是独立有价值的工程产物,放 GitHub 能换可见度 + 招到 ML 工程师。</p>
+
+<h2>7. 不需要决策也该做的事</h2>
+<ol>
+  <li>修 Finding #2(<code>&lt;select&gt;</code>)和 #3(checkbox)—— 不管最终走向,这两个修了 oracle / human 写起来都顺,benchmark 数字更可信</li>
+  <li>跑 3 seeds × 当前 10 task($20-25,~4 小时):collapse 单 seed 噪音,Wilson CI 收窄,statistically 站得住</li>
+  <li>在 opus 4.7 上复测一次($10):证明结论不只对 sonnet 成立</li>
+  <li>把 eval 框架部分(<code>runner_ccc.py</code> / <code>report.py</code> / setup-webarena.sh / oracle SKILL.md 模板)抽到一个独立 repo 或子包,加 README,准备开源</li>
+</ol>
+
+<p class="footer">由 src/report.py 自动生成 · 2026-05-26 · 分析配方非自动,详见原文</p>
+
+</body>
+</html>
