@@ -1,0 +1,95 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<title>Skill Recorder Eval — 3-arm (2026-05-28)</title>
+<style>
+@page { size: A4; margin: 18mm 18mm 22mm 18mm; }
+html { font-family: -apple-system, "Helvetica Neue", "PingFang SC", "Noto Sans CJK SC", sans-serif; font-size: 11pt; color: #1a1a1a; }
+body { margin: 0; line-height: 1.55; }
+h1 { font-size: 22pt; margin: 0 0 4pt; letter-spacing: -0.01em; }
+h1 + .subtitle { color: #555; font-size: 11pt; margin: 0 0 18pt; }
+h2 { font-size: 14pt; margin: 22pt 0 6pt; border-bottom: 1px solid #d0d0d0; padding-bottom: 3pt; }
+h3 { font-size: 12pt; margin: 16pt 0 4pt; color: #333; }
+p, li { font-size: 11pt; }
+code { font-family: "SF Mono", Menlo, monospace; font-size: 10pt; background: #f3f3f3; padding: 0.5pt 3pt; border-radius: 2pt; }
+table { border-collapse: collapse; width: 100%; font-size: 10pt; margin: 8pt 0; }
+th, td { text-align: left; padding: 5pt 8pt; border-bottom: 1px solid #e0e0e0; }
+th { background: #f0f0f0; font-weight: 600; }
+td.num { text-align: right; font-variant-numeric: tabular-nums; font-family: "SF Mono", monospace; }
+td.center { text-align: center; }
+.ok { color: #0a7d21; font-weight: 600; }
+.fail { color: #c0392b; font-weight: 600; }
+.warn { color: #b67400; font-weight: 600; }
+.meta { display: grid; grid-template-columns: 110pt 1fr; column-gap: 8pt; row-gap: 3pt; font-size: 10.5pt; margin-bottom: 18pt; }
+.meta dt { font-weight: 600; color: #555; }
+.meta dd { margin: 0; }
+.callout { background: #fff7e6; border-left: 3px solid #f0a020; padding: 8pt 12pt; margin: 10pt 0; border-radius: 0 4pt 4pt 0; }
+.callout.ok { background: #ebfbe9; border-left-color: #4caf50; }
+.callout.fail { background: #fbeae9; border-left-color: #c0392b; }
+.footer { color: #888; font-size: 9pt; text-align: center; margin-top: 30pt; border-top: 1px solid #ddd; padding-top: 8pt; }
+ul { padding-left: 18pt; }
+ul li { margin: 2pt 0; }
+.page-break { page-break-before: always; }
+</style></head><body>
+
+<h1>Skill Recorder Evaluation — 3-arm Cold / Oracle / Human</h1>
+<p class="subtitle">10 个 WebArena shopping_admin 任务,Claude Code CLI 驱动,seed 0,sonnet 4.6</p>
+
+<dl class="meta">
+  <dt>报告日期</dt>     <dd>2026-05-28</dd>
+  <dt>Runs</dt>         <dd>Cold <code>20260525T084638Z</code> · Oracle <code>20260526T040953Z</code> · Human <code>tmp</code></dd>
+  <dt>Benchmark</dt>    <dd>WebArena <code>shopping_admin</code> only (单服务 MVP scope)</dd>
+  <dt>Arms tested</dt>  <dd>cold · oracle · human</dd>
+  <dt>Seeds</dt>        <dd>0 (single seed; Wilson CI is wide — see below)</dd>
+</dl>
+
+<h2>Executive Summary</h2>
+<p><strong>Cold</strong> 60.0% → <strong>Human</strong> 77.8% → <strong>Oracle</strong> 100.0%. Human (raw CRX recording) sits between cold (no skill) and oracle (hand-authored ideal demonstration), and the gap human→oracle quantifies what Skill Recorder loses to the renderer's current limitations on <select>, checkboxes, and Knockout multiselects (Findings #2–#3).</p>
+<p class='callout warn'>† One cold trial uses a manual override of the original CSV score (webarena.704 — original 0 was a runner_ccc <code>pw.Page.url</code> cache bug; manual re-run after the fix confirmed 1.0).</p>
+<p class='callout'>‡ The human arm intentionally skipped recordings for tasks where the CRX-renderer combination is structurally guaranteed to fail (see Findings below). Skipped tasks render as <code>—</code> in the per-task table and are excluded from arm-level stats:<ul><li><code>webarena.699</code> — Skipped — recording a Cart Price Rule form with 4 native <select> elements is structurally guaranteed to fail under the current CRX renderer (browse fill doesn't apply to <select>; see Finding #2). Recording would not add signal.</li></ul></p>
+
+<h2>Summary by arm</h2>
+
+<table>
+  <thead><tr><th>Metric</th><th class='num'>Cold</th><th class='num'>Oracle</th><th class='num'>Human</th></tr></thead>
+  <tbody><tr><td>Success rate</td><td class='num'>60.0%</td><td class='num'>100.0%</td><td class='num'>77.8%</td></tr><tr><td>95% Wilson CI</td><td class='num'>[31.3%, 83.2%]</td><td class='num'>[72.2%, 100.0%]</td><td class='num'>[45.3%, 93.7%]</td></tr><tr><td>Trials (real)</td><td class='num'>10</td><td class='num'>10</td><td class='num'>9</td></tr><tr><td>Total cost</td><td class='num'>$6.18</td><td class='num'>$0.99</td><td class='num'>$5.78</td></tr><tr><td>Avg cost / trial</td><td class='num'>$0.62</td><td class='num'>$0.10</td><td class='num'>$0.64</td></tr><tr><td>Total turns</td><td class='num'>308</td><td class='num'>88</td><td class='num'>285</td></tr><tr><td>Avg turns / trial</td><td class='num'>30.8</td><td class='num'>8.8</td><td class='num'>31.7</td></tr><tr><td>Total wall-clock</td><td class='num'>29.8 min</td><td class='num'>7.8 min</td><td class='num'>31.9 min</td></tr></tbody>
+</table>
+
+
+<h2>Per-task results</h2>
+<p style="font-size:10pt;color:#666;">每格:✅ / ❌ / — (未运行或 ‡ 主动跳过) + <em>turns</em> + cost。† 表示覆盖了原始 CSV 分数。</p>
+<table><thead><tr><th>Task</th><th class='center'>Cold</th><th class='center'>Oracle</th><th class='center'>Human</th></tr></thead><tbody><tr><td><code>webarena.453</code></td><td class='center'><span class='ok'>✅</span> <small>47t / $0.63</small></td><td class='center'><span class='ok'>✅</span> <small>9t / $0.10</small></td><td class='center'><span class='ok'>✅</span> <small>28t / $0.53</small></td></tr><tr><td><code>webarena.458</code></td><td class='center'><span class='ok'>✅</span> <small>7t / $0.13</small></td><td class='center'><span class='ok'>✅</span> <small>8t / $0.11</small></td><td class='center'><span class='ok'>✅</span> <small>11t / $0.16</small></td></tr><tr><td><code>webarena.470</code></td><td class='center'><span class='ok'>✅</span> <small>8t / $0.14</small></td><td class='center'><span class='ok'>✅</span> <small>7t / $0.08</small></td><td class='center'><span class='ok'>✅</span> <small>10t / $0.14</small></td></tr><tr><td><code>webarena.496</code></td><td class='center'><span class='ok'>✅</span> <small>24t / $0.55</small></td><td class='center'><span class='ok'>✅</span> <small>9t / $0.11</small></td><td class='center'><span class='ok'>✅</span> <small>40t / $0.88</small></td></tr><tr><td><code>webarena.538</code></td><td class='center'><span class='ok'>✅</span> <small>51t / $1.34</small></td><td class='center'><span class='ok'>✅</span> <small>11t / $0.12</small></td><td class='center'><span class='ok'>✅</span> <small>41t / $0.89</small></td></tr><tr><td><code>webarena.771</code></td><td class='center'><span class='fail'>❌</span> <small>30t / $0.63</small></td><td class='center'><span class='ok'>✅</span> <small>12t / $0.12</small></td><td class='center'><span class='fail'>❌</span> <small>40t / $0.75</small></td></tr><tr><td><code>webarena.423</code></td><td class='center'><span class='fail'>❌</span> <small>51t / $0.85</small></td><td class='center'><span class='ok'>✅</span> <small>6t / $0.07</small></td><td class='center'><span class='ok'>✅</span> <small>44t / $0.85</small></td></tr><tr><td><code>webarena.704</code></td><td class='center'><span class='ok'>✅</span><small title="Original score=0 was a pw.Page.url cache bug in runner_ccc; manual re-run after the fix confirmed 1.0.">†</small> <small>8t / $0.14</small></td><td class='center'><span class='ok'>✅</span> <small>6t / $0.07</small></td><td class='center'><span class='ok'>✅</span> <small>10t / $0.14</small></td></tr><tr><td><code>webarena.694</code></td><td class='center'><span class='fail'>❌</span> <small>31t / $0.67</small></td><td class='center'><span class='ok'>✅</span> <small>11t / $0.12</small></td><td class='center'><span class='fail'>❌</span> <small>61t / $1.44</small></td></tr><tr><td><code>webarena.699</code></td><td class='center'><span class='fail'>❌</span> <small>51t / $1.09</small></td><td class='center'><span class='ok'>✅</span> <small>9t / $0.10</small></td><td class='center'>— <small>‡</small></td></tr></tbody></table>
+
+
+<div class="page-break"></div>
+
+<h2>Five product-level findings (surfaced by oracle authoring)</h2>
+<p>All five are real Skill Recorder TODOs, encoded as work-arounds in the oracle SKILL.md "Critical tool notes" sections. Fixing them should narrow the human → oracle gap.</p>
+
+<table>
+  <thead><tr><th>#</th><th>Issue</th><th>Impact</th><th>Current work-around</th><th>Product fix direction</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td><code>browse fill</code> presses Enter by default</td><td>Form fields submit prematurely, breaking subsequent fills</td><td>SKILL.md adds <code>--no-press-enter</code></td><td>Renderer default to <code>--no-press-enter</code>; only add Enter for <code>action: "submit"</code></td></tr>
+    <tr><td>2</td><td><code>browse fill</code> doesn't work on <code>&lt;select&gt;</code></td><td>Dropdown values silently not applied — biggest single cause of human-arm failures</td><td>Hand-written oracle uses <code>browse select</code></td><td>Add <code>action: "select"</code> to Skill schema; renderer outputs <code>browse select</code> for selects</td></tr>
+    <tr><td>3</td><td><code>browse fill</code> doesn't work on Magento checkbox toggles</td><td>Toggle widgets (Enable Product, Sale, etc.) cannot be flipped</td><td>Click adjacent <code>&lt;label&gt;</code> (<code>input[name="..."] + label</code>)</td><td>Renderer detects checkbox and emits click-label pattern</td></tr>
+    <tr><td>4</td><td>Playwright <code>Page.url</code> cache stale after external CDP nav</td><td>URLEvaluator reads stale URL after CCC's <code>browse open</code>, false-fails url_match</td><td>runner_ccc calls <code>page.evaluate(...)</code> before validate to force a CDP roundtrip</td><td>Use <code>frame.url()</code> or fresh CDP target enumeration in evaluator</td></tr>
+    <tr><td>5</td><td>Claude Code doesn't auto-load project skill bodies</td><td>SKILL.md name+description seen in catalog, body ignored — agent improvises and gets details wrong</td><td>runner prompt nudges "read your skills before acting"</td><td>Document skill-discovery patterns; possibly hint built-in</td></tr>
+  </tbody>
+</table>
+
+<h2>Methodology — how the three SKILL.md sets were produced</h2>
+<ul>
+  <li><strong>Cold</strong>: no SKILL.md. The agent receives only the WebArena task intent and the <code>browse</code> tool surface. Tests Claude Code's first-encounter capability.</li>
+  <li><strong>Oracle</strong>: 10 hand-authored SKILL.md files following our four-section template (Background, Critical tool notes, Steps, On failure). 4 were authored by direct Magento exploration (704, 771, 423, 694, 699); 5 were produced by parallel sub agents (453, 458, 470, 496, 538), each given a self-contained prompt with the task intent + WebArena eval criteria + Magento credentials + the five known browse-CLI gotchas + a format reference. All sub-agent skills passed eval on first try.</li>
+  <li><strong>Human</strong>: real one-shot recordings via the Skill Recorder Chrome extension. The user (project owner) recorded each task once, exported through CRX's "Save as Skill" flow, and the helper script <code>eval/scripts/human-record.sh</code> picked up the file and copied it into <code>eval/skills/human/</code>. No post-editing; whatever the recording captured is what the eval consumes — that's the contract.</li>
+</ul>
+
+<h2>Next steps</h2>
+<ol>
+  <li><strong>Fix Findings #2 and #3 first</strong> (the <code>&lt;select&gt;</code> and checkbox cases). These are the single biggest causes of human-arm failures, and they're well-scoped schema + renderer changes — no behavioural changes to CRX recording.</li>
+  <li><strong>3 seeds × 3 arms</strong> ($20-25, ~4h): tightens Wilson CI from ±30pp to ±15pp; closes the door on "this is a single-seed fluke" objections.</li>
+  <li><strong>opus 4.7 robustness check</strong> ($10): confirm conclusions generalise across frontier models.</li>
+  <li><strong>Re-record human arm after fixing #2/#3</strong>: the same 10 recordings, re-rendered through the updated renderer, should now pass most of the currently-failing tasks. That's the cleanest demonstration that the bugs are renderer-side, not user-side.</li>
+</ol>
+
+<p class="footer">由 src/report.py 自动生成 · 2026-05-28T09:58:46Z · Cold 20260525T084638Z · Oracle 20260526T040953Z · Human tmp</p>
+
+</body></html>

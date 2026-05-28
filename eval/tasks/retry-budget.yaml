@@ -1,0 +1,21 @@
+# Subset for re-running the 3 budget-bound failures from 2026-05-28's
+# human-arm run. Same intent strings as in selection.yaml — just trimmed
+# to the 3 tasks we want to re-attempt with a wider budget.
+
+- id: webarena.423
+  category: catalog
+  difficulty: hard
+  intent: "Mark all Hollister shirts on sale."
+  oracle_source: authored
+
+- id: webarena.694
+  category: catalog
+  difficulty: hard
+  intent: "Add a simple product named Energy-Bulk Women Shirt with 50 in stock, available in size S and color blue, priced at $60."
+  oracle_source: authored
+
+- id: webarena.771
+  category: reviews
+  difficulty: medium
+  intent: "Approve the positive reviews to display in our store."
+  oracle_source: authored
