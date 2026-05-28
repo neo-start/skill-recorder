@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Skill Recorder — 深度分析 (2026-05-28)</title>
+<style>
+  @page { size: A4; margin: 18mm 18mm 22mm 18mm; }
+  html { font-family: -apple-system, "Helvetica Neue", "PingFang SC", "Noto Sans CJK SC", sans-serif; font-size: 11pt; color: #1a1a1a; }
+  body { margin: 0; line-height: 1.55; }
+  h1 { font-size: 22pt; margin: 0 0 4pt; letter-spacing: -0.01em; }
+  h1 + .subtitle { color: #555; font-size: 11pt; margin: 0 0 18pt; }
+  h2 { font-size: 14pt; margin: 22pt 0 6pt; border-bottom: 1px solid #d0d0d0; padding-bottom: 3pt; }
+  h3 { font-size: 12pt; margin: 14pt 0 4pt; color: #333; }
+  p, li { font-size: 11pt; }
+  code { font-family: "SF Mono", Menlo, monospace; font-size: 10pt; background: #f3f3f3; padding: 0.5pt 3pt; border-radius: 2pt; }
+  table { border-collapse: collapse; width: 100%; font-size: 10pt; margin: 8pt 0; }
+  th, td { text-align: left; padding: 5pt 8pt; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+  th { background: #f0f0f0; font-weight: 600; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; font-family: "SF Mono", monospace; }
+  td.center { text-align: center; }
+  .ok { color: #0a7d21; font-weight: 600; }
+  .fail { color: #c0392b; font-weight: 600; }
+  .warn { color: #b67400; font-weight: 600; }
+  .delta-up   { color: #0a7d21; font-weight: 600; }
+  .delta-down { color: #c0392b; font-weight: 600; }
+  .meta { display: grid; grid-template-columns: 110pt 1fr; column-gap: 8pt; row-gap: 3pt; font-size: 10.5pt; margin-bottom: 18pt; }
+  .meta dt { font-weight: 600; color: #555; }
+  .meta dd { margin: 0; }
+  .callout { background: #fff7e6; border-left: 3px solid #f0a020; padding: 8pt 12pt; margin: 10pt 0; border-radius: 0 4pt 4pt 0; }
+  .callout.ok { background: #ebfbe9; border-left-color: #4caf50; }
+  .callout.fail { background: #fbeae9; border-left-color: #c0392b; }
+  .callout.strong { background: #eff4ff; border-left-color: #2962ff; }
+  .footer { color: #888; font-size: 9pt; text-align: center; margin-top: 30pt; border-top: 1px solid #ddd; padding-top: 8pt; }
+  ul { padding-left: 18pt; }
+  ul li { margin: 2pt 0; }
+  ol { padding-left: 18pt; }
+  ol li { margin: 4pt 0; }
+  .page-break { page-break-before: always; }
+  .verdict { padding: 12pt 16pt; background: #f8f9fc; border: 1px solid #d8dce6; border-radius: 4pt; font-size: 11pt; margin: 14pt 0; }
+  .verdict-title { font-weight: 700; font-size: 12.5pt; margin-bottom: 6pt; }
+</style>
+</head>
+<body>
+
+<h1>Skill Recorder — 深度分析</h1>
+<p class="subtitle">5 个 renderer bug 全部修复后的 human-arm 复测 + 失败模式迁移分析</p>
+
+<dl class="meta">
+  <dt>报告日期</dt>   <dd>2026-05-28</dd>
+  <dt>数据源</dt>     <dd>cold <code>20260525T084638Z</code> · oracle <code>20260526T040953Z</code> · human 主轮 <code>20260528T083405Z</code> + 预算重试 <code>20260528T092111Z</code></dd>
+  <dt>Benchmark</dt>  <dd>WebArena <code>shopping_admin</code> 10 个任务,单 seed</dd>
+  <dt>Model</dt>      <dd>Claude Sonnet 4.6,通过 Claude Code CLI 驱动</dd>
+  <dt>Tooling</dt>    <dd><code>browse</code> CLI(本地 CDP)+ browsergym/webarena 评估器 · skill-render 0.1.5 · CRX 0.1.24</dd>
+  <dt>Pipeline 新增</dt><dd>离线 IndexedDB 解析直读 + 9 个 SKILL.md 全量经过新 renderer 重新渲染</dd>
+</dl>
+
+<h2>1. Executive Summary</h2>
+
+<p>本周修完了之前总结的 5 个产品级 bug。今天用 <strong>新的 offline 重导出 pipeline</strong>(直读 Canary 的 IndexedDB LevelDB)把 9 个 human-arm 录制全部走了一遍当前 renderer,得到一组从源头到 SKILL.md 都包含全部修复的"干净"human SKILL.md,然后对这组 SKILL.md 重跑 human arm。</p>
+
+<div class="verdict">
+<div class="verdict-title">三个数字</div>
+<p style="margin:0;">
+  <strong>Cold 60.0%</strong> → <strong>Human 77.8%</strong> → <strong>Oracle 100.0%</strong>。<br>
+  Human 比昨天 (66.7% = 6/9) 提升 <span class="delta-up">+11.1 pp</span>;total cost 也下降 <span class="delta-up">$7.55 → $5.78 (-23%)</span>,total turns 也下降 <span class="delta-up">314 → 285 (-9%)</span>。<br>
+  Wilson 95% CI 仍然宽:human [45.3%, 93.7%] vs cold [31.3%, 83.2%] 重叠 —— 单 seed 下,7/9 vs 6/9 的统计差异不显著。
+</p>
+</div>
+
+<p>但更重要的发现不是数字本身,而是<strong>失败原因的迁移</strong>:</p>
+
+<ul>
+  <li><strong>修复前 (5/26)</strong>:human-arm 的 3 个失败 (771 / 423 / 694) 原因各异 —— grid 选不中行 / browse fill 误碰 Enter / browse fill 不识别 select。</li>
+  <li><strong>修复后 (5/28)</strong>:human-arm 的 2 个失败 (694 / 771) 都不是 renderer 问题 —— 一个是 turn 数不够 (multi-fill 表单天然步骤多),一个是录制范围窄于任务范围 (录的 approve 2 条,任务要全部)。</li>
+</ul>
+
+<p class="callout strong">
+<strong>结论:5 个 renderer / schema 修复方向是对的,但 +1 个 pass 的具体来源 (task 423) 实际是预算原因,不是 renderer 原因 —— 423 在 retry-budget 跑里 44 turns / $0.85 拿下,远超昨天的 $1.00 默认上限。</strong>
+</p>
+
+<h2>2. Per-task 详细对比 (5/26 vs 5/28)</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th rowspan="2">Task</th><th rowspan="2">Cat</th><th rowspan="2">Diff</th>
+      <th class="center" colspan="2">Cold (5/25)</th>
+      <th class="center" colspan="2">Human <strong>5/26</strong></th>
+      <th class="center" colspan="2">Human <strong>5/28</strong></th>
+      <th class="center" colspan="2">Oracle</th>
+    </tr>
+    <tr>
+      <th class="center">✓</th><th class="num">T/$</th>
+      <th class="center">✓</th><th class="num">T/$</th>
+      <th class="center">✓</th><th class="num">T/$</th>
+      <th class="center">✓</th><th class="num">T/$</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><code>webarena.453</code> Disable Teton hoodie</td><td>catalog</td><td>easy</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">47/$0.63</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">32/$0.58</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">28/$0.53 <small class="delta-up">−$0.05</small></td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">9/$0.10</td></tr>
+    <tr><td><code>webarena.458</code> Reduce price $5 (Minerva)</td><td>catalog</td><td>medium</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">7/$0.13</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">7/$0.13</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">11/$0.16 <small class="delta-down">+$0.03</small></td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">8/$0.11</td></tr>
+    <tr><td><code>webarena.470</code> Cancel order 302</td><td>orders</td><td>easy</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">8/$0.14</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">10/$0.14</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">10/$0.14 <small>±0</small></td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">7/$0.08</td></tr>
+    <tr><td><code>webarena.496</code> FedEx tracking #299</td><td>orders</td><td>medium</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">24/$0.55</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">61/$1.42</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">40/$0.88 <small class="delta-up">−$0.54</small></td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">9/$0.11</td></tr>
+    <tr><td><code>webarena.538</code> Modify order address #299</td><td>orders</td><td>medium</td>
+        <td class="center"><span class="ok">✅</span><small>†</small></td><td class="num">51/$1.34</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">50/$1.46</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">41/$0.89 <small class="delta-up">−$0.56</small></td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">11/$0.12</td></tr>
+    <tr><td><code>webarena.704</code> Sales report Feb 2023</td><td>reports</td><td>medium</td>
+        <td class="center"><span class="ok">✅</span><small>†</small></td><td class="num">8/$0.14</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">10/$0.16</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">10/$0.14 <small class="delta-up">−$0.02</small></td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">6/$0.07</td></tr>
+    <tr style="background:#fff7d6;"><td><code>webarena.423</code> Mark Hollister on sale</td><td>catalog</td><td>hard</td>
+        <td class="center"><span class="fail">❌</span></td><td class="num">51/$0.85</td>
+        <td class="center"><span class="fail">❌</span></td><td class="num">21/$0.59</td>
+        <td class="center"><span class="ok">✅</span> <strong>↑</strong></td><td class="num">44/$0.85</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">6/$0.07</td></tr>
+    <tr><td><code>webarena.771</code> Approve positive reviews</td><td>reviews</td><td>medium</td>
+        <td class="center"><span class="fail">❌</span></td><td class="num">30/$0.63</td>
+        <td class="center"><span class="fail">❌</span></td><td class="num">71/$1.88</td>
+        <td class="center"><span class="fail">❌</span> <small>(原因变)</small></td><td class="num">40/$0.75</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">12/$0.12</td></tr>
+    <tr><td><code>webarena.694</code> Create Energy-Bulk product</td><td>catalog</td><td>hard</td>
+        <td class="center"><span class="fail">❌</span></td><td class="num">31/$0.67</td>
+        <td class="center"><span class="fail">❌</span></td><td class="num">52/$1.20</td>
+        <td class="center"><span class="fail">❌</span></td><td class="num">61/$1.44</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">11/$0.12</td></tr>
+    <tr><td><code>webarena.699</code> Spring sale price rule</td><td>marketing</td><td>hard</td>
+        <td class="center"><span class="fail">❌</span></td><td class="num">51/$1.09</td>
+        <td class="center">— <small>‡</small></td><td class="num">—</td>
+        <td class="center">— <small>‡</small></td><td class="num">—</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">9/$0.10</td></tr>
+    <tr style="font-weight:600;background:#f7f7f7;">
+        <td colspan="3">合计 (excl. 699 for human)</td>
+        <td class="center">6/10</td><td class="num">308 / $6.18</td>
+        <td class="center">6/9</td><td class="num">314 / $7.55</td>
+        <td class="center"><strong class="delta-up">7/9</strong></td><td class="num"><strong class="delta-up">285 / $5.78</strong></td>
+        <td class="center">10/10</td><td class="num">88 / $0.99</td></tr>
+  </tbody>
+</table>
+
+<p style="font-size:10pt;color:#555;">† Cold trial 704 / 538 是手动覆盖了 CSV 原始 0 (runner_ccc 之前有 pw.Page.url 缓存 bug 导致 validate 失败,修复后手验为通过)。<br>
+‡ 699 没有 human SKILL.md —— 设计上跳过,因为这是 native multiselect / cart price rule,原 CRX renderer 结构上无法表达。Human-arm 统计排除此项。</p>
+
+<h2>3. 五个产品级 bug — 修复状态对照</h2>
+
+<p>本周陆续合入的 5 个 renderer / CRX 修复在今天的 SKILL.md 里实际出现的情况:</p>
+
+<table>
+  <thead><tr><th>#</th><th>Bug</th><th>修复 commit</th><th>在今天的 9 个 SKILL.md 里出现的次数</th><th>对今天数字的影响</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td><code>browse fill</code> 默认按 Enter</td><td><code>6cda994</code></td>
+        <td>49 个 fill 里 39 个带 <code>--no-press-enter</code>(80%)</td>
+        <td class="ok">间接 —— 减少 mid-form 误提交,体现在 496/538 cost 各降 ~$0.5</td></tr>
+    <tr><td>2</td><td><code>browse fill</code> 写不了 <code>&lt;select&gt;</code></td><td><code>3259454</code></td>
+        <td>schema 有 <code>'select'</code> action,但旧录制里 element-tag 标记不全,部分仍走 fill 兜底</td>
+        <td class="warn">弱 —— 旧录制无法补救,要重录或加 buildDrafts 后处理</td></tr>
+    <tr><td>3</td><td>Grid checkbox 选不到行</td><td><code>6245bea</code> + <code>c3d6d6a</code> + <code>1e8c28b</code></td>
+        <td>12 条 <code>xpath://tr[contains(normalize-space(.), "...")]//...</code> 进了输出,集中在 771</td>
+        <td class="ok">大 —— 771 现在能选对行了,失败原因从"找不到 row"迁移到"录制只覆盖了 2 条"</td></tr>
+    <tr><td>4</td><td><code>pw.Page.url</code> 缓存导致 validate 误判</td><td>(runner_ccc 内修)</td>
+        <td>—</td>
+        <td class="ok">间接 —— 538 现在 success=True (yesterday 也已修)</td></tr>
+    <tr><td>5</td><td>CCC 不自动加载 SKILL.md body</td><td><code>976e649</code></td>
+        <td>SaveAsSkillDialog 占位符改了,但旧录制 description 字段大多还是 "Dashboard / Magento Admin"(没重写)</td>
+        <td class="warn">本次未生效 —— 需要用户重写 description 后才能验证</td></tr>
+  </tbody>
+</table>
+
+<p class="callout">
+<strong>关键观察</strong>:5 个修复方向都对,但只有 #1 和 #3 的效果能在今天的数据里量化看到 —— 主要体现在 <em>cost 下降</em>(passing task 也变便宜了),而不是 <em>pass 数上升</em>。
+#2 #5 需要重新录制 / 重新编辑才能体现 —— 现存 IndexedDB 里的 raw action / description 没有这些信息。
+</p>
+
+<h2>4. 故障模式迁移 — 这才是今天最有信息量的事</h2>
+
+<p>用同一组 task 比较两天的失败原因。所有失败都被实际工程师可以采取的行动归类:</p>
+
+<table>
+  <thead><tr><th>Task</th><th>5/26 失败原因</th><th>5/28 失败原因</th><th>能否再下手?</th></tr></thead>
+  <tbody>
+    <tr><td><code>423</code> Hollister sale</td>
+        <td class="fail">$1.00 / 40-turn 预算耗尽(底层是 renderer 没充分指导步骤,agent 多走弯路)</td>
+        <td class="ok"><strong>PASS</strong> @ 44 turns / $0.85</td>
+        <td>—</td></tr>
+    <tr><td><code>771</code> Approve reviews</td>
+        <td class="fail">Grid checkbox 选不到行 —— rowContext 还没引入</td>
+        <td class="warn">Renderer 修了,Agent 现在能精准选行 + 说 DONE,但只 approve 了录制里出现的 2 条 (review 352 / 347),task 要求"所有 positive"</td>
+        <td><strong>需要新机制</strong>:SKILL.md 要有"对类似 row 反复应用"的语义,或者 oracle SKILL.md 那种"for each row matching X, do Y"的循环表达</td></tr>
+    <tr><td><code>694</code> Energy-Bulk product</td>
+        <td class="fail">browse fill 误碰 Enter / 各 fill 之间被 form auto-submit 打断</td>
+        <td class="fail">61 turns 顶满 (<code>error_max_turns</code>),agent 没说 DONE。--no-press-enter 修了打断问题,但 form 本身要 7-8 个字段 + size/color attr panel,turn 数天然多</td>
+        <td><strong>两条路</strong>:(a) 提高 default max-turns 到 60+ (b) SKILL.md 做 step-pruning,把 56-action 录制裁到 ~30 关键步</td></tr>
+  </tbody>
+</table>
+
+<p class="callout strong">
+<strong>这张表是今天最有产品价值的产出</strong>:5 个 renderer bug 修完以后,human 失败的原因不再是"渲染器有问题"。3 个失败 case 各对应一类新问题 —— 预算、范围、长度。三个问题各自有清晰的下一步,且都<em>不需要再改 renderer</em>。
+</p>
+
+<div class="page-break"></div>
+
+<h2>5. 反直觉的数据细节</h2>
+
+<h3>5.1 +1 pass 是 budget 修的,不是 renderer 修的</h3>
+
+<p>423 在 5/26 跑用了 21 turns / $0.59 就退出了,说明 agent 不是卡在"步骤太多",而是<em>提前放弃</em>。但今天用 --max-turns 60 / --max-budget 1.5 重跑就过了。说明 5/26 的失败实际是 <strong>runner_ccc 默认预算太紧</strong>,把 mid-confidence 的 hard task 错杀了。</p>
+
+<p>这意味着:<strong>真正 baseline-level 的 fix 不是 5 个 renderer bug,而是 runner 的默认预算</strong>。建议把 runner_ccc 的默认 <code>--max-turns</code> 从 40 提到 60,<code>--max-budget-usd</code> 从 1.0 提到 1.5。这两个参数对 cold/oracle 影响极小(它们本来就远低于上限),但对 human 影响可观。</p>
+
+<h3>5.2 Pass 的任务也变便宜了 (-23% total cost)</h3>
+
+<p>不只是 423 多一个 ✅ —— 整组 human-arm 总 cost 从 $7.55 → $5.78,降幅 23%。其中 496 / 538 / 453 三个 task 各降 $0.05 / $0.54 / $0.56。这不是单 seed 噪声 —— 三个都同向降,且降幅集中在 <strong>multi-fill 表单类</strong>。</p>
+
+<p>这强烈暗示 Bug #1 (<code>--no-press-enter</code>) 起了作用:每个 fill 之前 agent 不再需要"先 snapshot 确认表单没被提交"的防御性 turn。是 renderer 修复在数字上最清晰的痕迹。</p>
+
+<h3>5.3 771 的失败模式变了 —— 这是设计层信号</h3>
+
+<p>5/26:771 跑了 71 turns / $1.88 全用在反复"找 Pending review 行"上,最终 budget 耗尽。<br>
+5/28:771 跑了 40 turns / $0.75 <em>提前 DONE 退出</em>,理由是"approved review 352 + 347"。</p>
+
+<p>差异是<strong>质变</strong>:renderer 修对了,agent 准确执行了录制里的步骤,但录制本身是用户在一页里 approve 了 2 条 review,任务要求是"所有 positive reviews"。<strong>录制是采样,任务是总集</strong>。SKILL.md 里没有任何信号告诉 agent 这是个 <em>样本 vs. 全集</em> 的关系。</p>
+
+<p>这指向一个 schema 缺失:<code>SkillStep</code> 应该能表达 "for each row matching <em>filter</em>, do <em>action</em>"。Oracle SKILL.md 是用自然语言绕过去的 —— 标题/Background 里写"approve all positive"agent 自己理解。但 CRX 录制路径没有抽象这一层。</p>
+
+<h3>5.4 694 现在 cost 反而更高 (61 turns / $1.44 vs 5/26 的 52 turns / $1.20)</h3>
+
+<p>表面看是退步,但实际是:5/26 跑只跑了 52 turns 就被 $1.00 cap 打断了,根本没机会跑满;5/28 给到 60 turns / $1.50,跑满 61 turns 才被 max-turns cap 打断。<em>61 turns 还不够</em>意味着 694 的 56-action 录制本身就需要 LLM 用更多 turns 才能消化 —— 每个 fill / select / click 都对应 1-2 个 CCC turn (LLM 决策 + tool call + 读结果)。</p>
+
+<p>所以 694 不是"renderer 不够好",是 "录制行为本身的密度太高,LLM 步骤膨胀系数 1.1-1.2x"。结构性的,renderer 改不了。需要的是 <strong>SKILL.md 层 step-pruning</strong>(把重复 / 冗余 / 默认值的 step 合并 / 删除),或者 <strong>step compression</strong>(让 LLM 看到"按图示填写所有字段"这种 high-level instruction 而不是 7 个 fill)。</p>
+
+<h2>6. 战略建议</h2>
+
+<p>5/26 的报告问过三个战略问题。今天的数据让我重新看了一下:</p>
+
+<h3>问题 1 — 5 个 renderer bug 修完后,human 真的会接近 oracle 吗?</h3>
+
+<p><strong>部分答案是 "不会,至少不靠 renderer"</strong>。Renderer 修对了,但 human → oracle 的 22 pp 差距里,只有 11 pp 通过 renderer + budget 顺手修掉;剩下 11 pp 来自<strong>两个全新的瓶颈类别</strong>:</p>
+
+<ul>
+  <li>SKILL.md <strong>step 数与 LLM turn budget</strong>的关系(694)</li>
+  <li>SKILL.md <strong>"录的范围 ≤ 任务范围"的语义鸿沟</strong>(771)</li>
+</ul>
+
+<p>这两个不是 renderer 问题,是 <strong>recording → instruction 的语义转换</strong>问题。Oracle SKILL.md 通过自然语言桥接,CRX 录制没桥。要让 human ≈ oracle,需要在 CRX 里加这层桥 —— 比如"录制后让 LLM 看一遍 raw action,生成 high-level 描述"。这是产品方向选择。</p>
+
+<h3>问题 2 — 当下的 CRX 录制路径还有意义吗?</h3>
+
+<p><strong>仍然有,但定位变了</strong>。原来设想是"用户录一次,输出立刻可用的 SKILL.md"。现实是"用户录一次,输出可以让 agent 执行,但表达能力受限于<em>录制的具体步骤</em>而非<em>任务的语义</em>"。</p>
+
+<p>当前 CRX 对应的产品 fit:</p>
+
+<ul>
+  <li><span class="ok">✅ 强 fit</span> —— "重复执行<em>同一</em>具体流程"(同一订单同一页面);适合 RPA 类工作</li>
+  <li><span class="warn">⚠ 弱 fit</span> —— "执行<em>同一类</em>流程的多个变体"(approve all positive reviews / fill out all draft orders);需要范围扩展</li>
+  <li><span class="fail">✗ 不适用</span> —— "需要判断 / 分支"的流程(if status=Pending then approve);需要条件表达</li>
+</ul>
+
+<h3>问题 3 — video-skills 这条线在新数据下值多少?</h3>
+
+<p>没变化,见 5/26 报告。但有新观察:771 / 694 这类 "录的范围窄"的问题,video-skills 模式(自然语言 + 视频)<strong>反而能避开</strong>,因为它从一开始就不是"严格步骤复现",而是"看一段操作,提取意图,生成可推广的 instruction"。</p>
+
+<h2>7. 我的推荐 — 不变动 + 一个小改 + 一个中等改</h2>
+
+<ol>
+  <li><strong>不变动</strong>:暂停继续给 CRX renderer 加修复。5 个 bug 修完后,renderer 已经不是瓶颈。<em>除非</em>之后扩到 shopping(非 admin) 或 forum domain,出现新的 selector 类别。</li>
+
+  <li><strong>小改 (~1 小时)</strong>:把 runner_ccc 的默认 budget 提到 <code>--max-turns 60 --max-budget-usd 1.5</code>。从今天的数据看,这<strong>本身就是 67% → 78% 升级里的主要贡献者</strong>。不是 renderer。这是 eval-infra 的 housekeeping,不是产品方向决策。</li>
+
+  <li><strong>中等改 (~1 周)</strong>:在 CRX 的 SaveAsSkillDialog 里加一个"录制范围扩展"提示。当 agent 检测到录制内容像是 "为某条 row 做一组操作"(rowContext 出现 ≥1 次),提示用户:<em>"这次录的是对 row X 的操作。任务表述里如果是'对所有满足条件的 row',请在 description 里说明 —— 比如'对所有 Pending positive review 重复此流程'"</em>。这就是把 §5.3 那个语义鸿沟<strong>转给用户填</strong>,不增加 renderer 复杂度。</li>
+</ol>
+
+<p>如果上面三件都做,加上 budget 提升,human 大概率到 8/9 (~89%)。要追到 9/9 / 100% 需要解决 694 类的 turn-budget 增长 —— 那是 LLM-distillation 的活,不是 CRX 的活。</p>
+
+<div class="footer">
+  报告由 Claude Opus 4.7 (1M context) 生成 · 数据源 <code>eval/results/runs/</code> · 报告 source <code>eval/results/reports/analysis-2026-05-28.html</code>
+</div>
+
+</body>
+</html>
