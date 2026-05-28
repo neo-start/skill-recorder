@@ -61,7 +61,7 @@ browse click 'xpath://tr[contains(normalize-space(.), "AnyYesNo undefinedundefin
 
 ```bash
 # Fill select in the row containing "AnyYesNo undefinedundefinedrequire([jquery, mage/calendar":
-browse fill 'xpath://tr[contains(normalize-space(.), "AnyYesNo undefinedundefinedrequire([jquery, mage/calendar")]//select' 2
+browse fill --no-press-enter 'xpath://tr[contains(normalize-space(.), "AnyYesNo undefinedundefinedrequire([jquery, mage/calendar")]//select' 2
 ```
 
 **Expected:** "ApprovedPendingNot Approved" becomes interactable
@@ -103,7 +103,7 @@ browse click 'xpath://tr[contains(normalize-space(.), "352 Apr 24, 2023, 2:53:49
 
 ```bash
 # Fill input[type="checkbox"] in the row containing "352 Apr 24, 2023, 2:53:49 PM Pending Good but not perfect cu":
-browse fill 'xpath://tr[contains(normalize-space(.), "352 Apr 24, 2023, 2:53:49 PM Pending Good but not perfect cu")]//input[type="checkbox"]' on
+browse fill --no-press-enter 'xpath://tr[contains(normalize-space(.), "352 Apr 24, 2023, 2:53:49 PM Pending Good but not perfect cu")]//input[type="checkbox"]' on
 ```
 
 **Expected:** "#reviewGrid_table > tbody > tr._clickable.on-mouse" becomes interactable
@@ -130,7 +130,7 @@ browse click 'xpath://tr[contains(normalize-space(.), "349 Apr 24, 2023, 2:44:16
 
 ```bash
 # Fill input[type="checkbox"] in the row containing "349 Apr 24, 2023, 2:44:16 PM Pending OKish seam miller I hav":
-browse fill 'xpath://tr[contains(normalize-space(.), "349 Apr 24, 2023, 2:44:16 PM Pending OKish seam miller I hav")]//input[type="checkbox"]' off
+browse fill --no-press-enter 'xpath://tr[contains(normalize-space(.), "349 Apr 24, 2023, 2:44:16 PM Pending OKish seam miller I hav")]//input[type="checkbox"]' off
 ```
 
 **Expected:** "#id_619" becomes interactable
@@ -148,7 +148,7 @@ browse click 'xpath://tr[contains(normalize-space(.), "349 Apr 24, 2023, 2:44:16
 
 ```bash
 # Fill input[type="checkbox"] in the row containing "349 Apr 24, 2023, 2:44:16 PM Pending OKish seam miller I hav":
-browse fill 'xpath://tr[contains(normalize-space(.), "349 Apr 24, 2023, 2:44:16 PM Pending OKish seam miller I hav")]//input[type="checkbox"]' on
+browse fill --no-press-enter 'xpath://tr[contains(normalize-space(.), "349 Apr 24, 2023, 2:44:16 PM Pending OKish seam miller I hav")]//input[type="checkbox"]' on
 ```
 
 **Expected:** "#id_38" becomes interactable
@@ -166,7 +166,7 @@ browse click 'xpath://tr[contains(normalize-space(.), "347 Apr 24, 2023, 2:42:23
 
 ```bash
 # Fill input[type="checkbox"] in the row containing "347 Apr 24, 2023, 2:42:23 PM Pending Quite good Jane Smith I":
-browse fill 'xpath://tr[contains(normalize-space(.), "347 Apr 24, 2023, 2:42:23 PM Pending Quite good Jane Smith I")]//input[type="checkbox"]' on
+browse fill --no-press-enter 'xpath://tr[contains(normalize-space(.), "347 Apr 24, 2023, 2:42:23 PM Pending Quite good Jane Smith I")]//input[type="checkbox"]' on
 ```
 
 **Expected:** "Actions Delete Update Status" becomes interactable

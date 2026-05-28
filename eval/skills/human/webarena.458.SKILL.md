@@ -58,7 +58,7 @@ Selector hints: `aria: textbox:Price`, `css: #ESND3F0`, `xpath: /html/body/body[
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #ESND3F0 2
+browse fill --no-press-enter #ESND3F0 2
 ```
 Selector hints: `aria: textbox:Price`, `css: #ESND3F0`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/fieldset[1]/fieldset[1]/div[1]/div[1]/div[2]/div[1]/input[1]`
 
@@ -68,7 +68,7 @@ Selector hints: `aria: textbox:Price`, `css: #ESND3F0`, `xpath: /html/body/body[
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #ESND3F0 27
+browse fill --no-press-enter #ESND3F0 27
 ```
 Selector hints: `aria: textbox:Price`, `css: #ESND3F0`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/fieldset[1]/fieldset[1]/div[1]/div[1]/div[2]/div[1]/input[1]`
 

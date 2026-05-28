@@ -80,11 +80,9 @@ Selector hints: `css: #ui-datepicker-div > div.ui-datepicker-header.ui-widget-he
 
 ### 6. Fill "Select year"
 
-Target: text "19261927192819291930193119321933193419351936193719381939194019411942194319441945", role combobox, aria-label "Select year", tag <select>
 ```bash
-browse fill '#ui-datepicker-div > div.ui-datepicker-header.ui-widget-header:nth-of-type(1) > div.ui-datepicker-title > select.ui-datepicker-year:nth-of-type(2)' 2023
+browse select '#ui-datepicker-div > div.ui-datepicker-header.ui-widget-header:nth-of-type(1) > div.ui-datepicker-title > select.ui-datepicker-year:nth-of-type(2)' 2023
 ```
-Selector hints: `css: #ui-datepicker-div > div.ui-datepicker-header.ui-widget-header:nth-of-type(1) > div.ui-datepicker-title > select.ui-datepicker-year:nth-of-type(2)`, `xpath: /html/body/body[1]/div[5]/div[1]/div[1]/select[2]`
 
 **Expected:** "Select month" becomes interactable
 
@@ -105,11 +103,9 @@ Selector hints: `css: #ui-datepicker-div > div.ui-datepicker-header.ui-widget-he
 
 ### 8. Fill "Select month"
 
-Target: text "JanFebMarAprMayJunJulAugSepOctNovDec", role combobox, aria-label "Select month", tag <select>
 ```bash
-browse fill '#ui-datepicker-div > div.ui-datepicker-header.ui-widget-header:nth-of-type(1) > div.ui-datepicker-title > select.ui-datepicker-month:nth-of-type(1)' 1
+browse select '#ui-datepicker-div > div.ui-datepicker-header.ui-widget-header:nth-of-type(1) > div.ui-datepicker-title > select.ui-datepicker-month:nth-of-type(1)' 1
 ```
-Selector hints: `css: #ui-datepicker-div > div.ui-datepicker-header.ui-widget-header:nth-of-type(1) > div.ui-datepicker-title > select.ui-datepicker-month:nth-of-type(1)`, `xpath: /html/body/body[1]/div[5]/div[1]/div[1]/select[1]`
 
 **Expected:** "1" becomes interactable
 
@@ -160,11 +156,9 @@ Selector hints: `css: #ui-datepicker-div > div.ui-datepicker-header.ui-widget-he
 
 ### 12. Fill "Select year"
 
-Target: text "19261927192819291930193119321933193419351936193719381939194019411942194319441945", role combobox, aria-label "Select year", tag <select>
 ```bash
-browse fill '#ui-datepicker-div > div.ui-datepicker-header.ui-widget-header:nth-of-type(1) > div.ui-datepicker-title > select.ui-datepicker-year:nth-of-type(2)' 2023
+browse select '#ui-datepicker-div > div.ui-datepicker-header.ui-widget-header:nth-of-type(1) > div.ui-datepicker-title > select.ui-datepicker-year:nth-of-type(2)' 2023
 ```
-Selector hints: `css: #ui-datepicker-div > div.ui-datepicker-header.ui-widget-header:nth-of-type(1) > div.ui-datepicker-title > select.ui-datepicker-year:nth-of-type(2)`, `xpath: /html/body/body[1]/div[5]/div[1]/div[1]/select[2]`
 
 **Expected:** "Select month" becomes interactable
 
@@ -185,11 +179,9 @@ Selector hints: `css: #ui-datepicker-div > div.ui-datepicker-header.ui-widget-he
 
 ### 14. Fill "Select month"
 
-Target: text "JanFebMarAprMayJunJulAugSepOctNovDec", role combobox, aria-label "Select month", tag <select>
 ```bash
-browse fill '#ui-datepicker-div > div.ui-datepicker-header.ui-widget-header:nth-of-type(1) > div.ui-datepicker-title > select.ui-datepicker-month:nth-of-type(1)' 1
+browse select '#ui-datepicker-div > div.ui-datepicker-header.ui-widget-header:nth-of-type(1) > div.ui-datepicker-title > select.ui-datepicker-month:nth-of-type(1)' 1
 ```
-Selector hints: `css: #ui-datepicker-div > div.ui-datepicker-header.ui-widget-header:nth-of-type(1) > div.ui-datepicker-title > select.ui-datepicker-month:nth-of-type(1)`, `xpath: /html/body/body[1]/div[5]/div[1]/div[1]/select[1]`
 
 **Expected:** "28" becomes interactable
 

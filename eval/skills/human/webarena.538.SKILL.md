@@ -125,7 +125,7 @@ browse fill #street0 '456 Oak Avenue'
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #street0 '{{value_1}}'
+browse fill --no-press-enter #street0 '{{value_1}}'
 ```
 Selector hints: `css: #street0`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[2]/div[1]/form[1]/div[9]/div[1]/div[1]/input[1]`
 
@@ -168,7 +168,7 @@ browse fill #street1 'Apartment 5B'
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #street1 'Apartment 5B'
+browse fill --no-press-enter #street1 'Apartment 5B'
 ```
 Selector hints: `css: #street1`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[2]/div[1]/form[1]/div[9]/div[1]/div[2]/input[1]`
 
@@ -191,11 +191,9 @@ Selector hints: `css: #region_id`, `xpath: /html/body/body[1]/div[3]/main[1]/div
 
 ### 15. Fill "Please selectAlabamaAlaskaAmerican SamoaArizonaArkansasArmed Forces AfricaArmed "
 
-Target: text "Please selectAlabamaAlaskaAmerican SamoaArizonaArkansasArmed Forces AfricaArmed ", role combobox, tag <select>
 ```bash
-browse fill #region_id 43
+browse select #region_id 43
 ```
-Selector hints: `css: #region_id`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[2]/div[1]/form[1]/div[11]/div[1]/select[1]`
 
 **Expected:** "Please selectAlabamaAlaskaAmerican SamoaArizonaArkansasArmed Forces AfricaArmed " becomes interactable
 
@@ -250,7 +248,7 @@ Selector hints: `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/d
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #city New
+browse fill --no-press-enter #city New
 ```
 Selector hints: `aria: textbox:City`, `css: #city`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[2]/div[1]/form[1]/div[12]/div[1]/input[1]`
 
@@ -260,7 +258,7 @@ Selector hints: `aria: textbox:City`, `css: #city`, `xpath: /html/body/body[1]/d
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #city New
+browse fill --no-press-enter #city New
 ```
 Selector hints: `aria: textbox:City`, `css: #city`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[2]/div[1]/form[1]/div[12]/div[1]/input[1]`
 
@@ -270,7 +268,7 @@ Selector hints: `aria: textbox:City`, `css: #city`, `xpath: /html/body/body[1]/d
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #city 'New '
+browse fill --no-press-enter #city 'New '
 ```
 Selector hints: `aria: textbox:City`, `css: #city`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[2]/div[1]/form[1]/div[12]/div[1]/input[1]`
 
@@ -280,7 +278,7 @@ Selector hints: `aria: textbox:City`, `css: #city`, `xpath: /html/body/body[1]/d
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #city 'New Yo'
+browse fill --no-press-enter #city 'New Yo'
 ```
 Selector hints: `aria: textbox:City`, `css: #city`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[2]/div[1]/form[1]/div[12]/div[1]/input[1]`
 
@@ -290,7 +288,7 @@ Selector hints: `aria: textbox:City`, `css: #city`, `xpath: /html/body/body[1]/d
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #city 'New York'
+browse fill --no-press-enter #city 'New York'
 ```
 Selector hints: `aria: textbox:City`, `css: #city`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[2]/div[1]/form[1]/div[12]/div[1]/input[1]`
 
@@ -317,7 +315,7 @@ Selector hints: `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/d
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #postcode 100
+browse fill --no-press-enter #postcode 100
 ```
 Selector hints: `aria: textbox:Zip/Postal Code`, `css: #postcode`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[2]/div[1]/form[1]/div[13]/div[1]/input[1]`
 
@@ -327,7 +325,7 @@ Selector hints: `aria: textbox:Zip/Postal Code`, `css: #postcode`, `xpath: /html
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #postcode '{{value_2}}'
+browse fill --no-press-enter #postcode '{{value_2}}'
 ```
 Selector hints: `aria: textbox:Zip/Postal Code`, `css: #postcode`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[2]/div[1]/form[1]/div[13]/div[1]/input[1]`
 
@@ -337,7 +335,7 @@ Selector hints: `aria: textbox:Zip/Postal Code`, `css: #postcode`, `xpath: /html
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #postcode '{{value_3}}'
+browse fill --no-press-enter #postcode '{{value_3}}'
 ```
 Selector hints: `aria: textbox:Zip/Postal Code`, `css: #postcode`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[2]/div[1]/form[1]/div[13]/div[1]/input[1]`
 
@@ -440,7 +438,7 @@ browse fill #street0 '456 Oak Avenue'
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #street0 '{{value_4}}'
+browse fill --no-press-enter #street0 '{{value_4}}'
 ```
 Selector hints: `css: #street0`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[2]/div[1]/form[1]/div[9]/div[1]/div[1]/input[1]`
 
@@ -483,7 +481,7 @@ browse fill #street1 'Apartment 5B'
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #street1 'Apartment 5B'
+browse fill --no-press-enter #street1 'Apartment 5B'
 ```
 Selector hints: `css: #street1`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[2]/div[1]/form[1]/div[9]/div[1]/div[2]/input[1]`
 
@@ -521,11 +519,9 @@ Selector hints: `css: #region_id`, `xpath: /html/body/body[1]/div[3]/main[1]/div
 
 ### 42. Fill "Please selectAlabamaAlaskaAmerican SamoaArizonaArkansasArmed Forces AfricaArmed "
 
-Target: text "Please selectAlabamaAlaskaAmerican SamoaArizonaArkansasArmed Forces AfricaArmed ", role combobox, tag <select>
 ```bash
-browse fill #region_id 43
+browse select #region_id 43
 ```
-Selector hints: `css: #region_id`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[2]/div[1]/form[1]/div[11]/div[1]/select[1]`
 
 **Expected:** "Please selectAlabamaAlaskaAmerican SamoaArizonaArkansasArmed Forces AfricaArmed " becomes interactable
 
@@ -565,7 +561,7 @@ Selector hints: `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/d
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #city ''
+browse fill --no-press-enter #city ''
 ```
 Selector hints: `aria: textbox:City`, `css: #city`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[2]/div[1]/form[1]/div[12]/div[1]/input[1]`
 
@@ -575,7 +571,7 @@ Selector hints: `aria: textbox:City`, `css: #city`, `xpath: /html/body/body[1]/d
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #city N
+browse fill --no-press-enter #city N
 ```
 Selector hints: `aria: textbox:City`, `css: #city`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[2]/div[1]/form[1]/div[12]/div[1]/input[1]`
 
@@ -585,7 +581,7 @@ Selector hints: `aria: textbox:City`, `css: #city`, `xpath: /html/body/body[1]/d
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #city New
+browse fill --no-press-enter #city New
 ```
 Selector hints: `aria: textbox:City`, `css: #city`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[2]/div[1]/form[1]/div[12]/div[1]/input[1]`
 
@@ -595,7 +591,7 @@ Selector hints: `aria: textbox:City`, `css: #city`, `xpath: /html/body/body[1]/d
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #city 'New '
+browse fill --no-press-enter #city 'New '
 ```
 Selector hints: `aria: textbox:City`, `css: #city`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[2]/div[1]/form[1]/div[12]/div[1]/input[1]`
 
@@ -605,7 +601,7 @@ Selector hints: `aria: textbox:City`, `css: #city`, `xpath: /html/body/body[1]/d
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #city 'New Y'
+browse fill --no-press-enter #city 'New Y'
 ```
 Selector hints: `aria: textbox:City`, `css: #city`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[2]/div[1]/form[1]/div[12]/div[1]/input[1]`
 
@@ -615,7 +611,7 @@ Selector hints: `aria: textbox:City`, `css: #city`, `xpath: /html/body/body[1]/d
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #city 'New York'
+browse fill --no-press-enter #city 'New York'
 ```
 Selector hints: `aria: textbox:City`, `css: #city`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[2]/div[1]/form[1]/div[12]/div[1]/input[1]`
 
@@ -655,7 +651,7 @@ Selector hints: `aria: textbox:Zip/Postal Code`, `css: #postcode`, `xpath: /html
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #postcode 100
+browse fill --no-press-enter #postcode 100
 ```
 Selector hints: `aria: textbox:Zip/Postal Code`, `css: #postcode`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[2]/div[1]/form[1]/div[13]/div[1]/input[1]`
 
@@ -665,7 +661,7 @@ Selector hints: `aria: textbox:Zip/Postal Code`, `css: #postcode`, `xpath: /html
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #postcode '{{value_5}}'
+browse fill --no-press-enter #postcode '{{value_5}}'
 ```
 Selector hints: `aria: textbox:Zip/Postal Code`, `css: #postcode`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[2]/div[1]/form[1]/div[13]/div[1]/input[1]`
 

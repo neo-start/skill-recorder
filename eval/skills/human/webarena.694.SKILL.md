@@ -121,7 +121,7 @@ browse fill #HHSE6NR 'Energy-Bulk Women Shirt'
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #HHSE6NR '{{value_1}}'
+browse fill --no-press-enter #HHSE6NR '{{value_1}}'
 ```
 Selector hints: `aria: textbox:Product Name`, `css: #HHSE6NR`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/fieldset[1]/div[3]/div[2]/input[1]`
 
@@ -176,7 +176,7 @@ Selector hints: `aria: textbox:Price`, `css: #BYN9DWY`, `xpath: /html/body/body[
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #BYN9DWY 60
+browse fill --no-press-enter #BYN9DWY 60
 ```
 Selector hints: `aria: textbox:Price`, `css: #BYN9DWY`, `xpath: /html/body/body[1]/div[4]/main[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/fieldset[1]/fieldset[1]/div[1]/div[1]/div[2]/div[1]/input[1]`
 
@@ -201,7 +201,7 @@ Selector hints: `aria: textbox:Quantity`, `css: #LKBFOGE`, `xpath: /html/body/bo
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #LKBFOGE 50
+browse fill --no-press-enter #LKBFOGE 50
 ```
 Selector hints: `aria: textbox:Quantity`, `css: #LKBFOGE`, `xpath: /html/body/body[1]/div[4]/main[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/fieldset[1]/fieldset[2]/div[1]/div[1]/div[2]/input[1]`
 
@@ -224,11 +224,9 @@ Selector hints: `aria: combobox:notice-L1SJ95U`, `css: #L1SJ95U`, `xpath: /html/
 
 ### 17. Fill "notice-L1SJ95U"
 
-Target: text "55 cmXS65 cmS75 cmM6 footL8 footXL10 foot282930313233343638", role combobox, aria-label "notice-L1SJ95U", tag <select>
 ```bash
-browse fill #L1SJ95U 167
+browse select #L1SJ95U 167
 ```
-Selector hints: `aria: combobox:notice-L1SJ95U`, `css: #L1SJ95U`, `xpath: /html/body/body[1]/div[4]/main[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/fieldset[1]/div[13]/div[2]/select[1]`
 
 **Expected:** "notice-L1SJ95U" becomes interactable
 
@@ -264,11 +262,9 @@ Selector hints: `aria: combobox:notice-LMVK0YL`, `css: #LMVK0YL`, `xpath: /html/
 
 ### 20. Fill "notice-LMVK0YL"
 
-Target: text "BlackBlueBrownGrayGreenLavenderMultiOrangePurpleRedWhiteYellow", role combobox, aria-label "notice-LMVK0YL", tag <select>
 ```bash
-browse fill #LMVK0YL 50
+browse select #LMVK0YL 50
 ```
-Selector hints: `aria: combobox:notice-LMVK0YL`, `css: #LMVK0YL`, `xpath: /html/body/body[1]/div[4]/main[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/fieldset[1]/div[17]/div[2]/select[1]`
 
 **Expected:** "notice-LMVK0YL" becomes interactable
 

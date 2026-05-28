@@ -168,11 +168,9 @@ Selector hints: `css: #trackingC1`, `xpath: /html/body/body[1]/div[3]/main[1]/di
 
 ### 13. Fill "Custom Value DHL Federal Express United Parcel Service United States Postal Serv"
 
-Target: text "Custom Value DHL Federal Express United Parcel Service United States Postal Serv", role combobox, tag <select>
 ```bash
-browse fill #trackingC1 fedex
+browse select #trackingC1 fedex
 ```
-Selector hints: `css: #trackingC1`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/form[1]/div[2]/div[2]/div[2]/div[3]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/select[1]`
 
 **Expected:** "Custom Value DHL Federal Express United Parcel Service United States Postal Serv" becomes interactable
 
@@ -228,7 +226,7 @@ browse fill #trackingN1 8974568499
 
 Target: role textbox, tag <input>
 ```bash
-browse fill #trackingN1 '{{value_2}}'
+browse fill --no-press-enter #trackingN1 '{{value_2}}'
 ```
 Selector hints: `css: #trackingN1`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/form[1]/div[2]/div[2]/div[2]/div[3]/div[1]/table[1]/tbody[1]/tr[1]/td[3]/input[1]`
 

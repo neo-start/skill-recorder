@@ -67,7 +67,7 @@ Selector hints: `aria: textbox:Search by keyword`, `css: #fulltext`, `xpath: /ht
 
 Target: text "Search by keyword", role textbox, aria-label "Search by keyword", tag <input>
 ```bash
-browse fill #fulltext T
+browse fill --no-press-enter #fulltext T
 ```
 Selector hints: `aria: textbox:Search by keyword`, `css: #fulltext`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[5]/input[1]`
 
@@ -77,7 +77,7 @@ Selector hints: `aria: textbox:Search by keyword`, `css: #fulltext`, `xpath: /ht
 
 Target: text "Search by keyword", role textbox, aria-label "Search by keyword", tag <input>
 ```bash
-browse fill #fulltext Te
+browse fill --no-press-enter #fulltext Te
 ```
 Selector hints: `aria: textbox:Search by keyword`, `css: #fulltext`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[5]/input[1]`
 
@@ -87,7 +87,7 @@ Selector hints: `aria: textbox:Search by keyword`, `css: #fulltext`, `xpath: /ht
 
 Target: text "Search by keyword", role textbox, aria-label "Search by keyword", tag <input>
 ```bash
-browse fill #fulltext Teton
+browse fill --no-press-enter #fulltext Teton
 ```
 Selector hints: `aria: textbox:Search by keyword`, `css: #fulltext`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[5]/input[1]`
 
@@ -146,7 +146,7 @@ Selector hints: `aria: checkbox:Enable Product`, `css: #TSJDDR1`, `xpath: /html/
 
 Target: role checkbox, tag <input>
 ```bash
-browse fill #TSJDDR1 off
+browse fill --no-press-enter #TSJDDR1 off
 ```
 Selector hints: `aria: checkbox:Enable Product`, `css: #TSJDDR1`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/fieldset[1]/div[1]/div[2]/div[1]/input[1]`
 

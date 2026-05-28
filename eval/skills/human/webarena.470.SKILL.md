@@ -73,7 +73,7 @@ Selector hints: `aria: textbox:Search by keyword`, `css: #fulltext`, `xpath: /ht
 
 Target: text "Search by keyword", role textbox, aria-label "Search by keyword", tag <input>
 ```bash
-browse fill #fulltext 000
+browse fill --no-press-enter #fulltext 000
 ```
 Selector hints: `aria: textbox:Search by keyword`, `css: #fulltext`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[2]/input[1]`
 
@@ -83,7 +83,7 @@ Selector hints: `aria: textbox:Search by keyword`, `css: #fulltext`, `xpath: /ht
 
 Target: text "Search by keyword", role textbox, aria-label "Search by keyword", tag <input>
 ```bash
-browse fill #fulltext '{{search_by}}'
+browse fill --no-press-enter #fulltext '{{search_by}}'
 ```
 Selector hints: `aria: textbox:Search by keyword`, `css: #fulltext`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[2]/input[1]`
 
@@ -93,7 +93,7 @@ Selector hints: `aria: textbox:Search by keyword`, `css: #fulltext`, `xpath: /ht
 
 Target: text "Search by keyword", role textbox, aria-label "Search by keyword", tag <input>
 ```bash
-browse fill #fulltext '{{search_by}}'
+browse fill --no-press-enter #fulltext '{{search_by}}'
 ```
 Selector hints: `aria: textbox:Search by keyword`, `css: #fulltext`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[2]/input[1]`
 

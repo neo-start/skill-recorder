@@ -152,7 +152,7 @@ Selector hints: `aria: checkbox:Sale`, `css: #YOQDAYY`, `xpath: /html/body/body[
 
 Target: role checkbox, tag <input>
 ```bash
-browse fill #YOQDAYY on
+browse fill --no-press-enter #YOQDAYY on
 ```
 Selector hints: `aria: checkbox:Sale`, `css: #YOQDAYY`, `xpath: /html/body/body[1]/div[3]/main[1]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/fieldset[1]/div[22]/div[2]/div[1]/input[1]`
 
