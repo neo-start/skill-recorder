@@ -366,6 +366,18 @@ export interface Skill {
   sourceRecordingId?: string;
   /** Set when the Skill was distilled from a YouTube video. */
   sourceVideo?: SkillVideoSource;
+  /**
+   * When true, the renderer emits an "Execution fidelity" preamble
+   * blockquote before the Steps section, telling the agent to follow
+   * every recorded step in order and not to skip steps based on its own
+   * judgment of what the task needs. Discovered empirically: when this
+   * isn't present, capable models (Sonnet 4.6) frequently take shortcuts
+   * — skipping rows whose text seems off-topic, skipping fields they
+   * consider redundant — and silently drop fields the evaluator checks.
+   * Default off in the type; buildSkill turns it on for recording-derived
+   * Skills since the recording IS the contract there.
+   */
+  executionFidelity?: boolean;
   createdAt: number;
   updatedAt: number;
 }

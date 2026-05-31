@@ -49,6 +49,17 @@ export function renderSkillAsMarkdown(skill: Skill): string {
     lines.push(...renderAuthPrecondition(skill, startUrl));
   }
 
+  if (skill.executionFidelity) {
+    lines.push('> **Execution fidelity**: this is a recorded workflow. Execute every');
+    lines.push('> numbered step in order. Do not skip steps based on your own judgment');
+    lines.push('> of whether a step "looks redundant" or whether a row\'s text "doesn\'t');
+    lines.push('> fit the task" — the recording was made on the ground truth, and the');
+    lines.push('> evaluator usually checks specific fields/rows whose relevance is not');
+    lines.push('> obvious from the task description alone. Verify success conditions');
+    lines.push('> before declaring DONE.');
+    lines.push('');
+  }
+
   if (skill.parameters.length) {
     lines.push('## Parameters');
     lines.push('');

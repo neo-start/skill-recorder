@@ -1,0 +1,28 @@
+{
+  "id": "skill_fidelity_01",
+  "title": "Fidelity-marked skill",
+  "description": "Exercises the executionFidelity flag — when set, the renderer emits a preamble blockquote before the Steps section telling the agent to follow every recorded step verbatim and not to skip steps based on its own task interpretation.",
+  "domain": "example.com",
+  "startUrl": "https://example.com",
+  "parameters": [],
+  "steps": [
+    {
+      "id": "f1",
+      "intent": "Click the only button",
+      "action": "click",
+      "selectors": [
+        { "kind": "id", "value": "#go", "score": 95 }
+      ],
+      "fingerprint": {
+        "tag": "button",
+        "role": "button",
+        "text": "Go",
+        "attrs": { "id": "go" }
+      }
+    }
+  ],
+  "executionFidelity": true,
+  "sourceRecordingId": "rec_fidelity_fixture",
+  "createdAt": 1700000000000,
+  "updatedAt": 1700000000000
+}
