@@ -225,6 +225,8 @@ export interface BuildSkillInput {
   drafts: DraftStep[];
   recording: RecordingMeta;
   authHint: SkillAuthHint;
+  /** Optional override; defaults to true for recording-derived skills. */
+  executionFidelity?: boolean;
 }
 
 export function buildSkill(input: BuildSkillInput): Skill {
@@ -264,6 +266,13 @@ export function buildSkill(input: BuildSkillInput): Skill {
     steps,
     auth: input.authHint.required ? input.authHint : undefined,
     sourceRecordingId: input.recording.id,
+    // Recording-derived skills get the fidelity preamble by default: when
+    // the agent has a literal action log to follow, telling it not to
+    // second-guess prevents the "skip a step that looks redundant" failure
+    // mode we hit on tasks 771 (skipped a row whose text seemed neutral)
+    // and 694 (skipped the entire Category step set because the task
+    // intent didn't mention category). Opt out via SaveAsSkillDialog.
+    executionFidelity: input.executionFidelity ?? true,
     createdAt: Date.now(),
     updatedAt: Date.now(),
   };

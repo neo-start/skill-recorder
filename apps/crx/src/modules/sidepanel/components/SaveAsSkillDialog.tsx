@@ -317,6 +317,7 @@ export function SaveAsSkillDialog({ recording, onClose }: Props) {
   const [description, setDescription] = useState('');
   const [drafts, setDrafts] = useState<DraftStep[]>([]);
   const [authHint, setAuthHint] = useState<SkillAuthHint>({ required: false });
+  const [executionFidelity, setExecutionFidelity] = useState<boolean>(true);
   const [busy, setBusy] = useState<'idle' | 'copying' | 'downloading'>('idle');
   const [feedback, setFeedback] = useState<string | null>(null);
   const [noteOpen, setNoteOpen] = useState<Set<number>>(new Set());
@@ -347,7 +348,7 @@ export function SaveAsSkillDialog({ recording, onClose }: Props) {
   };
 
   const buildSkill = (): Skill =>
-    buildSkillPure({ title, description, drafts, recording, authHint });
+    buildSkillPure({ title, description, drafts, recording, authHint, executionFidelity });
 
   const onCopy = async () => {
     if (!canSave) return;
@@ -421,6 +422,22 @@ export function SaveAsSkillDialog({ recording, onClose }: Props) {
                   ? authHint.reason ||
                     'A `## Precondition` block will be emitted telling the agent to load a Browserbase context before running steps.'
                   : 'Skill assumes a public, unauthenticated page. Toggle on if the target site needs login.'}
+              </Hint>
+            </AuthLabel>
+          </AuthRow>
+
+          <AuthRow>
+            <AuthCheckbox
+              type="checkbox"
+              checked={executionFidelity}
+              onChange={(e) => setExecutionFidelity(e.target.checked)}
+            />
+            <AuthLabel>
+              <b>Add execution-fidelity preamble (recommended)</b>
+              <Hint>
+                {executionFidelity
+                  ? 'Tells the agent to follow every recorded step in order. Defeats the "skip a step that looks redundant" failure mode that costs eval points on multi-field forms and multi-row grids.'
+                  : 'Off — agent may take shortcuts based on its own interpretation of the task intent.'}
               </Hint>
             </AuthLabel>
           </AuthRow>
