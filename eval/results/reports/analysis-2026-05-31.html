@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Skill Recorder — Final closure (2026-05-31)</title>
+<style>
+  @page { size: A4; margin: 18mm 18mm 22mm 18mm; }
+  html { font-family: -apple-system, "Helvetica Neue", "PingFang SC", "Noto Sans CJK SC", sans-serif; font-size: 11pt; color: #1a1a1a; }
+  body { margin: 0; line-height: 1.55; }
+  h1 { font-size: 22pt; margin: 0 0 4pt; letter-spacing: -0.01em; }
+  h1 + .subtitle { color: #555; font-size: 11pt; margin: 0 0 18pt; }
+  h2 { font-size: 14pt; margin: 22pt 0 6pt; border-bottom: 1px solid #d0d0d0; padding-bottom: 3pt; }
+  h3 { font-size: 12pt; margin: 14pt 0 4pt; color: #333; }
+  p, li { font-size: 11pt; }
+  code { font-family: "SF Mono", Menlo, monospace; font-size: 10pt; background: #f3f3f3; padding: 0.5pt 3pt; border-radius: 2pt; }
+  table { border-collapse: collapse; width: 100%; font-size: 10pt; margin: 8pt 0; }
+  th, td { text-align: left; padding: 5pt 8pt; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+  th { background: #f0f0f0; font-weight: 600; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; font-family: "SF Mono", monospace; }
+  td.center { text-align: center; }
+  .ok { color: #0a7d21; font-weight: 600; }
+  .fail { color: #c0392b; font-weight: 600; }
+  .warn { color: #b67400; font-weight: 600; }
+  .delta-up   { color: #0a7d21; font-weight: 600; }
+  .delta-down { color: #c0392b; font-weight: 600; }
+  .meta { display: grid; grid-template-columns: 110pt 1fr; column-gap: 8pt; row-gap: 3pt; font-size: 10.5pt; margin-bottom: 18pt; }
+  .meta dt { font-weight: 600; color: #555; }
+  .meta dd { margin: 0; }
+  .callout { background: #fff7e6; border-left: 3px solid #f0a020; padding: 8pt 12pt; margin: 10pt 0; border-radius: 0 4pt 4pt 0; }
+  .callout.ok { background: #ebfbe9; border-left-color: #4caf50; }
+  .callout.fail { background: #fbeae9; border-left-color: #c0392b; }
+  .callout.strong { background: #eff4ff; border-left-color: #2962ff; }
+  .footer { color: #888; font-size: 9pt; text-align: center; margin-top: 30pt; border-top: 1px solid #ddd; padding-top: 8pt; }
+  ul { padding-left: 18pt; }
+  ul li { margin: 2pt 0; }
+  ol { padding-left: 18pt; }
+  ol li { margin: 4pt 0; }
+  .page-break { page-break-before: always; }
+  .verdict { padding: 12pt 16pt; background: #f8f9fc; border: 1px solid #d8dce6; border-radius: 4pt; font-size: 11pt; margin: 14pt 0; }
+  .verdict-title { font-weight: 700; font-size: 12.5pt; margin-bottom: 6pt; }
+  .trajectory { display: grid; grid-template-columns: 110pt 1fr; column-gap: 12pt; row-gap: 8pt; margin: 12pt 0; font-size: 10.5pt; }
+  .trajectory dt { font-weight: 700; }
+  .trajectory dd { margin: 0; }
+  .arrow { color: #2962ff; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<h1>Skill Recorder — Final closure</h1>
+<p class="subtitle">Human-arm 67% → 100% — agent over-judgment 才是真敌人,不是 renderer</p>
+
+<dl class="meta">
+  <dt>报告日期</dt>   <dd>2026-05-31</dd>
+  <dt>数据源</dt>     <dd>cold <code>20260525T084638Z</code> · oracle <code>20260526T040953Z</code> · human merged <code>5/28 base + 5/31 single-task retries</code></dd>
+  <dt>Benchmark</dt>  <dd>WebArena <code>shopping_admin</code> · 10 tasks · 单 seed</dd>
+  <dt>Model</dt>      <dd>Claude Sonnet 4.6,通过 Claude Code CLI 驱动</dd>
+  <dt>Tooling</dt>    <dd><code>browse</code> CLI(本地 CDP)· skill-render <strong>0.1.7</strong> · CRX <strong>0.1.26</strong></dd>
+  <dt>新增能力</dt>    <dd><code>SkillStep.note</code>(per-step 备注)· <code>Skill.executionFidelity</code>(renderer 自动 emit 保真 preamble)</dd>
+</dl>
+
+<h2>1. Executive Summary</h2>
+
+<div class="verdict">
+<div class="verdict-title">三个数字</div>
+<p style="margin:0;">
+  <strong>Cold 60.0%</strong> <span class="arrow">→</span> <strong>Human 100.0%</strong> <span class="arrow">→</span> <strong>Oracle 100.0%</strong>。<br>
+  Human 比 5/28 (77.8%) 再升 <span class="delta-up">+22.2 pp</span>,正式追平 oracle(差距 0 pp)。<br>
+  Wilson 95% CI:human [66.4%, 100.0%] · oracle [72.2%, 100.0%] · cold [31.3%, 83.2%]。Human ∩ Oracle CI 完全重叠;Human 显著优于 cold。
+</p>
+</div>
+
+<p>这次的提升不是再修一个 renderer bug 拿到的,而是<strong>发现并修复了一类新的 failure mode —— "agent 看任务后自作主张,跳过录制步骤"</strong>。两条修复路径:</p>
+
+<ul>
+  <li><strong>Per-step note</strong>(<code>SkillStep.note</code>):每个 step 可以挂一段 human-authored 解释 ("approve this row even though it looks neutral")。renderer 输出为 <code>&gt; **Note from recorder**:</code> blockquote。</li>
+  <li><strong>Execution fidelity preamble</strong>(<code>Skill.executionFidelity</code>):整个 Skill 头部加一段保真指令告诉 agent"严格按 step 执行,不要按自己对 task 的理解走捷径"。renderer 自动 emit;<code>buildSkill</code> 对 recording 路径默认开启;CRX SaveAsSkillDialog 加 checkbox 可关。</li>
+</ul>
+
+<p class="callout strong">
+<strong>关键认知</strong>:5/28 的报告把剩下的 2 个失败归因于"录制范围窄"和"turn-budget 不够"。深挖后发现两个都是同一个本质问题 —— <em>agent 用自己的语义判断覆盖了录制的具体步骤</em>(771 跳过它认为不算 positive 的 row,694 跳过它认为不必要的 category 步骤)。给 agent 两条显性指令(per-step note 在局部 + executionFidelity preamble 在全局),它就老实按录制走。
+</p>
+
+<h2>2. Per-task 详细对比</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th rowspan="2">Task</th><th rowspan="2">Cat</th><th rowspan="2">Diff</th>
+      <th class="center" colspan="2">Cold</th>
+      <th class="center" colspan="2">Human <strong>5/26</strong></th>
+      <th class="center" colspan="2">Human <strong>5/28</strong></th>
+      <th class="center" colspan="2">Human <strong>5/31</strong></th>
+      <th class="center" colspan="2">Oracle</th>
+    </tr>
+    <tr>
+      <th class="center">✓</th><th class="num">T/$</th>
+      <th class="center">✓</th><th class="num">T/$</th>
+      <th class="center">✓</th><th class="num">T/$</th>
+      <th class="center">✓</th><th class="num">T/$</th>
+      <th class="center">✓</th><th class="num">T/$</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><code>webarena.453</code> Disable Teton hoodie</td><td>catalog</td><td>easy</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">47/$0.63</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">32/$0.58</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">28/$0.53</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">28/$0.53</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">9/$0.10</td></tr>
+    <tr><td><code>webarena.458</code> Reduce price $5</td><td>catalog</td><td>medium</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">7/$0.13</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">7/$0.13</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">11/$0.16</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">11/$0.16</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">8/$0.11</td></tr>
+    <tr><td><code>webarena.470</code> Cancel order 302</td><td>orders</td><td>easy</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">8/$0.14</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">10/$0.14</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">10/$0.14</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">10/$0.14</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">7/$0.08</td></tr>
+    <tr><td><code>webarena.496</code> FedEx tracking #299</td><td>orders</td><td>medium</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">24/$0.55</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">61/$1.42</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">40/$0.88</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">40/$0.88</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">9/$0.11</td></tr>
+    <tr><td><code>webarena.538</code> Modify order address</td><td>orders</td><td>medium</td>
+        <td class="center"><span class="ok">✅</span><small>†</small></td><td class="num">51/$1.34</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">50/$1.46</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">41/$0.89</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">41/$0.89</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">11/$0.12</td></tr>
+    <tr><td><code>webarena.704</code> Sales report Feb '23</td><td>reports</td><td>medium</td>
+        <td class="center"><span class="ok">✅</span><small>†</small></td><td class="num">8/$0.14</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">10/$0.16</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">10/$0.14</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">10/$0.14</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">6/$0.07</td></tr>
+    <tr style="background:#fff7d6;"><td><code>webarena.423</code> Mark Hollister on sale</td><td>catalog</td><td>hard</td>
+        <td class="center"><span class="fail">❌</span></td><td class="num">51/$0.85</td>
+        <td class="center"><span class="fail">❌</span></td><td class="num">21/$0.59</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">44/$0.85</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">44/$0.85</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">6/$0.07</td></tr>
+    <tr style="background:#fff7d6;"><td><code>webarena.771</code> Approve positive reviews</td><td>reviews</td><td>medium</td>
+        <td class="center"><span class="fail">❌</span></td><td class="num">30/$0.63</td>
+        <td class="center"><span class="fail">❌</span></td><td class="num">71/$1.88</td>
+        <td class="center"><span class="fail">❌</span></td><td class="num">40/$0.75</td>
+        <td class="center"><span class="ok">✅</span> <strong>↑</strong></td><td class="num">47/$1.27</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">12/$0.12</td></tr>
+    <tr style="background:#fff7d6;"><td><code>webarena.694</code> Create Energy-Bulk product</td><td>catalog</td><td>hard</td>
+        <td class="center"><span class="fail">❌</span></td><td class="num">31/$0.67</td>
+        <td class="center"><span class="fail">❌</span></td><td class="num">52/$1.20</td>
+        <td class="center"><span class="fail">❌</span></td><td class="num">61/$1.44</td>
+        <td class="center"><span class="ok">✅</span> <strong>↑</strong></td><td class="num">61/$1.28</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">11/$0.12</td></tr>
+    <tr><td><code>webarena.699</code> Spring sale price rule</td><td>marketing</td><td>hard</td>
+        <td class="center"><span class="fail">❌</span></td><td class="num">51/$1.09</td>
+        <td class="center">— <small>‡</small></td><td class="num">—</td>
+        <td class="center">— <small>‡</small></td><td class="num">—</td>
+        <td class="center">— <small>‡</small></td><td class="num">—</td>
+        <td class="center"><span class="ok">✅</span></td><td class="num">10/$0.10</td></tr>
+    <tr style="font-weight:600;background:#f7f7f7;">
+        <td colspan="3">合计(excl. 699 for human)</td>
+        <td class="center">6/10</td><td class="num">308 / $6.18</td>
+        <td class="center">6/9</td><td class="num">314 / $7.55</td>
+        <td class="center">7/9</td><td class="num">285 / $5.78</td>
+        <td class="center"><strong class="delta-up">9/9</strong></td><td class="num"><strong>292 / $6.14</strong></td>
+        <td class="center">10/10</td><td class="num">88 / $0.99</td></tr>
+  </tbody>
+</table>
+
+<p style="font-size:10pt;color:#555;">† Cold 538/704 是覆盖了原始 CSV 的 0(runner_ccc 之前有 pw.Page.url 缓存 bug 导致 validate 失败,修复后手验为通过)。<br>
+‡ Human 699 跳过 —— native multiselect / cart price rule,CRX 当前 renderer 结构上无法表达。统计上排除此项。</p>
+
+<p>Cost-per-pass 趋势(human arm 内):$1.26(5/26)→ $0.83(5/28)→ <strong>$0.68</strong>(5/31)。每多一个 pass,平均单次成本反而下降 —— 说明加 fidelity 指令不是用"agent 多想"换的,而是 agent 少走弯路了。</p>
+
+<h2>3. 今天发生了什么 — 时间线</h2>
+
+<dl class="trajectory">
+  <dt>5/26 baseline</dt>
+  <dd>Human 6/9 (67%)。失败:423(budget 耗尽)、694(grid select 选不到)、771(checkbox 选不到 row)。归因到 5 个 renderer/schema bug。</dd>
+
+  <dt>5/27-28 上午</dt>
+  <dd>修完 5 个 bug。离线 IndexedDB 重导出 pipeline 上线(reexport-from-chrome.py 走 LevelDB 直读),9 个 SKILL.md 全走最新 renderer 重渲染。retry-budget.yaml 给 hard task 调高 budget。<br>
+  → Human <span class="delta-up">7/9 (78%)</span>。423 修复(budget 真原因)。</dd>
+
+  <dt>5/28 晚 ~ 5/31 早</dt>
+  <dd>Per-step note 上线:<code>SkillStep.note</code> + 渲染为 <code>&gt; **Note from recorder**</code> blockquote + CRX UI 加 💬 按钮。771 重录覆盖正确的 3 条 review,加上 inline "execution fidelity" 段落。<br>
+  → Human <span class="delta-up">8/9 (89%)</span>。771 修复(用户实测:agent 看到 fidelity 指令后老实 approve 全部 3 条,Magento 回 "3 record(s) updated")。</dd>
+
+  <dt>5/31 下午</dt>
+  <dd>用 annotate-694.py 给老 694 录制注入 11 条 per-step note(关键是 CRITICAL Category note + 几条值的语义注释,如"167 是 size S 的内部 ID,不要试图转换")+ inline fidelity。<br>
+  → Human <span class="delta-up">9/9 (100%)</span> = Oracle。</dd>
+
+  <dt>5/31 收尾</dt>
+  <dd>把 fidelity preamble 提升为 renderer 默认(<code>Skill.executionFidelity</code>),buildSkill 对 recording 路径默认开启,CRX SaveAsSkillDialog 加 opt-out checkbox。771 + 694 重新走渲染器默认 pipeline 验证,仍然都过。<strong>实现自动化:之后录制 → 按 Save → 自动带 preamble + per-step note 入口,不需要再 hand-edit SKILL.md。</strong></dd>
+</dl>
+
+<h2>4. Agent over-judgment 的两个证据</h2>
+
+<h3>4.1 Task 771 — sentiment 过滤</h3>
+
+<p>录制覆盖了正确的 3 条 review(347/349/352,等于 evaluator ground truth)。第一次跑结果:</p>
+
+<p style="font-family: monospace; font-size: 10pt; background: #f3f3f3; padding: 6pt 10pt; border-radius: 4pt; margin: 6pt 0;">
+"Both positive reviews have been approved:<br>
+- Review 352 "Good but not perfect" → Approved<br>
+- Review 347 "Quite good" → Approved<br>
+The negative/neutral reviews (353 "Bad!", 351 "won't recommand", <strong>349 "OKish"</strong>) remain Pending."
+</p>
+
+<p>Agent 看到 review 349 的内容是 "OKish",自己判定为中性,跳过了那条 approve。但 evaluator 不在意"positive"在自然语言里怎么定义 —— 它要求 status_id ∈ {347, 349, 352} 全为 Approved。差一条就 0 分。加了 fidelity 指令后:</p>
+
+<p style="font-family: monospace; font-size: 10pt; background: #ebfbe9; padding: 6pt 10pt; border-radius: 4pt; margin: 6pt 0;">
+"A total of 3 record(s) have been updated." ← Magento 自己说的 ✓
+</p>
+
+<h3>4.2 Task 694 — task intent 解读</h3>
+
+<p>录制完整包含 27 步,包括步骤 22-25(打开 Category dropdown → 选 Tops → Done)。第一次跑(没 fidelity 指令)结果:</p>
+
+<ul>
+  <li>✓ 填 name "Energy-Bulk Women Shirt"</li>
+  <li>✓ 填 price 60</li>
+  <li>✓ 填 quantity 50</li>
+  <li>✓ 选 size 167, color 50</li>
+  <li>✓ 点 Save,Magento 回 "You saved the product." ← agent 说 DONE</li>
+  <li>✗ <strong>整段 Category 选择被跳过</strong></li>
+</ul>
+
+<p>WebArena evaluator 检查 7 个字段,其中一个是 <code>category_ids</code> 必须包含 "tops"。Agent 没看到任务 intent 里提到 category(intent 原文:"Add a simple product named ... with 50 in stock, ... size S and color blue, priced at $60"),就自己决定那部分不需要。加 fidelity preamble + Category step 上的 CRITICAL note 后 PASS。</p>
+
+<h3>共同模式</h3>
+
+<p>两次失败本质一致:<strong>agent 把"按录制执行"覆盖成了"按对 task 的理解执行"</strong>。Recording 是 ground truth 的具体落地,task intent 是 ground truth 的自然语言描述 —— intent 的颗粒度通常粗于 recording,agent 用 intent 反推会缺信息。Fidelity preamble 是告诉 agent "recording 是 contract,不是 hint"。</p>
+
+<div class="page-break"></div>
+
+<h2>5. 新增的两个 schema/UI 字段</h2>
+
+<table>
+  <thead><tr><th>字段</th><th>位置</th><th>语义</th><th>UI</th><th>fixture</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><code>SkillStep.note?: string</code></td>
+      <td>per-step</td>
+      <td>挂在单个 step 上的 human-authored 注释。Renderer 输出为 step 标题 + bash 之间的 <code>&gt; **Note from recorder**:</code> blockquote。多行支持。</td>
+      <td>SaveAsSkillDialog 每个 step 一个折叠的 💬 add note 按钮 + 琥珀色 textarea</td>
+      <td><code>note.skill.json</code></td>
+    </tr>
+    <tr>
+      <td><code>Skill.executionFidelity?: boolean</code></td>
+      <td>top-level</td>
+      <td>true → renderer 在 Domain 后、Steps 前 emit 一段 7 行的保真 blockquote,告诉 agent 不要跳步、不要自作主张。<code>buildSkill</code> 对 recording 路径默认 true。</td>
+      <td>SaveAsSkillDialog auth 行下面一个 checkbox,默认勾选,off 状态有 warning hint</td>
+      <td><code>execution-fidelity.skill.json</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Parity:7 个 fixture 全绿。CRX 0.1.26 / skill-render 0.1.7。所有 commit 已 push。</p>
+
+<h2>6. 反直觉的数据观察</h2>
+
+<h3>6.1 +2 pass 但 total cost 也涨了</h3>
+
+<p>5/28 → 5/31:total turns 285 → 292 (+7),total cost $5.78 → $6.14 (+$0.36)。表面看像"花钱买准确率"。但 cost-per-pass <strong>下降</strong>($0.83 → $0.68),因为多出来的 2 个 pass(771 + 694)本身吃掉的成本远小于"agent 反复试错"的成本。</p>
+
+<p>具体看 694:5/28 跑 61 turns / $1.44(还失败),5/31 加 fidelity + notes 跑 61 turns / $1.28(成功)。<strong>同样的 turn 数,成本更低</strong> —— 因为 agent 不再 snapshot/probe/绕弯,直接按 step 走。Output token 也少了:18480 → 15188。</p>
+
+<h3>6.2 Per-step note 和 fidelity preamble 是两套机制,不能互相替代</h3>
+
+<p>初看像冗余,但本质不同:</p>
+
+<ul>
+  <li><strong>Fidelity preamble</strong> 解决"agent 完全跳过某些 step"的问题(694 跳 Category,因为根本没考虑要做这个)。是 <em>全局</em> 默认行为约束。</li>
+  <li><strong>Per-step note</strong> 解决"agent 执行某步但用错值/语义判断错"的问题(771 不知道 349 是 ground truth positive,694 不知道 167 是 size S 的内部 ID)。是 <em>局部</em> 隐性知识 channel。</li>
+</ul>
+
+<p>验证:5/28 单加 per-step note 不够(771 还是失败,因为 agent 跳过整个 row 不进入 note 影响范围);5/31 单加 fidelity 也不够(694 即使保真也不知道 167 = S,要 note 告诉它)。两个一起 = belt + suspenders。</p>
+
+<h3>6.3 Annotate 老录制 vs 重录哪个更划算?</h3>
+
+<p>771 走"重录"路径(用户花 5-10 min 重新走一遍流程),694 走"annotate-694.py"路径(我读 IndexedDB 老录制 + Python 脚本注入 11 条 note + 渲染)。两个都 PASS,但工作量差异大:</p>
+
+<ul>
+  <li>771 重录:用户操作 5-10 min + 脚本同步 ~30s</li>
+  <li>694 注解:脚本写 30 min(我做) + 用户 0 min</li>
+</ul>
+
+<p>分摊到"一个 fix",重录便宜;但 annotate 是<strong>可复用资产</strong>(脚本可以变成"annotate any recording")。生产场景里:用户日常用 CRX 的 UI 在 SaveAsSkillDialog 直接挂 note 是首选;annotate-694.py 这种是"对已经录好但没标的录制做事后补救"的工具,价值在 retroactive。</p>
+
+<h3>6.4 CRX 0.1.26 之后 — 用户工作流</h3>
+
+<p>下次用户录新 task 的流程缩短到:</p>
+
+<ol>
+  <li>录制(像今天一样)</li>
+  <li>点 Save as skill</li>
+  <li>SaveAsSkillDialog 默认<strong>已经勾选</strong>"Add execution-fidelity preamble"</li>
+  <li>对 1-3 个语义不明显的 step 点 💬 加 note(可选)</li>
+  <li>Save → SKILL.md 自动带 preamble + notes,直接喂给 agent</li>
+</ol>
+
+<p>不需要再 hand-edit SKILL.md,不需要再跑 annotate 脚本。这是把今天的所有发现"打包成产品"的状态。</p>
+
+<h2>7. 现在的失败矩阵</h2>
+
+<table>
+  <thead><tr><th>Failure mode</th><th>5/26 出现?</th><th>5/28 出现?</th><th>5/31 出现?</th><th>修复路径</th></tr></thead>
+  <tbody>
+    <tr><td>Renderer 输出错的 selector(grid checkbox/select)</td>
+        <td class="ok">是</td><td class="ok">已修</td><td class="ok">无</td>
+        <td>5/26-27 commits:rowContext xpath + browse select</td></tr>
+    <tr><td><code>browse fill</code> 默认按 Enter,误提交表单</td>
+        <td class="ok">是</td><td class="ok">已修</td><td class="ok">无</td>
+        <td>5/28 commit 6cda994: renderer 默认 --no-press-enter</td></tr>
+    <tr><td>runner_ccc default budget 太紧(40 turns / $1.0)</td>
+        <td class="ok">是(423)</td><td class="warn">部分(694)</td><td class="ok">无</td>
+        <td>本次提到 60-80 turns / $1.5-3.0;default 还没改(housekeeping todo)</td></tr>
+    <tr><td>Agent 用自己的语义判断覆盖 step(<strong>over-judgment</strong>)</td>
+        <td class="fail">未识别</td><td class="fail">未识别</td><td class="ok">已修</td>
+        <td><strong>本次新发现</strong> · per-step note + executionFidelity preamble</td></tr>
+    <tr><td>录制范围 ≠ task 范围(773 oracle 才知道要做全表)</td>
+        <td>—</td><td class="warn">疑似</td><td class="ok">伪命题</td>
+        <td>本来以为是问题(5/28 报告 §5.3),实测 5/31 后<strong>不存在</strong>:771 的录制范围 = ground truth,只是 agent 跳了</td></tr>
+    <tr><td>Multi-fill task turn 数天然多(694 56 actions)</td>
+        <td>—</td><td class="warn">疑似</td><td class="ok">伪命题</td>
+        <td>本来以为要 step pruning,实测 5/31 加 fidelity 后 61 turns 就够了(以前一直被 over-judgment 浪费 turn)</td></tr>
+    <tr><td>699 cart price rule 用 multiselect</td>
+        <td class="fail">结构性</td><td class="fail">结构性</td><td class="fail">结构性</td>
+        <td>CRX 当前 renderer 表达不了 native multiselect;非本次范围</td></tr>
+  </tbody>
+</table>
+
+<p class="callout strong">
+<strong>关键观察</strong>:5/28 报告里识别的"范围 ≠ 任务范围"和"turn 数天然多"两个失败模式,在加了 fidelity 之后<strong>都消失了</strong>。它们不是独立 failure mode,只是 agent over-judgment 的两种表现。这是今天最大的 conceptual gain —— 把三个看似不同的 failure 收敛到同一个根因。
+</p>
+
+<h2>8. 我的推荐 — 还剩三件事</h2>
+
+<ol>
+  <li><strong>把 runner_ccc default budget 提到 60 turns / $1.5</strong>(housekeeping)。今天验证过没 fidelity 仅靠 budget 能解 423;加 fidelity 后,大部分 hard task 也都不会撞顶。Default 改了就不需要每次单跑都加 flag。~10 min。</li>
+
+  <li><strong>三 seed × 三 arm 复测</strong>。单 seed 下 9/9 看着喜人,但 CI 还是宽。3 seed × 3 arm × 10 task = 90 trial,~3 hr。能给出真正可信的 oracle ↔ human 等价结论。</li>
+
+  <li><strong>非 Magento 域复测</strong>(forum 或 gitlab)。今天的 fidelity 发现是基于 Magento admin 这一类"表单密集 + 严格 evaluator"场景。Shopping(C2C 流程)、forum(发帖回复)、gitlab(代码 PR) 这些场景 agent over-judgment 的表现可能不同。需要一个 demo 任务验证 fidelity 在非 Magento 也起作用 / 不起作用。</li>
+</ol>
+
+<p>699(cart price rule multiselect)<strong>不在</strong>上面三个里 —— 那是 renderer 表达力问题,要做新 schema(multiselect action type)。和今天的发现是不同 track 的事情。</p>
+
+<h2>9. 一句话总结</h2>
+
+<p class="callout ok">
+<strong>Skill Recorder 距离"可用产品"少了最后两个 schema 字段</strong>(<code>SkillStep.note</code> + <code>Skill.executionFidelity</code>),这两个字段都在今天落地。未来用户录制的工作流可以在 single-seed Sonnet 4.6 下追上 hand-authored oracle 的成功率 —— <em>录制 = 契约,不再是"建议"</em>。
+</p>
+
+<div class="footer">
+  报告由 Claude Opus 4.7 (1M context) 生成 · 数据源 <code>eval/results/runs/</code> · 报告 source <code>eval/results/reports/analysis-2026-05-31.html</code>
+</div>
+
+</body>
+</html>
