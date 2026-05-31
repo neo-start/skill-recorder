@@ -34,6 +34,13 @@ export interface DraftStep {
    * `browse fill --no-press-enter ...` so we don't prematurely submit.
    */
   pressEnter?: boolean;
+  /**
+   * Optional human-authored note. Surfaced into the rendered SKILL.md as a
+   * `> **Note from recorder**: …` blockquote. Set by the user via the
+   * SaveAsSkillDialog per-step "+ note" affordance — empty / undefined for
+   * the default (no extra annotation).
+   */
+  note?: string;
 }
 
 // ─── Draft construction ─────────────────────────────────────────────────
@@ -339,6 +346,7 @@ function toSkillStep(
       : undefined,
     rowContext: d.raw.rowContext,
     pressEnter: d.action === 'fill' ? d.pressEnter ?? false : undefined,
+    note: d.note?.trim() || undefined,
     expectation: deriveExpectation(d, next),
   };
 }
@@ -436,6 +444,15 @@ export function defaultIntent(a: ActionStep, action: SkillActionType): string {
     }
     case 'switchTab':
       return `Switch to tab #${(a.targetTabIndex ?? 0) + 1}`;
+    case 'select': {
+      const label = aria || (text && text !== a.fingerprint?.tag ? text : '');
+      const fieldLabel = label || a.fingerprint?.tag || 'dropdown';
+      if (a.rowContext) {
+        const rowSnippet = a.rowContext.rowText.slice(0, 60);
+        return `Select option in "${fieldLabel}" in the row containing "${rowSnippet}"`;
+      }
+      return `Select option in "${fieldLabel}"`;
+    }
     case 'guidance':
       // Recording path never produces guidance steps — they only come from
       // video-distilled skills, which never flow through this function.

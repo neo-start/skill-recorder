@@ -173,6 +173,36 @@ const ValueInput = styled.input`
   font-size: 12px;
 `;
 
+const NoteToggle = styled.button<{ $hasNote?: boolean }>`
+  align-self: flex-start;
+  border: 1px dashed ${(p) => (p.$hasNote ? '#f0a020' : colors.border)};
+  background: ${(p) => (p.$hasNote ? '#fff7e6' : 'transparent')};
+  color: ${(p) => (p.$hasNote ? '#b67400' : colors.textMuted)};
+  border-radius: 4px;
+  font-size: 11px;
+  padding: 3px 8px;
+  cursor: pointer;
+`;
+
+const NoteArea = styled.textarea`
+  border: 1px solid #f0a020;
+  background: #fff7e6;
+  border-radius: 5px;
+  padding: 6px 9px;
+  font: inherit;
+  font-size: 12px;
+  min-height: 50px;
+  resize: vertical;
+  &:focus {
+    outline: none;
+    border-color: #d68910;
+  }
+  &::placeholder {
+    color: #b67400;
+    opacity: 0.6;
+  }
+`;
+
 const ParamInput = styled.input`
   flex: 1;
   border: 1px solid #3b82f6;
@@ -289,6 +319,13 @@ export function SaveAsSkillDialog({ recording, onClose }: Props) {
   const [authHint, setAuthHint] = useState<SkillAuthHint>({ required: false });
   const [busy, setBusy] = useState<'idle' | 'copying' | 'downloading'>('idle');
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [noteOpen, setNoteOpen] = useState<Set<number>>(new Set());
+  const toggleNote = (i: number) =>
+    setNoteOpen((prev) => {
+      const next = new Set(prev);
+      if (next.has(i)) next.delete(i); else next.add(i);
+      return next;
+    });
 
   useEffect(() => {
     void (async () => {
@@ -447,6 +484,20 @@ export function SaveAsSkillDialog({ recording, onClose }: Props) {
                 </ValueRow>
               )}
               <Hint>{describeRaw(d.raw)}</Hint>
+              {noteOpen.has(i) || (d.note && d.note.length) ? (
+                <NoteArea
+                  value={d.note ?? ''}
+                  onChange={(e) => updateDraft(i, { note: e.target.value })}
+                  placeholder="Note for the agent — e.g. 'approve even if the text looks neutral' or 'this dropdown looks redundant but skipping it breaks step 9'. Surfaced as a > blockquote in the rendered SKILL.md."
+                  onBlur={() => {
+                    if (!d.note || !d.note.trim()) toggleNote(i);
+                  }}
+                />
+              ) : (
+                <NoteToggle $hasNote={!!d.note} onClick={() => toggleNote(i)}>
+                  💬 add note
+                </NoteToggle>
+              )}
             </StepRow>
           ))}
         </Body>
