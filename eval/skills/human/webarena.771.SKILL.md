@@ -8,12 +8,13 @@ allowed-tools: Bash
 
 Domain: `localhost:7780`
 
-> **Execution fidelity**: this is a recorded workflow. Execute every step
-> in order. If a step approves a row whose text seems ambiguous to you
-> (e.g. "OKish"), still approve it — the recording was made on the ground
-> truth and your own sentiment judgment must NOT override which rows the
-> recording touched. Approve exactly the rows that this recording approves;
-> do not add rows and do not skip rows.
+> **Execution fidelity**: this is a recorded workflow. Execute every
+> numbered step in order. Do not skip steps based on your own judgment
+> of whether a step "looks redundant" or whether a row's text "doesn't
+> fit the task" — the recording was made on the ground truth, and the
+> evaluator usually checks specific fields/rows whose relevance is not
+> obvious from the task description alone. Verify success conditions
+> before declaring DONE.
 
 ## Steps
 

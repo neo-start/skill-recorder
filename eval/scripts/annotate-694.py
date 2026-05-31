@@ -163,28 +163,16 @@ def annotate(skill: dict) -> int:
     return added
 
 
-FIDELITY_PREAMBLE = """\
-> **Execution fidelity**: this is a recorded workflow. Execute every numbered
-> step in order, and do NOT take shortcuts based on what you think the task
-> needs. The WebArena evaluator for this task checks 7 distinct fields
-> (name, price, qty, attribute set, size, color, *category*) — skipping any
-> recorded step typically drops one of those checks and scores 0. In
-> particular, do not assume the task is done after Save — verify the success
-> banner first.
-"""
-
 def render_md(skill: dict) -> str:
+    # The renderer auto-emits the "Execution fidelity" preamble for any
+    # Skill with executionFidelity=true, which buildSkill sets by default
+    # for recording-derived skills (skill-render ≥ 0.1.7). No need to
+    # post-process here.
     p = subprocess.run(
         ["node", str(RENDER_CLI), "render"],
         input=json.dumps(skill), capture_output=True, text=True, check=True,
     )
-    md = p.stdout
-    # Inject the execution-fidelity preamble after the "Domain:" line so it
-    # appears prominently before the Steps section. Idempotent — if the
-    # preamble is already present, skip.
-    if "Execution fidelity" not in md:
-        md = md.replace("## Steps\n", FIDELITY_PREAMBLE + "\n## Steps\n", 1)
-    return md
+    return p.stdout
 
 
 def main():

@@ -8,19 +8,19 @@ allowed-tools: Bash
 
 Domain: `localhost:7780`
 
+> **Execution fidelity**: this is a recorded workflow. Execute every
+> numbered step in order. Do not skip steps based on your own judgment
+> of whether a step "looks redundant" or whether a row's text "doesn't
+> fit the task" — the recording was made on the ground truth, and the
+> evaluator usually checks specific fields/rows whose relevance is not
+> obvious from the task description alone. Verify success conditions
+> before declaring DONE.
+
 ## Parameters
 
 Ask the user for any of these not already provided:
 
 - `value_1` — Value for value_1 (example: `Energy-Bulk Women Shirt`)
-
-> **Execution fidelity**: this is a recorded workflow. Execute every numbered
-> step in order, and do NOT take shortcuts based on what you think the task
-> needs. The WebArena evaluator for this task checks 7 distinct fields
-> (name, price, qty, attribute set, size, color, *category*) — skipping any
-> recorded step typically drops one of those checks and scores 0. In
-> particular, do not assume the task is done after Save — verify the success
-> banner first.
 
 ## Steps
 

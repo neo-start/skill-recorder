@@ -1,0 +1,16 @@
+# Verification subset after promoting fidelity preamble to renderer
+# default. 771 + 694 are the two tasks that previously needed the inline
+# preamble hack; this rerun confirms the renderer-emitted preamble lands
+# the same result.
+
+- id: webarena.771
+  category: reviews
+  difficulty: medium
+  intent: "Approve the positive reviews to display in our store."
+  oracle_source: authored
+
+- id: webarena.694
+  category: catalog
+  difficulty: hard
+  intent: "Add a simple product named Energy-Bulk Women Shirt with 50 in stock, available in size S and color blue, priced at $60."
+  oracle_source: authored
