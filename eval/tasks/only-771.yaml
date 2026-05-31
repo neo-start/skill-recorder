@@ -1,0 +1,5 @@
+- id: webarena.771
+  category: reviews
+  difficulty: medium
+  intent: "Approve the positive reviews to display in our store."
+  oracle_source: authored
