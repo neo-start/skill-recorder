@@ -1,0 +1,50 @@
+{
+  "id": "skill_note_01",
+  "title": "Approve reviews with judgment-override note",
+  "description": "Exercises the per-step `note` field — a human-authored hint that the renderer emits as a `> Note from recorder:` blockquote before the bash block. Used to defeat agent over-judgment on steps whose meaning isn't obvious from the recording alone.",
+  "domain": "localhost:7780",
+  "startUrl": "http://localhost:7780/admin/review/index/",
+  "parameters": [],
+  "steps": [
+    {
+      "id": "n1",
+      "intent": "Open the All Reviews grid",
+      "action": "navigate",
+      "url": "http://localhost:7780/admin/review/index/"
+    },
+    {
+      "id": "n2",
+      "intent": "Approve review 349 (looks neutral, but ground truth marks it positive)",
+      "action": "click",
+      "selectors": [
+        { "kind": "xpath", "value": "xpath://tr[contains(normalize-space(.), \"349\")]//input[@type=\"checkbox\"]", "score": 60 }
+      ],
+      "fingerprint": {
+        "tag": "input",
+        "role": "checkbox",
+        "text": "",
+        "attrs": { "type": "checkbox" }
+      },
+      "note": "Approve this row even though the comment reads \"OKish\". The WebArena evaluator treats it as positive — do not skip based on your own sentiment judgment."
+    },
+    {
+      "id": "n3",
+      "intent": "Multi-line note: set status to Approved",
+      "action": "fill",
+      "selectors": [
+        { "kind": "xpath", "value": "xpath://tr[contains(normalize-space(.), \"349\")]//select[@name=\"status_id\"]", "score": 60 }
+      ],
+      "valueTemplate": "1",
+      "fingerprint": {
+        "tag": "select",
+        "role": "combobox",
+        "text": "",
+        "attrs": { "name": "status_id" }
+      },
+      "note": "Status value 1 = Approved.\nThis is the magic constant Magento uses internally — don't try to write \"Approved\" as a string."
+    }
+  ],
+  "sourceRecordingId": "rec_note_fixture",
+  "createdAt": 1700000000000,
+  "updatedAt": 1700000000000
+}

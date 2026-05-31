@@ -66,6 +66,12 @@ export function renderSkillAsMarkdown(skill: Skill): string {
   skill.steps.forEach((step, idx) => {
     lines.push(`### ${idx + 1}. ${step.intent || defaultIntent(step)}`);
     lines.push('');
+    if (step.note && step.note.trim()) {
+      const noteLines = step.note.trim().split('\n');
+      lines.push(`> **Note from recorder**: ${noteLines[0]}`);
+      for (let i = 1; i < noteLines.length; i++) lines.push(`> ${noteLines[i]}`);
+      lines.push('');
+    }
     lines.push(...renderStepBody(step));
     if (step.expectation?.description) {
       lines.push(`**Expected:** ${step.expectation.description}`);

@@ -271,6 +271,15 @@ export interface SkillStep {
    * multi-field forms — pressing Enter mid-fill prematurely submits.
    */
   pressEnter?: boolean;
+  /**
+   * Optional human-authored note explaining *why* this step is necessary or
+   * how it should be interpreted. Surfaced into the rendered SKILL.md as a
+   * `> **Note from recorder**: …` blockquote between the step intent and
+   * the bash block. Used to override agent over-judgment on steps whose
+   * meaning isn't obvious from the action alone (e.g. "approve this row
+   * even if the text looks neutral").
+   */
+  note?: string;
   key?: string;
   modifiers?: { meta?: boolean; ctrl?: boolean; shift?: boolean; alt?: boolean };
   scrollX?: number;
