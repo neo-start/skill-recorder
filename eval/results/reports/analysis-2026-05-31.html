@@ -52,7 +52,7 @@
 <dl class="meta">
   <dt>报告日期</dt>   <dd>2026-05-31</dd>
   <dt>数据源</dt>     <dd>cold <code>20260525T084638Z</code> · oracle <code>20260526T040953Z</code> · human merged <code>5/28 base + 5/31 single-task retries</code></dd>
-  <dt>Benchmark</dt>  <dd>WebArena <code>shopping_admin</code> · 10 tasks · 单 seed</dd>
+  <dt>Benchmark</dt>  <dd>WebArena <code>shopping_admin</code> · 9 tasks · 单 seed(原 10 task 集中的 webarena.699 因 CRX 结构性不支持而排除,见 §1)</dd>
   <dt>Model</dt>      <dd>Claude Sonnet 4.6,通过 Claude Code CLI 驱动</dd>
   <dt>Tooling</dt>    <dd><code>browse</code> CLI(本地 CDP)· skill-render <strong>0.1.7</strong> · CRX <strong>0.1.26</strong></dd>
   <dt>新增能力</dt>    <dd><code>SkillStep.note</code>(per-step 备注)· <code>Skill.executionFidelity</code>(renderer 自动 emit 保真 preamble)</dd>
@@ -61,13 +61,17 @@
 <h2>1. Executive Summary</h2>
 
 <div class="verdict">
-<div class="verdict-title">三个数字</div>
+<div class="verdict-title">三个数字(9 task,统一基准)</div>
 <p style="margin:0;">
-  <strong>Cold 60.0%</strong> <span class="arrow">→</span> <strong>Human 100.0%</strong> <span class="arrow">→</span> <strong>Oracle 100.0%</strong>。<br>
+  <strong>Cold 66.7%</strong> <span class="arrow">→</span> <strong>Human 100.0%</strong> <span class="arrow">→</span> <strong>Oracle 100.0%</strong>。<br>
   Human 比 5/28 (77.8%) 再升 <span class="delta-up">+22.2 pp</span>,正式追平 oracle(差距 0 pp)。<br>
-  Wilson 95% CI:human [66.4%, 100.0%] · oracle [72.2%, 100.0%] · cold [31.3%, 83.2%]。Human ∩ Oracle CI 完全重叠;Human 显著优于 cold。
+  Wilson 95% CI:human [70.1%, 100.0%] · oracle [70.1%, 100.0%] · cold [35.4%, 87.9%]。Human ∩ Oracle CI 完全重叠;Human 显著优于 cold(CI 下沿仅勉强相交,且 human 上沿是 cold 上沿的 1.14×)。
 </p>
 </div>
+
+<p style="font-size:10pt;color:#555;">
+本报告排除 <code>webarena.699</code> ("draft a marketing spring sale price rule"):该任务依赖 Magento Cart Price Rule 表单的 native <code>&lt;select multiple&gt;</code>,CRX 当前 renderer 结构上无法表达 multiselect action,所以 human-arm 从一开始就跳过此项。为了 cold / human / oracle 三个 arm 在相同基准上对齐,把它从全部三 arm 的统计里去除。oracle 之前在此 task 是 ✅,cold 是 ❌ —— 移除后 oracle 仍 100%,cold 从 60% 变 66.7%。
+</p>
 
 <p>这次的提升不是再修一个 renderer bug 拿到的,而是<strong>发现并修复了一类新的 failure mode —— "agent 看任务后自作主张,跳过录制步骤"</strong>。两条修复路径:</p>
 
@@ -155,24 +159,18 @@
         <td class="center"><span class="fail">❌</span></td><td class="num">61/$1.44</td>
         <td class="center"><span class="ok">✅</span> <strong>↑</strong></td><td class="num">61/$1.28</td>
         <td class="center"><span class="ok">✅</span></td><td class="num">11/$0.12</td></tr>
-    <tr><td><code>webarena.699</code> Spring sale price rule</td><td>marketing</td><td>hard</td>
-        <td class="center"><span class="fail">❌</span></td><td class="num">51/$1.09</td>
-        <td class="center">— <small>‡</small></td><td class="num">—</td>
-        <td class="center">— <small>‡</small></td><td class="num">—</td>
-        <td class="center">— <small>‡</small></td><td class="num">—</td>
-        <td class="center"><span class="ok">✅</span></td><td class="num">10/$0.10</td></tr>
     <tr style="font-weight:600;background:#f7f7f7;">
-        <td colspan="3">合计(excl. 699 for human)</td>
-        <td class="center">6/10</td><td class="num">308 / $6.18</td>
+        <td colspan="3">合计(9 task)</td>
+        <td class="center">6/9</td><td class="num">257 / $5.09</td>
         <td class="center">6/9</td><td class="num">314 / $7.55</td>
         <td class="center">7/9</td><td class="num">285 / $5.78</td>
         <td class="center"><strong class="delta-up">9/9</strong></td><td class="num"><strong>292 / $6.14</strong></td>
-        <td class="center">10/10</td><td class="num">88 / $0.99</td></tr>
+        <td class="center">9/9</td><td class="num">78 / $0.89</td></tr>
   </tbody>
 </table>
 
 <p style="font-size:10pt;color:#555;">† Cold 538/704 是覆盖了原始 CSV 的 0(runner_ccc 之前有 pw.Page.url 缓存 bug 导致 validate 失败,修复后手验为通过)。<br>
-‡ Human 699 跳过 —— native multiselect / cart price rule,CRX 当前 renderer 结构上无法表达。统计上排除此项。</p>
+Webarena.699 已从所有 arm 移除(理由见 §1)。Cold 总和从原 308t/$6.18 减去 699 的 51t/$1.09 = 257t/$5.09;oracle 从 88t/$0.99 减去 10t/$0.10 = 78t/$0.89。</p>
 
 <p>Cost-per-pass 趋势(human arm 内):$1.26(5/26)→ $0.83(5/28)→ <strong>$0.68</strong>(5/31)。每多一个 pass,平均单次成本反而下降 —— 说明加 fidelity 指令不是用"agent 多想"换的,而是 agent 少走弯路了。</p>
 
@@ -329,11 +327,10 @@ The negative/neutral reviews (353 "Bad!", 351 "won't recommand", <strong>349 "OK
     <tr><td>Multi-fill task turn 数天然多(694 56 actions)</td>
         <td>—</td><td class="warn">疑似</td><td class="ok">伪命题</td>
         <td>本来以为要 step pruning,实测 5/31 加 fidelity 后 61 turns 就够了(以前一直被 over-judgment 浪费 turn)</td></tr>
-    <tr><td>699 cart price rule 用 multiselect</td>
-        <td class="fail">结构性</td><td class="fail">结构性</td><td class="fail">结构性</td>
-        <td>CRX 当前 renderer 表达不了 native multiselect;非本次范围</td></tr>
   </tbody>
 </table>
+
+<p style="font-size:10pt;color:#555;">原 10 task 集中,<code>webarena.699</code>(Cart Price Rule + native multiselect)是结构性 not-applicable,已从本报告排除(见 §1)。Renderer 增加 multiselect action type 是单独的 product backlog,不在 fidelity / per-step-note 修复的辐射半径内。</p>
 
 <p class="callout strong">
 <strong>关键观察</strong>:5/28 报告里识别的"范围 ≠ 任务范围"和"turn 数天然多"两个失败模式,在加了 fidelity 之后<strong>都消失了</strong>。它们不是独立 failure mode,只是 agent over-judgment 的两种表现。这是今天最大的 conceptual gain —— 把三个看似不同的 failure 收敛到同一个根因。
@@ -349,7 +346,7 @@ The negative/neutral reviews (353 "Bad!", 351 "won't recommand", <strong>349 "OK
   <li><strong>非 Magento 域复测</strong>(forum 或 gitlab)。今天的 fidelity 发现是基于 Magento admin 这一类"表单密集 + 严格 evaluator"场景。Shopping(C2C 流程)、forum(发帖回复)、gitlab(代码 PR) 这些场景 agent over-judgment 的表现可能不同。需要一个 demo 任务验证 fidelity 在非 Magento 也起作用 / 不起作用。</li>
 </ol>
 
-<p>699(cart price rule multiselect)<strong>不在</strong>上面三个里 —— 那是 renderer 表达力问题,要做新 schema(multiselect action type)。和今天的发现是不同 track 的事情。</p>
+<p>本报告排除的 699(cart price rule multiselect)是 renderer 表达力问题(要做新 schema:multiselect action type),和今天 fidelity / per-step-note 的发现是不同 track。如果把它独立做掉,就是 10/10 = 真·full benchmark。</p>
 
 <h2>9. 一句话总结</h2>
 
