@@ -14,6 +14,14 @@ Ask the user for any of these not already provided:
 
 - `value_1` — Value for value_1 (example: `Energy-Bulk Women Shirt`)
 
+> **Execution fidelity**: this is a recorded workflow. Execute every numbered
+> step in order, and do NOT take shortcuts based on what you think the task
+> needs. The WebArena evaluator for this task checks 7 distinct fields
+> (name, price, qty, attribute set, size, color, *category*) — skipping any
+> recorded step typically drops one of those checks and scores 0. In
+> particular, do not assume the task is done after Save — verify the success
+> banner first.
+
 ## Steps
 
 ### 1. Navigate to http://localhost:7780/admin/admin/dashboard/
@@ -109,6 +117,8 @@ browse press 'Meta+v'
 
 ### 8. Paste into "input"
 
+> **Note from recorder**: Product Name. The pasted value is "Energy-Bulk Women Shirt" (via {{value_1}}). Magento auto-generates the SKU from this, so any typo here cascades. The exact mixed-case spelling matters.
+
 ```bash
 # Paste into the resolved field. Most apps accept a plain fill;
 # fall back to OS clipboard + Cmd+V if the page intercepts paste.
@@ -118,6 +128,8 @@ browse fill #HHSE6NR 'Energy-Bulk Women Shirt'
 **Expected:** "#HHSE6NR" becomes interactable
 
 ### 9. Fill input
+
+> **Note from recorder**: Re-fill of the Name field after paste — both steps target the same input (#HHSE6NR). Do not split this into two different values; the recording is just defensive against paste flicker.
 
 Target: role textbox, tag <input>
 ```bash
@@ -143,6 +155,8 @@ Selector hints: `aria: :Attribute Set`, `css: #ATTJQ78`, `xpath: /html/body/body
 **Expected:** "Default Bag Bottom Default Downloadable Gear Sprite Stasis Ball Sprite Yoga Stra" becomes interactable
 
 ### 11. Click "Default Bag Bottom Default Downloadable Gear Sprite Stasis Ball Sprite Yoga Stra"
+
+> **Note from recorder**: Attribute Set selector. Picks "Top" — this is what unlocks the size and color swatch panels used in steps 16-21. Without this switch, those swatches simply do not render and the eval fails.
 
 Target: text "Default Bag Bottom Default Downloadable Gear Sprite Stasis Ball Sprite Yoga Stra", tag <div>
 ```bash
@@ -174,6 +188,8 @@ Selector hints: `aria: textbox:Price`, `css: #BYN9DWY`, `xpath: /html/body/body[
 
 ### 13. Fill input
 
+> **Note from recorder**: Price. Plain number 60 — no $ sign, no thousand separator. Magento accepts decimals (60 or 60.00); the eval checks the numeric value, not the formatted string.
+
 Target: role textbox, tag <input>
 ```bash
 browse fill --no-press-enter #BYN9DWY 60
@@ -199,6 +215,8 @@ Selector hints: `aria: textbox:Quantity`, `css: #LKBFOGE`, `xpath: /html/body/bo
 
 ### 15. Fill input
 
+> **Note from recorder**: Quantity. Any qty > 0 auto-sets Stock Status to 'In Stock' — you do NOT need to find or toggle a separate Stock Status dropdown elsewhere on the form.
+
 Target: role textbox, tag <input>
 ```bash
 browse fill --no-press-enter #LKBFOGE 50
@@ -223,6 +241,8 @@ Selector hints: `aria: combobox:notice-L1SJ95U`, `css: #L1SJ95U`, `xpath: /html/
 **Expected:** "notice-L1SJ95U" becomes interactable
 
 ### 17. Fill "notice-L1SJ95U"
+
+> **Note from recorder**: Size swatch — the value "167" is Magento's internal option ID for size "S". Do NOT try to convert "S" → some other string; use 167 exactly as recorded. The numeric ID is what the form POST expects.
 
 ```bash
 browse select #L1SJ95U 167
@@ -262,6 +282,8 @@ Selector hints: `aria: combobox:notice-LMVK0YL`, `css: #LMVK0YL`, `xpath: /html/
 
 ### 20. Fill "notice-LMVK0YL"
 
+> **Note from recorder**: Color swatch — the value "50" is Magento's internal option ID for color "Blue". Do NOT confuse the fact that this happens to match the quantity value above; it is the option ID, not a stock count. Use 50 exactly as recorded.
+
 ```bash
 browse select #LMVK0YL 50
 ```
@@ -284,6 +306,8 @@ Selector hints: `aria: combobox:notice-LMVK0YL`, `css: #LMVK0YL`, `xpath: /html/
 **Expected:** "Select... Default Category Gear Collections Training Men Women Promotions Sale W" becomes interactable
 
 ### 22. Click "Select... Default Category Gear Collections Training Men Women Promotions Sale W"
+
+> **Note from recorder**: CRITICAL — Category selector. The WebArena evaluator explicitly checks that this product belongs to category 'Tops'; without this step the entire trial scores 0 even if every other field is correct. Click the category dropdown to open it (steps 22-25 are: open dropdown → expand tree → pick Tops → click Done).
 
 Target: text "Select... Default Category Gear Collections Training Men Women Promotions Sale W", tag <div>
 ```bash
@@ -315,6 +339,8 @@ Selector hints: `aria: :Categories`, `css: #LOT4K5X`, `xpath: /html/body/body[1]
 
 ### 24. Click "Tops"
 
+> **Note from recorder**: Category picker — "Tops" is the only category to add. Required by the evaluator. Do not expand the tree further; clicking Tops then Done is sufficient.
+
 Target: text "Tops", tag <label>
 ```bash
 # Locate the element in the page.
@@ -345,6 +371,8 @@ Selector hints: `text: Done`, `css: #LOT4K5X > div.action-menu._active:nth-of-ty
 
 ### 26. Click "Save"
 
+> **Note from recorder**: Click the orange "Save" button in the top-right toolbar. Do NOT click "Save & New" / "Save & Close" / "Save & Duplicate" — those navigate away in ways the eval doesn't expect. After clicking, wait for the green "You saved the product." banner before declaring DONE.
+
 Target: text "Save", role button, tag <button>
 ```bash
 # Locate the element in the page.
@@ -359,6 +387,8 @@ Selector hints: `text: Save`, `css: div:nth-of-type(4) > main > div.page-main-ac
 **Expected:** URL becomes localhost:7780/admin/catalog/product/edit/id/2041/set/9/type/simple/store/…
 
 ### 27. Click "Enable Product Attribute Set Top Bag Bottom Default Downloadable Gear Sprite Sta"
+
+> **Note from recorder**: OPTIONAL — this click happened after Save in the recording, likely an accidental focus shift. The product is already saved by step 26; you can safely skip this step and reply DONE as soon as the success banner appears.
 
 Target: text "Enable Product Attribute Set Top Bag Bottom Default Downloadable Gear Sprite Sta", tag <fieldset>
 > ⚠️ This appears to click a specific item from a dynamic list (e.g. a search result). The exact element will likely be missing when replayed with different parameters — re-snapshot the page and pick an appropriate item by relevance instead of trusting the recorded selector.
