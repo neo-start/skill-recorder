@@ -6,7 +6,10 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const OUT = path.resolve(__dirname, '..', 'out');
+const WEB = path.resolve(__dirname, '..');
+const OUT = path.resolve(WEB, 'out');
+const FUNCTIONS_SRC = path.resolve(WEB, 'functions');
+const FUNCTIONS_DST = path.resolve(OUT, 'functions');
 
 async function exists(p) {
   try {
@@ -42,6 +45,14 @@ async function main() {
     await fs.cp(enDir, OUT, { recursive: true, force: true });
     await fs.rm(enDir, { recursive: true, force: true });
     console.log('[postbuild] en/* merged into root, en/ removed');
+  }
+
+  // Cloudflare Pages discovers functions/ at the deploy root. Since we deploy
+  // `out/`, mirror functions into `out/functions/` so dynamic routes survive
+  // static export.
+  if (await exists(FUNCTIONS_SRC)) {
+    await fs.cp(FUNCTIONS_SRC, FUNCTIONS_DST, { recursive: true, force: true });
+    console.log('[postbuild] functions/ -> out/functions/');
   }
 
   console.log('[postbuild] done — canonical EN is now at /');

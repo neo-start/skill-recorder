@@ -29,7 +29,7 @@ export default async function LocaleLayout({
   const websiteJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Skill Recorder',
+    name: 'Cadeno',
     url: BASE_URL,
     description: tMeta('description'),
   };
@@ -37,7 +37,7 @@ export default async function LocaleLayout({
   const softwareJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
-    name: 'Skill Recorder',
+    name: 'Cadeno',
     url: BASE_URL,
     description: tMeta('description'),
     applicationCategory: 'DeveloperApplication',

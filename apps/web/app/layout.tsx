@@ -28,8 +28,8 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: 'Skill Recorder',
-    template: '%s — Skill Recorder',
+    default: 'Cadeno',
+    template: '%s — Cadeno',
   },
   robots: {
     index: true,

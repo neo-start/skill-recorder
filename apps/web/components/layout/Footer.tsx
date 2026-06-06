@@ -120,7 +120,7 @@ export default function Footer() {
         <Brand>
           <Logo href="/">
             <LogoImg src="/images/logo-transparent.svg" alt="" height={28} />
-            <Wordmark>Skill Recorder</Wordmark>
+            <Wordmark>Cadeno</Wordmark>
           </Logo>
           <Tagline>{t('tagline')}</Tagline>
         </Brand>
