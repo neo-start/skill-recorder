@@ -1,94 +1,98 @@
 'use client';
 
 import styled from 'styled-components';
-import Button from '@/components/ui/Button';
 
-/* ────────────────────────────────────────────────────────────────────
- * Hero — centered editorial typography. No product card on the right.
- * Delphi-style: leads with positioning ("Your Personal FDE"), backs it
- * with the storyline kicker, then a single CTA pair. Subtle dotted
- * background instead of a hero image.
- * ──────────────────────────────────────────────────────────────────── */
+/* Delphi-style hero. Copy is preserved verbatim from v1; everything
+ * visual is rebuilt against Delphi.ai's actual design tokens (per
+ * memory: clone with fidelity, not Cadeno's design system).
+ *
+ * Stripped: Iowan italic accent on FDE, Caveat hand kicker, royal-blue
+ * eyebrow + dotted radial-gradient background, drop-shadow glow on
+ * primary CTA.
+ *
+ * Adopted: Inter system stack, near-black ink, medium-gray subhead,
+ * fully rounded black/white CTA pair, flat white canvas with generous
+ * vertical breath. */
+
+const SANS =
+  "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+const INK = '#0a0a0a';
+const SUB = '#6b6b6b';
+const HAIRLINE = '#e8e6e1';
+const FAINT = '#999999';
 
 const Section = styled.section`
   position: relative;
-  padding-block: calc(var(--navbar-height) + var(--space-20)) var(--space-24);
-  background:
-    radial-gradient(circle at 1px 1px, rgba(15, 30, 74, 0.05) 1px, transparent 0) 0 0 / 28px 28px,
-    radial-gradient(ellipse at 50% 0%, rgba(48, 92, 222, 0.08), transparent 65%),
-    linear-gradient(180deg, #fbfcff 0%, #ffffff 80%);
-  text-align: center;
-  overflow: hidden;
-  border-bottom: 1px solid var(--color-border);
+  background: #ffffff;
+  padding-block: calc(var(--navbar-height) + 80px) 120px;
+  border-bottom: 1px solid ${HAIRLINE};
 
   @media (max-width: 768px) {
-    padding-block: calc(var(--navbar-height) + var(--space-12)) var(--space-16);
+    padding-block: calc(var(--navbar-height) + 56px) 80px;
   }
 `;
 
 const Inner = styled.div`
-  position: relative;
-  max-width: 960px;
+  max-width: 920px;
   margin: 0 auto;
-  padding-inline: var(--space-6);
-`;
+  padding-inline: 32px;
+  text-align: center;
+  font-family: ${SANS};
+  color: ${INK};
 
-const Eyebrow = styled.div`
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-3);
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--color-primary-600);
-  margin-bottom: var(--space-8);
-
-  &::before,
-  &::after {
-    content: '';
-    display: block;
-    width: 28px;
-    height: 1px;
-    background: var(--color-primary-300);
+  @media (max-width: 768px) {
+    padding-inline: 22px;
   }
 `;
 
+const Eyebrow = styled.div`
+  font-family: ${SANS};
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: ${FAINT};
+  margin-bottom: 28px;
+`;
+
 const Headline = styled.h1`
-  font-size: clamp(2.75rem, 7vw, 5.75rem);
+  font-family: ${SANS};
+  font-size: clamp(2.5rem, 6.5vw, 5rem);
   font-weight: 700;
-  color: var(--color-gray-900);
-  line-height: 0.98;
-  letter-spacing: -0.04em;
-  margin: 0;
+  color: ${INK};
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  margin: 0 auto;
+  max-width: 14ch;
 
   em {
     font-style: italic;
-    font-family: 'Iowan Old Style', 'Georgia', 'Times New Roman', serif;
-    font-weight: 500;
-    color: var(--color-primary-600);
-    letter-spacing: -0.02em;
+    font-weight: 700;
+    color: ${INK};
   }
 `;
 
 const Kicker = styled.p`
-  font-family: var(--font-hand);
-  font-size: clamp(1.5rem, 2.4vw, 2rem);
-  color: var(--color-primary-500);
-  line-height: 1.2;
-  margin: var(--space-6) 0 0;
+  font-family: ${SANS};
+  font-style: italic;
+  font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
+  font-weight: 500;
+  color: ${SUB};
+  line-height: 1.4;
+  margin: 24px 0 0;
 `;
 
 const Lead = styled.p`
+  font-family: ${SANS};
   font-size: clamp(1.0625rem, 1.4vw, 1.25rem);
-  color: var(--color-gray-700);
+  color: ${SUB};
   line-height: 1.55;
-  margin: var(--space-8) auto 0;
-  max-width: 620px;
+  margin: 36px auto 0;
+  max-width: 580px;
+  font-weight: 400;
 
   strong {
-    color: var(--color-gray-900);
+    color: ${INK};
     font-weight: 600;
   }
 `;
@@ -96,38 +100,61 @@ const Lead = styled.p`
 const Ctas = styled.div`
   display: inline-flex;
   align-items: center;
-  gap: var(--space-6);
+  gap: 12px;
+  margin-top: 40px;
   flex-wrap: wrap;
   justify-content: center;
-  margin-top: var(--space-10);
 `;
 
-const Primary = styled(Button)`
-  height: 56px;
-  padding: 0 var(--space-10);
-  border-radius: 12px;
-  font-size: var(--text-base);
-  font-weight: 600;
-  box-shadow: 0 12px 28px rgba(48, 92, 222, 0.28);
+const Primary = styled.a`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 52px;
+  padding: 0 28px;
+  background: ${INK};
+  color: #ffffff;
+  font-family: ${SANS};
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  border-radius: 100px;
+  transition: background 160ms ease, transform 120ms ease;
+
+  &:hover {
+    background: #2a2a2a;
+    transform: translateY(-1px);
+  }
 `;
 
 const Secondary = styled.a`
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  font-size: var(--text-base);
+  height: 52px;
+  padding: 0 26px;
+  background: #ffffff;
+  color: ${INK};
+  border: 1px solid ${HAIRLINE};
+  font-family: ${SANS};
   font-weight: 500;
-  color: var(--color-text);
+  font-size: 15px;
+  letter-spacing: -0.005em;
   text-decoration: none;
-  transition: color var(--transition-fast);
+  border-radius: 100px;
+  transition: border-color 160ms ease, background 160ms ease;
 
   &::after {
     content: '→';
-    transition: transform var(--transition-fast);
+    transition: transform 120ms ease;
   }
 
   &:hover {
-    color: var(--color-primary-500);
+    border-color: ${INK};
+    background: #fafafa;
   }
 
   &:hover::after {
@@ -136,13 +163,14 @@ const Secondary = styled.a`
 `;
 
 const TrustLine = styled.p`
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  margin-top: var(--space-12);
+  font-family: ${SANS};
+  font-size: 13px;
+  color: ${SUB};
+  margin-top: 56px;
   letter-spacing: 0.01em;
 
   strong {
-    color: var(--color-gray-900);
+    color: ${INK};
     font-weight: 600;
   }
 `;
@@ -164,7 +192,7 @@ export default function HeroSection() {
         </Lead>
 
         <Ctas>
-          <Primary size="lg" href="#waitlist">
+          <Primary href="#waitlist">
             Join the waitlist
           </Primary>
           <Secondary href="#use-cases">See what skills can do</Secondary>

@@ -4,37 +4,46 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import styled from 'styled-components';
 
+const SANS =
+  "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+const INK = '#0a0a0a';
+const SUB = '#6b6b6b';
+const HAIRLINE = '#e8e6e1';
+
 const FooterEl = styled.footer`
-  background-color: var(--color-bg);
-  border-top: 1px solid var(--color-border);
-  padding-top: var(--space-16);
-  padding-bottom: var(--space-8);
+  background-color: #ffffff;
+  border-top: 1px solid ${HAIRLINE};
+  padding-top: 72px;
+  padding-bottom: 36px;
+  font-family: ${SANS};
+  color: ${INK};
 `;
 
 const Inner = styled.div`
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-12);
+  gap: 48px;
 
   @media (min-width: 768px) {
     grid-template-columns: 2fr 3fr;
-    gap: var(--space-8);
+    gap: 32px;
   }
 `;
 
 const Brand = styled.div`
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: 14px;
 `;
 
 const Logo = styled(Link)`
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: var(--text-lg);
-  font-weight: 700;
-  color: var(--color-gray-900);
+  font-family: ${SANS};
+  font-size: 16px;
+  font-weight: 600;
+  color: ${INK};
   letter-spacing: -0.02em;
   text-decoration: none;
 `;
@@ -47,47 +56,48 @@ const LogoImg = styled.img`
 `;
 
 const Wordmark = styled.span`
-  color: var(--color-gray-900);
+  font-family: ${SANS};
+  color: ${INK};
 `;
 
 const Tagline = styled.p`
-  font-size: var(--text-sm);
-  color: var(--color-gray-700);
-  max-width: 260px;
-  line-height: 1.5;
+  font-family: ${SANS};
+  font-size: 14px;
+  color: ${SUB};
+  max-width: 280px;
+  line-height: 1.55;
 `;
 
 const Cols = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-8);
-
-  @media (max-width: 480px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  gap: 32px;
 `;
 
 const Col = styled.div`
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: 12px;
 `;
 
 const ColTitle = styled.p`
-  font-size: var(--text-xs);
-  font-weight: 600;
+  font-family: ${SANS};
+  font-size: 11px;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--color-gray-900);
-  margin-bottom: var(--space-1);
+  letter-spacing: 0.12em;
+  color: #999999;
+  margin-bottom: 4px;
 `;
 
 const FooterLink = styled(Link)`
-  font-size: var(--text-sm);
-  color: var(--color-gray-700);
-  transition: color var(--transition-fast);
+  font-family: ${SANS};
+  font-size: 14px;
+  color: ${SUB};
+  transition: color 160ms ease;
+  text-decoration: none;
 
-  &:hover { color: var(--color-gray-900); }
+  &:hover { color: ${INK}; }
 `;
 
 const Bottom = styled.div`
@@ -95,15 +105,16 @@ const Bottom = styled.div`
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: var(--space-3);
-  margin-top: var(--space-12);
-  padding-top: var(--space-6);
-  border-top: 1px solid var(--color-border);
+  gap: 12px;
+  margin-top: 56px;
+  padding-top: 24px;
+  border-top: 1px solid ${HAIRLINE};
 `;
 
 const Copyright = styled.p`
-  font-size: var(--text-xs);
-  color: var(--color-gray-700);
+  font-family: ${SANS};
+  font-size: 12px;
+  color: #999999;
 `;
 
 export default function Footer() {

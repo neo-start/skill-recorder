@@ -3,163 +3,171 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 
-/* ────────────────────────────────────────────────────────────────────
- * Use Cases — six role pills, each revealing a concrete example skill.
- * Mirrors Delphi's role chips (Experts / Coaches / ...) but goes one
- * step further: every role gets a real skill card with trigger, steps,
- * and outcome — so the visitor sees what they would actually build.
- * ──────────────────────────────────────────────────────────────────── */
+/* Delphi-style UseCasesSection. Keeps the interactive 6-pill tab
+ * pattern + skill card content; repaints everything monochrome.
+ *
+ * Stripped: royal-blue active pill, royal-blue gradient highlight
+ * accents, dark navy code-pane preview card with cyan/yellow syntax
+ * coloring.
+ *
+ * Adopted: Inter throughout, near-black active pill (Delphi's tab
+ * treatment), warm cream skill-card surface, hairline dividers,
+ * neutral check / arrow icons. */
+
+const SANS =
+  "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+const INK = '#0a0a0a';
+const SUB = '#6b6b6b';
+const HAIRLINE = '#e8e6e1';
+const CARD = '#faf8f4';
+const FAINT = '#999999';
+const PAGE = '#fafaf7';
 
 const Section = styled.section`
-  padding-block: var(--space-24);
-  background: var(--color-bg-subtle);
-  border-bottom: 1px solid var(--color-border);
+  padding-block: 120px;
+  background: ${PAGE};
+  border-bottom: 1px solid ${HAIRLINE};
+  font-family: ${SANS};
+  color: ${INK};
 
   @media (max-width: 768px) {
-    padding-block: var(--space-16);
+    padding-block: 80px;
   }
 `;
 
 const Inner = styled.div`
-  max-width: var(--container-max);
+  max-width: 1080px;
   margin: 0 auto;
-  padding-inline: var(--space-8);
+  padding-inline: 32px;
 
   @media (max-width: 768px) {
-    padding-inline: var(--space-6);
+    padding-inline: 22px;
   }
 `;
 
 const Header = styled.div`
-  max-width: 720px;
-  margin: 0 auto var(--space-12);
+  max-width: 680px;
+  margin: 0 auto 56px;
   text-align: center;
 `;
 
 const Label = styled.div`
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
+  font-family: ${SANS};
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--color-primary-600);
-  margin-bottom: var(--space-4);
+  color: ${FAINT};
+  margin-bottom: 22px;
 `;
 
 const Title = styled.h2`
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-family: ${SANS};
+  font-size: clamp(2rem, 4.2vw, 3rem);
   font-weight: 700;
-  color: var(--color-gray-900);
-  line-height: 1.1;
+  color: ${INK};
+  line-height: 1.08;
   letter-spacing: -0.03em;
   margin: 0;
 
   em {
     font-style: italic;
-    font-family: 'Iowan Old Style', 'Georgia', 'Times New Roman', serif;
-    font-weight: 500;
-    color: var(--color-primary-600);
+    font-weight: 700;
+    color: ${INK};
   }
 `;
 
 const Lead = styled.p`
-  font-size: var(--text-lg);
-  color: var(--color-gray-700);
+  font-family: ${SANS};
+  font-size: 1.0625rem;
+  color: ${SUB};
   line-height: 1.55;
-  margin: var(--space-6) auto 0;
-  max-width: 580px;
+  margin: 24px auto 0;
+  max-width: 560px;
 `;
 
 const Pills = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: var(--space-3);
-  margin-bottom: var(--space-10);
+  gap: 8px;
+  margin-bottom: 40px;
 `;
 
 const Pill = styled.button<{ $active: boolean }>`
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  height: 40px;
-  padding: 0 var(--space-5);
-  border-radius: var(--radius-full);
-  border: 1.5px solid ${({ $active }) => ($active ? 'var(--color-primary-500)' : 'var(--color-border)')};
-  background: ${({ $active }) => ($active ? 'var(--color-primary-500)' : 'var(--color-bg)')};
-  color: ${({ $active }) => ($active ? '#fff' : 'var(--color-text)')};
-  font-family: var(--font-sans);
-  font-size: var(--text-sm);
-  font-weight: 600;
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 100px;
+  border: 1px solid ${({ $active }) => ($active ? INK : HAIRLINE)};
+  background: ${({ $active }) => ($active ? INK : '#ffffff')};
+  color: ${({ $active }) => ($active ? '#ffffff' : INK)};
+  font-family: ${SANS};
+  font-size: 14px;
+  font-weight: 500;
   letter-spacing: -0.005em;
   cursor: pointer;
-  transition:
-    background var(--transition-fast),
-    border-color var(--transition-fast),
-    color var(--transition-fast),
-    transform var(--transition-fast);
+  transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
 
   &:hover {
-    border-color: ${({ $active }) => ($active ? 'var(--color-primary-500)' : 'var(--color-border-hover)')};
-    transform: translateY(-1px);
+    border-color: ${INK};
   }
 `;
 
 const Card = styled.article`
+  background: #ffffff;
+  border: 1px solid ${HAIRLINE};
+  border-radius: 24px;
+  padding: 40px;
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-  gap: var(--space-12);
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 48px;
   align-items: stretch;
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-2xl);
-  padding: var(--space-10);
-  box-shadow:
-    0 1px 2px rgba(7, 14, 36, 0.04),
-    0 28px 70px -36px rgba(7, 14, 36, 0.18);
 
   @media (max-width: 880px) {
     grid-template-columns: 1fr;
-    gap: var(--space-8);
-    padding: var(--space-8);
+    gap: 32px;
+    padding: 32px;
   }
 `;
 
 const CardLeft = styled.div`
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: 18px;
   min-width: 0;
 `;
 
-const SkillBadge = styled.div`
+const Badge = styled.div`
   display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
   align-self: flex-start;
   padding: 4px 10px;
-  border-radius: var(--radius-full);
-  background: rgba(48, 92, 222, 0.08);
-  color: var(--color-primary-600);
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  border-radius: 100px;
+  background: #ffffff;
+  border: 1px solid ${HAIRLINE};
+  color: ${SUB};
+  font-family: ${SANS};
   font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-weight: 500;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 `;
 
 const SkillTitle = styled.h3`
-  font-size: clamp(1.5rem, 2.6vw, 2rem);
-  font-weight: 700;
-  color: var(--color-gray-900);
+  font-family: ${SANS};
+  font-size: clamp(1.4rem, 2.4vw, 1.875rem);
+  font-weight: 600;
+  color: ${INK};
   letter-spacing: -0.025em;
   line-height: 1.15;
   margin: 0;
 `;
 
-const SkillForWhom = styled.p`
-  font-size: var(--text-base);
-  color: var(--color-gray-700);
+const ForWhom = styled.p`
+  font-family: ${SANS};
+  font-size: 1rem;
+  color: ${SUB};
   line-height: 1.55;
   margin: 0;
 `;
@@ -167,98 +175,97 @@ const SkillForWhom = styled.p`
 const Meta = styled.dl`
   display: grid;
   grid-template-columns: max-content 1fr;
-  gap: var(--space-2) var(--space-4);
+  gap: 8px 18px;
   margin: 0;
-  padding-top: var(--space-5);
-  border-top: 1px dashed var(--color-border);
+  padding-top: 18px;
+  border-top: 1px solid ${HAIRLINE};
 
   dt {
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: ${SANS};
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 500;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--color-text-muted);
+    color: ${FAINT};
     padding-top: 2px;
   }
 
   dd {
+    font-family: ${SANS};
     font-size: 0.9375rem;
-    color: var(--color-text);
+    color: ${INK};
     line-height: 1.5;
     margin: 0;
   }
 `;
 
 const CardRight = styled.div`
-  background: #0a1535;
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
+  background: ${CARD};
+  border: 1px solid ${HAIRLINE};
+  border-radius: 16px;
+  padding: 28px;
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 13px;
-  color: #cdd5f4;
-  line-height: 1.65;
+  gap: 14px;
+  font-family: ${SANS};
+  font-size: 14px;
+  color: ${INK};
+  line-height: 1.6;
 `;
 
 const PaneHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: var(--space-3);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  margin-bottom: var(--space-3);
-
-  span:first-child {
-    color: #7a9ef5;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    font-size: 10.5px;
-    text-transform: uppercase;
-  }
-
-  span:last-child {
-    color: #adc1f7;
-    font-size: 10.5px;
-  }
+  padding-bottom: 12px;
+  border-bottom: 1px solid ${HAIRLINE};
+  margin-bottom: 6px;
+  font-family: ${SANS};
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: ${FAINT};
+  font-weight: 500;
 `;
 
 const StepRow = styled.div`
   display: grid;
   grid-template-columns: 22px 1fr;
-  gap: var(--space-3);
+  gap: 12px;
   align-items: baseline;
 `;
 
 const StepNum = styled.span`
-  color: #7a9ef5;
-  font-weight: 700;
+  color: ${FAINT};
+  font-weight: 600;
   text-align: right;
+  font-size: 13px;
 `;
 
 const StepText = styled.span`
-  color: #eaeeff;
+  color: ${INK};
 `;
 
 const Highlight = styled.span`
-  color: #fbbf24;
+  font-style: italic;
+  color: ${INK};
   font-weight: 600;
 `;
 
 const OutcomeBlock = styled.div`
-  margin-top: var(--space-3);
-  padding-top: var(--space-3);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  color: #10b981;
+  margin-top: 10px;
+  padding-top: 14px;
+  border-top: 1px solid ${HAIRLINE};
+  color: ${INK};
   display: grid;
   grid-template-columns: 22px 1fr;
-  gap: var(--space-3);
+  gap: 12px;
+  font-style: italic;
 
   span:first-child {
     text-align: right;
-    color: #34d399;
+    color: ${INK};
+    font-style: normal;
   }
 `;
 
@@ -278,7 +285,7 @@ const roles: Role[] = [
   {
     id: 'creators',
     pill: 'Creators',
-    badge: 'SKILL · CREATORS',
+    badge: 'Skill · Creators',
     title: 'Turn one YouTube video into a week of LinkedIn.',
     forWhom: 'For the creator who films once and ships everywhere.',
     trigger: 'When I publish a new YouTube video',
@@ -293,22 +300,22 @@ const roles: Role[] = [
   {
     id: 'operators',
     pill: 'Social Operators',
-    badge: 'SKILL · OPERATORS',
+    badge: 'Skill · Operators',
     title: 'Run 10 client accounts before you finish your coffee.',
     forWhom: 'For the social manager juggling brands, calendars, and voices.',
     trigger: 'Mon–Fri at 9:00am',
     surface: 'X · Instagram · TikTok · LinkedIn',
     steps: [
-      { text: 'Read today\'s industry news per niche' },
-      { text: 'Generate one post per account', highlight: 'in each brand\'s voice' },
-      { text: 'Queue via each account\'s scheduler · attach AI images' },
+      { text: "Read today's industry news per niche" },
+      { text: 'Generate one post per account', highlight: "in each brand's voice" },
+      { text: "Queue via each account's scheduler · attach AI images" },
     ],
     outcome: '10 posts scheduled, change log written to Notion.',
   },
   {
     id: 'sales',
     pill: 'Sales & Growth',
-    badge: 'SKILL · SALES',
+    badge: 'Skill · Sales',
     title: 'Scrape 500 KOLs from a hashtag — with contact methods.',
     forWhom: 'For the operator who needs leads, not another scraper subscription.',
     trigger: 'When I add a new niche to my CRM',
@@ -323,7 +330,7 @@ const roles: Role[] = [
   {
     id: 'freelancers',
     pill: 'Freelancers',
-    badge: 'SKILL · FREELANCERS',
+    badge: 'Skill · Freelancers',
     title: 'Deliver an AI workflow to an SMB client by EOD.',
     forWhom: 'For the freelancer selling AI transformation — without writing code from scratch.',
     trigger: 'After client kickoff form is submitted',
@@ -338,8 +345,8 @@ const roles: Role[] = [
   {
     id: 'coaches',
     pill: 'Coaches & Consultants',
-    badge: 'SKILL · COACHES',
-    title: 'Onboard every new 1:1 client like it\'s your first.',
+    badge: 'Skill · Coaches',
+    title: "Onboard every new 1:1 client like it's your first.",
     forWhom: 'For the coach whose playbook is in their head — and now in their agent.',
     trigger: 'When a Calendly intake completes',
     surface: 'Calendly · Gmail · Notion',
@@ -353,7 +360,7 @@ const roles: Role[] = [
   {
     id: 'founders',
     pill: 'Founders',
-    badge: 'SKILL · FOUNDERS',
+    badge: 'Skill · Founders',
     title: 'Submit to 1,000 AI directories overnight.',
     forWhom: 'For the solopreneur launching — or the job seeker shipping résumés.',
     trigger: 'Manual run on launch day',
@@ -400,9 +407,9 @@ export default function UseCasesSection() {
 
         <Card key={role.id}>
           <CardLeft>
-            <SkillBadge>{role.badge}</SkillBadge>
+            <Badge>{role.badge}</Badge>
             <SkillTitle>{role.title}</SkillTitle>
-            <SkillForWhom>{role.forWhom}</SkillForWhom>
+            <ForWhom>{role.forWhom}</ForWhom>
 
             <Meta>
               <dt>Trigger</dt>
@@ -414,7 +421,7 @@ export default function UseCasesSection() {
 
           <CardRight>
             <PaneHeader>
-              <span>SKILL.run()</span>
+              <span>Skill.run()</span>
               <span>{role.steps.length} steps</span>
             </PaneHeader>
 

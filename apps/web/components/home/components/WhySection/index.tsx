@@ -2,77 +2,86 @@
 
 import styled from 'styled-components';
 
-/* ────────────────────────────────────────────────────────────────────
- * Why — five callouts on what a personal FDE unlocks. Format mirrors
- * Delphi's "You're in demand. Be present for every opportunity." section:
- * one strong heading, a short prose lead, then a 2-3-2 grid of callout
- * cards, each titled with a verb-led promise.
- * ──────────────────────────────────────────────────────────────────── */
+/* Delphi-style WhySection. 4 callouts; copy preserved. Stripped Iowan
+ * italic on "be in a hundred places", strip royal blue icon tints,
+ * strip rounded extra-large border-radius. Adopted Delphi's hairline
+ * border + warm cream card surface. */
+
+const SANS =
+  "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+const INK = '#0a0a0a';
+const SUB = '#6b6b6b';
+const HAIRLINE = '#e8e6e1';
+const CARD = '#faf8f4';
+const FAINT = '#999999';
 
 const Section = styled.section`
-  padding-block: var(--space-24);
-  background: var(--color-bg);
-  border-bottom: 1px solid var(--color-border);
+  padding-block: 120px;
+  background: #ffffff;
+  border-bottom: 1px solid ${HAIRLINE};
+  font-family: ${SANS};
+  color: ${INK};
 
   @media (max-width: 768px) {
-    padding-block: var(--space-16);
+    padding-block: 80px;
   }
 `;
 
 const Inner = styled.div`
-  max-width: var(--container-max);
+  max-width: 1080px;
   margin: 0 auto;
-  padding-inline: var(--space-8);
+  padding-inline: 32px;
 
   @media (max-width: 768px) {
-    padding-inline: var(--space-6);
+    padding-inline: 22px;
   }
 `;
 
 const Header = styled.div`
-  max-width: 720px;
-  margin: 0 auto var(--space-16);
+  max-width: 680px;
+  margin: 0 auto 72px;
   text-align: center;
 `;
 
 const Label = styled.div`
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
+  font-family: ${SANS};
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--color-primary-600);
-  margin-bottom: var(--space-4);
+  color: ${FAINT};
+  margin-bottom: 22px;
 `;
 
 const Title = styled.h2`
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-family: ${SANS};
+  font-size: clamp(2rem, 4.2vw, 3rem);
   font-weight: 700;
-  color: var(--color-gray-900);
-  line-height: 1.1;
+  color: ${INK};
+  line-height: 1.08;
   letter-spacing: -0.03em;
   margin: 0;
 
   em {
     font-style: italic;
-    font-family: 'Iowan Old Style', 'Georgia', 'Times New Roman', serif;
-    font-weight: 500;
-    color: var(--color-primary-600);
+    font-weight: 700;
+    color: ${INK};
   }
 `;
 
 const Lead = styled.p`
-  font-size: var(--text-lg);
-  color: var(--color-gray-700);
+  font-family: ${SANS};
+  font-size: 1.0625rem;
+  color: ${SUB};
   line-height: 1.55;
-  margin: var(--space-6) auto 0;
-  max-width: 580px;
+  margin: 24px auto 0;
+  max-width: 560px;
 `;
 
 const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-6);
+  gap: 20px;
 
   @media (max-width: 560px) {
     grid-template-columns: 1fr;
@@ -82,49 +91,50 @@ const Grid = styled.div`
 const Card = styled.article`
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-8);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  background: var(--color-bg);
-  transition: border-color var(--transition-base), transform var(--transition-base), box-shadow var(--transition-base);
+  gap: 12px;
+  padding: 32px;
+  border: 1px solid ${HAIRLINE};
+  border-radius: 20px;
+  background: ${CARD};
+  transition: border-color 200ms ease, transform 200ms ease;
 
   &:hover {
-    border-color: var(--color-border-hover);
+    border-color: ${INK};
     transform: translateY(-2px);
-    box-shadow: 0 12px 28px -16px rgba(7, 14, 36, 0.18);
   }
 
   @media (max-width: 560px) {
-    padding: var(--space-6);
+    padding: 24px;
   }
 `;
 
 const Icon = styled.div`
   width: 40px;
   height: 40px;
-  border-radius: 10px;
-  background: var(--color-bg-subtle);
-  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid ${HAIRLINE};
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-primary-600);
-  margin-bottom: var(--space-3);
+  color: ${INK};
+  margin-bottom: 8px;
 `;
 
 const CardTitle = styled.h3`
-  font-size: var(--text-xl);
+  font-family: ${SANS};
+  font-size: 1.25rem;
   font-weight: 600;
-  color: var(--color-gray-900);
+  color: ${INK};
   line-height: 1.25;
   letter-spacing: -0.015em;
   margin: 0;
 `;
 
 const CardBody = styled.p`
+  font-family: ${SANS};
   font-size: 0.9375rem;
-  color: var(--color-gray-700);
+  color: ${SUB};
   line-height: 1.55;
   margin: 0;
 `;
@@ -140,7 +150,7 @@ const items: Item[] = [
     title: 'Never repeat yourself.',
     body: 'Show your agent how to do it once — the next thousand times are on autopilot.',
     icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <polyline points="1 4 1 10 7 10" />
         <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
       </svg>
@@ -150,7 +160,7 @@ const items: Item[] = [
     title: 'Capture tribal knowledge.',
     body: 'Turn the tutorials, docs, and videos you trust into skills your agent can actually execute.',
     icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
         <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
       </svg>
@@ -160,7 +170,7 @@ const items: Item[] = [
     title: 'Be in a hundred places.',
     body: 'Social, outreach, lead gen, listings — your agent shows up everywhere, on schedule, on brand.',
     icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10" />
         <path d="M2 12h20" />
         <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
@@ -171,7 +181,7 @@ const items: Item[] = [
     title: 'Build leverage.',
     body: 'Package your best skills as services to clients. Deliver a week of work in an afternoon.',
     icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
       </svg>
     ),

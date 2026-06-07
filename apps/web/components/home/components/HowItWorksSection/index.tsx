@@ -2,71 +2,79 @@
 
 import styled from 'styled-components';
 
-/* ────────────────────────────────────────────────────────────────────
- * How it works — three steps. Mirrors Delphi's "Create your Digital
- * Mind in just 15 minutes" section: big 01 / 02 / 03 numerals,
- * verb-led step titles, short prose per step. No screenshots — keep
- * the visual quiet so the storyline carries it.
- * ──────────────────────────────────────────────────────────────────── */
+/* Delphi-style HowItWorksSection. 3 steps; copy preserved. Stripped
+ * italic-serif numerals, Caveat hand kickers/footnotes, royal-blue
+ * accents and dashed connecting rail. Adopted Delphi's minimal sans
+ * numerals + grey divider rules. */
+
+const SANS =
+  "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+const INK = '#0a0a0a';
+const SUB = '#6b6b6b';
+const HAIRLINE = '#e8e6e1';
+const FAINT = '#999999';
 
 const Section = styled.section`
-  padding-block: var(--space-24);
-  background: var(--color-bg);
-  border-bottom: 1px solid var(--color-border);
+  padding-block: 120px;
+  background: #ffffff;
+  border-bottom: 1px solid ${HAIRLINE};
+  font-family: ${SANS};
+  color: ${INK};
 
   @media (max-width: 768px) {
-    padding-block: var(--space-16);
+    padding-block: 80px;
   }
 `;
 
 const Inner = styled.div`
-  max-width: var(--container-max);
+  max-width: 1080px;
   margin: 0 auto;
-  padding-inline: var(--space-8);
+  padding-inline: 32px;
 
   @media (max-width: 768px) {
-    padding-inline: var(--space-6);
+    padding-inline: 22px;
   }
 `;
 
 const Header = styled.div`
-  max-width: 720px;
-  margin: 0 auto var(--space-16);
+  max-width: 680px;
+  margin: 0 auto 72px;
   text-align: center;
 `;
 
 const Label = styled.div`
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
+  font-family: ${SANS};
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--color-primary-600);
-  margin-bottom: var(--space-4);
+  color: ${FAINT};
+  margin-bottom: 22px;
 `;
 
 const Title = styled.h2`
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-family: ${SANS};
+  font-size: clamp(2rem, 4.2vw, 3rem);
   font-weight: 700;
-  color: var(--color-gray-900);
-  line-height: 1.1;
+  color: ${INK};
+  line-height: 1.08;
   letter-spacing: -0.03em;
   margin: 0;
 
   em {
     font-style: italic;
-    font-family: 'Iowan Old Style', 'Georgia', 'Times New Roman', serif;
-    font-weight: 500;
-    color: var(--color-primary-600);
+    font-weight: 700;
+    color: ${INK};
   }
 `;
 
 const Lead = styled.p`
-  font-size: var(--text-lg);
-  color: var(--color-gray-700);
+  font-family: ${SANS};
+  font-size: 1.0625rem;
+  color: ${SUB};
   line-height: 1.55;
-  margin: var(--space-6) auto 0;
-  max-width: 580px;
+  margin: 24px auto 0;
+  max-width: 560px;
 `;
 
 const Steps = styled.ol`
@@ -75,92 +83,62 @@ const Steps = styled.ol`
   padding: 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-10);
-  position: relative;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 36px;
-    left: 8%;
-    right: 8%;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      var(--color-border) 12%,
-      var(--color-border) 88%,
-      transparent 100%
-    );
-    z-index: 0;
-  }
+  gap: 32px;
 
   @media (max-width: 880px) {
     grid-template-columns: 1fr;
-    gap: var(--space-10);
-
-    &::before {
-      display: none;
-    }
+    gap: 28px;
   }
 `;
 
 const Step = styled.li`
-  position: relative;
-  z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: 14px;
+  padding-top: 28px;
+  border-top: 1px solid ${INK};
 `;
 
 const StepNum = styled.div`
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Iowan Old Style', 'Georgia', 'Times New Roman', serif;
-  font-style: italic;
+  font-family: ${SANS};
+  font-size: 13px;
   font-weight: 500;
-  font-size: 2rem;
-  color: var(--color-primary-600);
-  background: var(--color-bg);
-  border: 1.5px solid var(--color-border);
-  letter-spacing: -0.02em;
+  letter-spacing: 0.1em;
+  color: ${FAINT};
 `;
 
 const StepKicker = styled.div`
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
+  font-family: ${SANS};
+  font-style: italic;
+  font-size: 14px;
+  color: ${SUB};
+  margin-top: -8px;
 `;
 
 const StepTitle = styled.h3`
-  font-size: var(--text-2xl);
-  font-weight: 700;
-  color: var(--color-gray-900);
+  font-family: ${SANS};
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: ${INK};
   line-height: 1.2;
   letter-spacing: -0.02em;
   margin: 0;
 `;
 
 const StepBody = styled.p`
-  font-size: var(--text-base);
-  color: var(--color-gray-700);
+  font-family: ${SANS};
+  font-size: 0.9375rem;
+  color: ${SUB};
   line-height: 1.6;
   margin: 0;
 `;
 
 const StepFootnote = styled.div`
-  font-family: var(--font-hand);
-  font-size: 1.0625rem;
-  color: var(--color-primary-500);
-  line-height: 1.3;
-  margin-top: var(--space-1);
+  font-family: ${SANS};
+  font-style: italic;
+  font-size: 0.875rem;
+  color: ${FAINT};
+  margin-top: 4px;
 `;
 
 const steps = [
@@ -177,7 +155,7 @@ const steps = [
     kicker: 'We distill it',
     title: 'Your know-how becomes a skill.',
     body:
-      'Skill Recorder cleans the noise, names the inputs, and writes a skill your agent can actually run. You review and tweak — or trust the defaults.',
+      'Cadeno cleans the noise, names the inputs, and writes a skill your agent can actually run. You review and tweak — or trust the defaults.',
     foot: 'no scripting required',
   },
   {
@@ -211,7 +189,7 @@ export default function HowItWorksSection() {
               <StepKicker>{s.kicker}</StepKicker>
               <StepTitle>{s.title}</StepTitle>
               <StepBody>{s.body}</StepBody>
-              <StepFootnote>↳ {s.foot}</StepFootnote>
+              <StepFootnote>{s.foot}</StepFootnote>
             </Step>
           ))}
         </Steps>

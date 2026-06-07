@@ -3,13 +3,20 @@
 import { useState, type FormEvent } from 'react';
 import styled, { keyframes } from 'styled-components';
 
-/* ────────────────────────────────────────────────────────────────────
- * Final CTA — waitlist signup. While Cadeno is in private beta this is
- * the only conversion point on the page. Submits to /api/waitlist (a
- * Cloudflare Pages Function that logs to the dashboard). In `pnpm dev`
- * the function isn't wired so we simulate success — to test the real
- * endpoint, build and run `pnpm pages:dev`.
- * ──────────────────────────────────────────────────────────────────── */
+/* Delphi-style CTASection — waitlist form on flat white instead of
+ * dark royal-blue gradient. Form lives inside a hairline cream card.
+ * Submit / status / success / error states preserved unchanged.
+ *
+ * In `pnpm dev` (no CF Pages Function running), submit fakes success.
+ * In `pnpm pages:dev` or production, posts to /api/waitlist. */
+
+const SANS =
+  "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+const INK = '#0a0a0a';
+const SUB = '#6b6b6b';
+const HAIRLINE = '#e8e6e1';
+const CARD = '#faf8f4';
+const FAINT = '#999999';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const IS_DEV = process.env.NODE_ENV === 'development';
@@ -17,91 +24,84 @@ const IS_DEV = process.env.NODE_ENV === 'development';
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
 const Section = styled.section`
-  position: relative;
-  padding-block: var(--space-24);
-  background: var(--gradient-brand-deep);
-  overflow: hidden;
+  padding-block: 120px;
+  background: #ffffff;
+  font-family: ${SANS};
+  color: ${INK};
 
   @media (max-width: 768px) {
-    padding-block: var(--space-16);
-  }
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.08), transparent 50%),
-      radial-gradient(circle at 80% 80%, rgba(122, 158, 245, 0.18), transparent 55%);
-    pointer-events: none;
+    padding-block: 80px;
   }
 `;
 
 const Inner = styled.div`
-  position: relative;
-  max-width: 880px;
+  max-width: 760px;
   margin: 0 auto;
-  padding-inline: var(--space-6);
+  padding-inline: 32px;
   text-align: center;
+
+  @media (max-width: 768px) {
+    padding-inline: 22px;
+  }
 `;
 
 const Eyebrow = styled.div`
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.22em;
+  font-family: ${SANS};
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(173, 193, 247, 0.85);
-  margin-bottom: var(--space-6);
+  color: ${FAINT};
+  margin-bottom: 22px;
 `;
 
 const Title = styled.h2`
-  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  font-family: ${SANS};
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
   font-weight: 700;
-  color: #ffffff;
+  color: ${INK};
   line-height: 1.05;
   letter-spacing: -0.035em;
   margin: 0;
 
   em {
     font-style: italic;
-    font-family: 'Iowan Old Style', 'Georgia', 'Times New Roman', serif;
-    font-weight: 500;
-    color: #eaeeff;
+    font-weight: 700;
+    color: ${INK};
   }
 `;
 
 const Lead = styled.p`
+  font-family: ${SANS};
   font-size: clamp(1.0625rem, 1.4vw, 1.25rem);
-  color: rgba(234, 238, 255, 0.85);
+  color: ${SUB};
   line-height: 1.55;
-  margin: var(--space-6) auto 0;
-  max-width: 560px;
+  margin: 28px auto 0;
+  max-width: 540px;
 `;
 
 const Form = styled.form`
   display: flex;
   align-items: stretch;
-  gap: var(--space-3);
-  margin: var(--space-10) auto 0;
-  max-width: 480px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 14px;
+  gap: 8px;
+  margin: 40px auto 0;
+  max-width: 460px;
+  background: ${CARD};
+  border: 1px solid ${HAIRLINE};
+  border-radius: 100px;
   padding: 6px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  transition: border-color var(--transition-fast), background var(--transition-fast);
+  transition: border-color 160ms ease, background 160ms ease;
 
   &:focus-within {
-    border-color: rgba(255, 255, 255, 0.45);
-    background: rgba(255, 255, 255, 0.12);
+    border-color: ${INK};
+    background: #ffffff;
   }
 
   @media (max-width: 560px) {
     flex-direction: column;
-    gap: var(--space-2);
-    padding: var(--space-2);
+    gap: 8px;
+    border-radius: 22px;
+    padding: 8px;
   }
 `;
 
@@ -109,16 +109,16 @@ const Email = styled.input`
   flex: 1;
   min-width: 0;
   height: 48px;
-  padding: 0 var(--space-4);
+  padding: 0 18px;
   border: none;
   background: transparent;
-  color: #ffffff;
-  font-family: var(--font-sans);
-  font-size: var(--text-base);
+  color: ${INK};
+  font-family: ${SANS};
+  font-size: 15px;
   letter-spacing: -0.005em;
 
   &::placeholder {
-    color: rgba(234, 238, 255, 0.55);
+    color: ${FAINT};
   }
 
   &:focus {
@@ -139,91 +139,92 @@ const Submit = styled.button`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2);
+  gap: 8px;
   height: 48px;
-  padding: 0 var(--space-7);
-  border-radius: 10px;
-  background: #ffffff;
-  color: var(--color-primary-700);
+  padding: 0 24px;
+  border-radius: 100px;
+  background: ${INK};
+  color: #ffffff;
   border: none;
-  font-family: var(--font-sans);
-  font-size: 0.9375rem;
-  font-weight: 600;
+  font-family: ${SANS};
+  font-size: 15px;
+  font-weight: 500;
   letter-spacing: -0.005em;
   cursor: pointer;
-  transition: background var(--transition-fast), transform var(--transition-fast);
+  transition: background 160ms ease, transform 120ms ease;
   white-space: nowrap;
 
   &:hover:not(:disabled) {
-    background: #f5f7ff;
+    background: #2a2a2a;
     transform: translateY(-1px);
   }
 
   &:disabled {
     cursor: not-allowed;
-    opacity: 0.7;
+    opacity: 0.6;
   }
 
   & > .spinner {
     width: 14px;
     height: 14px;
     border-radius: 50%;
-    border: 2px solid rgba(48, 92, 222, 0.25);
-    border-top-color: var(--color-primary-600);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #ffffff;
     animation: ${spin} 600ms linear infinite;
   }
 `;
 
 const Status = styled.p<{ $tone: 'error' | 'info' }>`
-  font-size: var(--text-sm);
-  color: ${({ $tone }) =>
-    $tone === 'error' ? '#ffd6d6' : 'rgba(234, 238, 255, 0.75)'};
-  margin: var(--space-3) auto 0;
-  max-width: 480px;
+  font-family: ${SANS};
+  font-size: 13px;
+  color: ${({ $tone }) => ($tone === 'error' ? '#a52424' : SUB)};
+  margin: 14px auto 0;
+  max-width: 460px;
   line-height: 1.5;
   min-height: 1.5em;
 `;
 
 const SuccessBlock = styled.div`
-  margin: var(--space-10) auto 0;
-  max-width: 480px;
-  padding: var(--space-6) var(--space-8);
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 14px;
+  margin: 40px auto 0;
+  max-width: 460px;
+  padding: 28px;
+  background: ${CARD};
+  border: 1px solid ${HAIRLINE};
+  border-radius: 20px;
   text-align: left;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 
   & > .heading {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
-    font-size: var(--text-lg);
+    gap: 10px;
+    font-family: ${SANS};
+    font-size: 1rem;
     font-weight: 600;
-    color: #ffffff;
-    margin-bottom: var(--space-2);
+    color: ${INK};
+    margin-bottom: 8px;
     letter-spacing: -0.01em;
   }
 
   & > .heading svg {
-    color: #a3ff5e;
+    color: ${INK};
     flex-shrink: 0;
   }
 
   & > .body {
-    font-size: var(--text-sm);
-    color: rgba(234, 238, 255, 0.78);
+    font-family: ${SANS};
+    font-size: 0.9375rem;
+    color: ${SUB};
     line-height: 1.55;
     margin: 0;
   }
 `;
 
 const FinePrint = styled.p`
+  font-family: ${SANS};
   font-size: 12px;
-  color: rgba(234, 238, 255, 0.55);
-  margin: var(--space-4) auto 0;
-  max-width: 480px;
+  color: ${FAINT};
+  margin: 16px auto 0;
+  max-width: 460px;
   line-height: 1.5;
 `;
 
@@ -247,9 +248,6 @@ export default function CTASection() {
 
     try {
       if (IS_DEV) {
-        // Function only runs under `pnpm pages:dev`, not `pnpm dev`. Simulate
-        // success so the form is testable in dev. Remove this branch once a
-        // real backend is wired and devs run pages:dev for full-stack testing.
         await new Promise(r => setTimeout(r, 700));
         setStatus('success');
         return;
@@ -271,11 +269,11 @@ export default function CTASection() {
       setMessage(
         data.error === 'invalid_email'
           ? "That doesn't look like an email — try again?"
-          : "Something went wrong on our end. Try again in a moment?",
+          : 'Something went wrong on our end. Try again in a moment?',
       );
     } catch {
       setStatus('error');
-      setMessage("Network hiccup — try again in a moment?");
+      setMessage('Network hiccup — try again in a moment?');
     }
   }
 

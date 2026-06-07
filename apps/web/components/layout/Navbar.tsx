@@ -24,7 +24,7 @@ const Header = styled.header<{ $scrolled: boolean }>`
       background: rgba(255, 255, 255, 0.92);
       backdrop-filter: saturate(180%) blur(20px);
       -webkit-backdrop-filter: saturate(180%) blur(20px);
-      border-bottom: 1px solid var(--color-border);
+      border-bottom: 1px solid #e8e6e1;
       box-shadow: var(--shadow-sm);
     `}
 `;
@@ -59,10 +59,11 @@ const LogoImg = styled.img`
 `;
 
 const Wordmark = styled.span`
-  font-size: var(--text-xl);
-  font-weight: 700;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
   letter-spacing: -0.02em;
-  color: #000000;
+  color: #0a0a0a;
 `;
 
 const Spacer = styled.div`

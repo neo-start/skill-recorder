@@ -23,6 +23,8 @@ export const VARIANTS: Array<{ id: string; href: string; label: string }> = [
   { id: 'fashion', href: '/styles/fashion', label: 'fashion' },
   { id: 'y2k', href: '/styles/y2k', label: 'y2k' },
   { id: 'cottagecore', href: '/styles/cottagecore', label: 'cottagecore' },
+  { id: 'inspiration', href: '/styles/inspiration', label: '+ inspiration' },
+  { id: 'clones-delphi', href: '/styles/clones/delphi', label: 'clone · delphi' },
 ];
 
 type Tone = 'dark' | 'light' | 'paper' | 'glass' | 'warm' | 'mono';

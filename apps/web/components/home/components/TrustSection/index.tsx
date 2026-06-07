@@ -2,79 +2,87 @@
 
 import styled from 'styled-components';
 
-/* ────────────────────────────────────────────────────────────────────
- * Trust — mirrors Delphi's "Your mind is Yours." section. Italicized
- * possessive headline + four short trust pillars. No security badges
- * or compliance logos — the visitor we're talking to (prosumer / OPC)
- * cares about control, not SOC 2.
- * ──────────────────────────────────────────────────────────────────── */
+/* Delphi-style TrustSection. 4 pillars; copy preserved. Stripped
+ * royal-blue icon tints and the cream-blue tinted section background.
+ * Adopted Delphi's pale cream surface + monochrome pillar cards. */
+
+const SANS =
+  "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+const INK = '#0a0a0a';
+const SUB = '#6b6b6b';
+const HAIRLINE = '#e8e6e1';
+const PAGE = '#fafaf7';
+const FAINT = '#999999';
 
 const Section = styled.section`
-  padding-block: var(--space-24);
-  background: var(--color-bg-subtle);
-  border-bottom: 1px solid var(--color-border);
+  padding-block: 120px;
+  background: ${PAGE};
+  border-bottom: 1px solid ${HAIRLINE};
+  font-family: ${SANS};
+  color: ${INK};
 
   @media (max-width: 768px) {
-    padding-block: var(--space-16);
+    padding-block: 80px;
   }
 `;
 
 const Inner = styled.div`
-  max-width: var(--container-max);
+  max-width: 1080px;
   margin: 0 auto;
-  padding-inline: var(--space-8);
+  padding-inline: 32px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-  gap: var(--space-16);
+  gap: 64px;
   align-items: center;
 
   @media (max-width: 880px) {
     grid-template-columns: 1fr;
-    gap: var(--space-10);
-    padding-inline: var(--space-6);
+    gap: 48px;
+    padding-inline: 22px;
   }
 `;
 
 const Left = styled.div``;
 
 const Label = styled.div`
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
+  font-family: ${SANS};
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--color-primary-600);
-  margin-bottom: var(--space-4);
+  color: ${FAINT};
+  margin-bottom: 22px;
 `;
 
 const Title = styled.h2`
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-family: ${SANS};
+  font-size: clamp(2rem, 4.2vw, 3rem);
   font-weight: 700;
-  color: var(--color-gray-900);
-  line-height: 1.1;
+  color: ${INK};
+  line-height: 1.08;
   letter-spacing: -0.03em;
   margin: 0;
 
   em {
     font-style: italic;
-    font-family: 'Iowan Old Style', 'Georgia', 'Times New Roman', serif;
-    font-weight: 500;
-    color: var(--color-primary-600);
+    font-weight: 700;
+    color: ${INK};
   }
 `;
 
 const Lead = styled.p`
-  font-size: var(--text-lg);
-  color: var(--color-gray-700);
+  font-family: ${SANS};
+  font-size: 1.0625rem;
+  color: ${SUB};
   line-height: 1.6;
-  margin: var(--space-6) 0 0;
+  margin: 24px 0 0;
   max-width: 460px;
 `;
 
 const Pillars = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--space-6);
+  gap: 18px;
 
   @media (max-width: 560px) {
     grid-template-columns: 1fr;
@@ -84,32 +92,34 @@ const Pillars = styled.div`
 const Pillar = styled.div`
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-6);
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
+  gap: 8px;
+  padding: 26px;
+  background: #ffffff;
+  border: 1px solid ${HAIRLINE};
+  border-radius: 16px;
 `;
 
 const PillarTitle = styled.h3`
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  font-size: var(--text-base);
+  gap: 10px;
+  font-family: ${SANS};
+  font-size: 1rem;
   font-weight: 600;
-  color: var(--color-gray-900);
+  color: ${INK};
   margin: 0;
   letter-spacing: -0.01em;
 
   svg {
-    color: var(--color-primary-500);
+    color: ${INK};
     flex-shrink: 0;
   }
 `;
 
 const PillarBody = styled.p`
+  font-family: ${SANS};
   font-size: 0.9375rem;
-  color: var(--color-gray-700);
+  color: ${SUB};
   line-height: 1.55;
   margin: 0;
 `;
@@ -137,7 +147,7 @@ const pillars = [
   },
   {
     title: 'Export anytime.',
-    body: 'Every skill is a portable file. Take it with you, share it with a client, sell it on a marketplace — it\'s yours.',
+    body: "Every skill is a portable file. Take it with you, share it with a client, sell it on a marketplace — it's yours.",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -168,7 +178,7 @@ export default function TrustSection() {
             Your skills are <em>Yours.</em>
           </Title>
           <Lead>
-            Skill Recorder is the layer between you and your agent. We don't sit between you and your accounts, your customers, or your data.
+            Cadeno is the layer between you and your agent. We don't sit between you and your accounts, your customers, or your data.
           </Lead>
         </Left>
 
