@@ -25,21 +25,13 @@ function url(locale: string, path: string): string {
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
 
-  return ROUTES.map(({ path, changeFrequency, priority }) => {
-    // hreflang alternates so search engines treat the 12 locale variants
-    // as one page in many languages.
-    const languages: Record<string, string> = {};
-    for (const locale of routing.locales) {
-      languages[locale] = url(locale, path);
-    }
-    languages['x-default'] = url(routing.defaultLocale, path);
-
-    return {
-      url: url(routing.defaultLocale, path),
-      lastModified,
-      changeFrequency,
-      priority,
-      alternates: { languages },
-    };
-  });
+  // Plain sitemap (no hreflang <xhtml:link> alternates): the homepage is not
+  // localized yet, and the xhtml namespace makes browsers render the file as
+  // HTML instead of an XML tree.
+  return ROUTES.map(({ path, changeFrequency, priority }) => ({
+    url: url(routing.defaultLocale, path),
+    lastModified,
+    changeFrequency,
+    priority,
+  }));
 }
