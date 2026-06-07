@@ -53,14 +53,20 @@ export default function RootNotFound() {
     router.replace('/');
   }, [router]);
 
+  // The root layout is a pass-through, so this unmatched-path fallback must
+  // supply its own <html>/<body>.
   return (
-    <Container id="page-404">
-      <Content>
-        <Message>Redirecting…</Message>
-        <PrimaryButton href="/en" id="back-home">
-          Back to Home
-        </PrimaryButton>
-      </Content>
-    </Container>
+    <html lang="en">
+      <body>
+        <Container id="page-404">
+          <Content>
+            <Message>Redirecting…</Message>
+            <PrimaryButton href="/en" id="back-home">
+              Back to Home
+            </PrimaryButton>
+          </Content>
+        </Container>
+      </body>
+    </html>
   );
 }

@@ -4,15 +4,38 @@ import {
   getTranslations,
   unstable_setRequestLocale,
 } from 'next-intl/server';
+import { Lexend, Caveat, JetBrains_Mono } from 'next/font/google';
+import StyledComponentsRegistry from '@/lib/registry';
+import { GlobalStyle } from '@/styles/GlobalStyle';
 import { routing } from '@/i18n/routing';
 
+const lexend = Lexend({
+  subsets: ['latin'],
+  variable: '--font-lexend',
+  display: 'swap',
+});
+
+const caveat = Caveat({
+  subsets: ['latin'],
+  variable: '--font-caveat',
+  display: 'swap',
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-jetbrains-mono',
+  display: 'swap',
+});
+
 const BASE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://skill-recorder.dev';
+  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://cadeno.ai';
 
 export function generateStaticParams() {
   return routing.locales.map(locale => ({ locale }));
 }
 
+// This layout owns <html>/<body> so `lang` reflects the active locale. The
+// root app/layout.tsx is a pass-through (it has no access to the locale param).
 export default async function LocaleLayout({
   children,
   params,
@@ -50,16 +73,30 @@ export default async function LocaleLayout({
   };
 
   return (
-    <NextIntlClientProvider messages={messages}>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareJsonLd) }}
-      />
-      {children}
-    </NextIntlClientProvider>
+    <html
+      lang={params.locale}
+      className={[lexend.variable, caveat.variable, jetbrainsMono.variable].join(
+        ' ',
+      )}
+    >
+      <body>
+        <StyledComponentsRegistry>
+          <GlobalStyle />
+          <NextIntlClientProvider messages={messages}>
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+            />
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify(softwareJsonLd),
+              }}
+            />
+            {children}
+          </NextIntlClientProvider>
+        </StyledComponentsRegistry>
+      </body>
+    </html>
   );
 }

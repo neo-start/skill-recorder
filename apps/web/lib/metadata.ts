@@ -3,7 +3,7 @@ import { routing } from '@/i18n/routing';
 import type { Metadata } from 'next';
 
 const BASE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://skill-recorder.dev';
+  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://cadeno.ai';
 
 function buildLocaleUrl(locale: string, path: string): string {
   const seg = locale === routing.defaultLocale ? '' : `/${locale}`;
