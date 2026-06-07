@@ -7,8 +7,9 @@ import styled, { keyframes } from 'styled-components';
  * dark royal-blue gradient. Form lives inside a hairline cream card.
  * Submit / status / success / error states preserved unchanged.
  *
- * In `pnpm dev` (no CF Pages Function running), submit fakes success.
- * In `pnpm pages:dev` or production, posts to /api/waitlist. */
+ * In `pnpm dev`, submit fakes success. In production the form posts the
+ * email to Formspree (form `mkogzzvj`), which delivers sign-ups straight to
+ * hi@linxin.me — no backend needed, so this works on static hosting. */
 
 const SANS =
   "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
@@ -20,6 +21,10 @@ const FAINT = '#999999';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const IS_DEV = process.env.NODE_ENV === 'development';
+
+// Formspree endpoint (delivers sign-ups to hi@linxin.me). Shared with the
+// linxin.me personal contact form; submissions land in the same inbox.
+const WAITLIST_ENDPOINT = 'https://formspree.io/f/mkogzzvj';
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -253,10 +258,17 @@ export default function CTASection() {
         return;
       }
 
-      const res = await fetch('/api/waitlist', {
+      const res = await fetch(WAITLIST_ENDPOINT, {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ email: trimmed, source: 'homepage_cta' }),
+        headers: {
+          'content-type': 'application/json',
+          accept: 'application/json',
+        },
+        body: JSON.stringify({
+          email: trimmed,
+          source: 'homepage_cta',
+          _subject: 'Cadeno waitlist sign-up',
+        }),
       });
 
       if (res.ok) {
@@ -264,10 +276,12 @@ export default function CTASection() {
         return;
       }
 
-      const data: { error?: string } = await res.json().catch(() => ({}));
+      const data: { errors?: { message?: string }[] } = await res
+        .json()
+        .catch(() => ({}));
       setStatus('error');
       setMessage(
-        data.error === 'invalid_email'
+        data.errors?.[0]?.message
           ? "That doesn't look like an email — try again?"
           : 'Something went wrong on our end. Try again in a moment?',
       );
