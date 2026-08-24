@@ -19,3 +19,6 @@ tsconfig.tsbuildinfo
 # Playwright
 test-results
 playwright-report
+
+# Local packaged releases
+/apps/crx/releases/
