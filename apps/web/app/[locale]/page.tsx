@@ -4,7 +4,7 @@ import { routing } from '@/i18n/routing';
 import Home from '@/components/home';
 
 const BASE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://skill-recorder.dev';
+  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://cadeno.ai';
 
 export function generateStaticParams() {
   return routing.locales.map(locale => ({ locale }));

@@ -16,6 +16,9 @@ tsconfig.tsbuildinfo
 .env.*.local
 .wrangler
 
+# oh-my-claudecode local state
+.omc/
+
 # Playwright
 test-results
 playwright-report

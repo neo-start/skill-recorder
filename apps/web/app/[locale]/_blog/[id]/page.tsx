@@ -9,7 +9,7 @@ import { fetchBlogById, fetchBlogList } from '@/lib/blog';
 import blogsIndex from '@/public/seo/blog/contents/en/blogs.json';
 
 const BASE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://skill-recorder.dev';
+  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://cadeno.ai';
 
 export function generateStaticParams() {
   const ids = (blogsIndex as any).blogs.map((b: any) => b.id as string);
